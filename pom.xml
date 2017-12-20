@@ -11,9 +11,16 @@
         <log4j.version>2.9.1</log4j.version>
         <testng.version>6.13.1</testng.version>
         <mokito.version>2.1.0</mokito.version>
+        <mysql-connector.version>8.0.8-dmr</mysql-connector.version>
+        <lombok.version>1.16.18</lombok.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql-connector.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
@@ -35,6 +42,11 @@
             <artifactId>mockito-core</artifactId>
             <version>${mokito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
     </dependencies>
 
