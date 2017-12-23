@@ -4,7 +4,7 @@
     <groupId>com.chernik</groupId>
     <artifactId>internet-provider</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.2-SNAPSHOT</version>
 
 
     <properties>
@@ -13,6 +13,7 @@
         <mokito.version>2.1.0</mokito.version>
         <mysql-connector.version>8.0.8-dmr</mysql-connector.version>
         <lombok.version>1.16.18</lombok.version>
+        <servlet.version>3.0.1</servlet.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

@@ -3,4 +3,15 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
+    <listener>
+        <listener-class>com.chernik.internetprovider.servlet.StartupListener</listener-class>
+    </listener>
+    <servlet>
+        <servlet-name>front-controller</servlet-name>
+        <servlet-class>com.chernik.internetprovider.servlet.FrontControllerServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>front-controller</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
 </web-app>
