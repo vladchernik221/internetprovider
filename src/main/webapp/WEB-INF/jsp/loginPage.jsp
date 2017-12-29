@@ -1,22 +1,27 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Владислав
-  Date: 22.12.2017
-  Time: 16:57
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Title</title>
 </head>
 <body>
-<form action="/authentication" method="POST">
-    login: <input type="text" name="login"/>
-    <br/>
-    password: <input type="password" name="password"/>
-    <br/>
-    <input type="submit" name="auth"/>
-</form>
+<c:choose>
+    <c:when test="${sessionScope.user == null}">
+        <form method="post" action="/signin">
+            login: <input type="text" name="login"/>
+            <br/>
+            password: <input type="password" name="password"/>
+            <br/>
+            <input type="submit" value="Login" name="auth"/>
+        </form>
+    </c:when>
+    <c:otherwise>
+        Hello ${sessionScope.user.login}!
+        <br>
+        <form method="post" action="/logout">
+            <input type="submit" value="Logout" name="logout">
+        </form>
+    </c:otherwise>
+</c:choose>
 </body>
 </html>

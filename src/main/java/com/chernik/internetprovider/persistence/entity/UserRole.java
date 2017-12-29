@@ -1,7 +1,8 @@
 package com.chernik.internetprovider.persistence.entity;
 
-public enum  Role {
+public enum UserRole {
     ADMIN,
     SELLER,
-    CUSTOMER
+    CUSTOMER,
+    UNAUTHORIZED
 }

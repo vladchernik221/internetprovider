@@ -9,7 +9,7 @@ public class User {
     private Long UserId;
     private String login;
     private String password;
-    private Role role;
+    private UserRole userRole;
     private Boolean blocked;
     private ContractAnnex contractAnnex;
 }

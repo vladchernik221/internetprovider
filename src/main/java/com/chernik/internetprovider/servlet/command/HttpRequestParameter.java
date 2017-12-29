@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class HttpRequestParameter {
-    String uri;
-    HttpRequestType type;
+    private String uri;
+    private HttpRequestType type;
 
     public HttpRequestParameter(String uri) {
         this.uri = uri;

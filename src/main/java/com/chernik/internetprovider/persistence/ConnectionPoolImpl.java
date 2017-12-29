@@ -1,5 +1,9 @@
 package com.chernik.internetprovider.persistence;
 
+import com.chernik.internetprovider.context.AfterCreate;
+import com.chernik.internetprovider.context.Autowired;
+import com.chernik.internetprovider.context.BeforeDestroy;
+import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.property.PropertyHolder;
@@ -18,7 +22,8 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO something with closing
+@Component
+public class ConnectionPoolImpl implements ConnectionPool {
     private final static Logger LOGGER = LogManager.getLogger(ConnectionPoolImpl.class);
 
     private final static String DATABASE_CONNECTION_FORMAT = "%s?user=%s&password=%s&" +
@@ -30,10 +35,11 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
     private final static String MAX_CONNECTIONS_PROPERTY_NAME = "database.connections.count";
     private final static String TIMEOUT_PROPERTY_NAME = "database.connections.timeOut";
 
+    @Autowired
+    private PropertyHolder propertyHolder;
+
     private Lock locker = new ReentrantLock();
     private Condition condition = locker.newCondition();
-    private Lock creationLocker = new ReentrantLock();
-    private Condition creationCondition = creationLocker.newCondition();
 
     private String url;
     private String user;
@@ -45,13 +51,8 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
     private ArrayDeque<Connection> busyConnections = new ArrayDeque<>();
     private AtomicInteger connectionCount = new AtomicInteger();
 
-
-    public ConnectionPoolImpl() {
-        initDatabaseProperty();
-        LOGGER.log(Level.INFO, "Connection pool was initialized");
-    }
-
-    private void initDatabaseProperty() {
+    @AfterCreate
+    public void initDatabaseProperty() {
         String driver = readPropertyWithValidation(DRIVER_PROPERTY_NAME);
         try {
             Class.forName(driver).newInstance();
@@ -63,112 +64,89 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
         user = readPropertyWithValidation(USER_PROPERTY_NAME);
         password = readPropertyWithValidation(PASSWORD_PROPERTY_NAME);
 
-        String maxConnectionsProperty = readProperty(MAX_CONNECTIONS_PROPERTY_NAME);
+        String maxConnectionsProperty = propertyHolder.getProperty(MAX_CONNECTIONS_PROPERTY_NAME);
         if (maxConnectionsProperty != null && Integer.parseInt(maxConnectionsProperty) > 0) {
             maxConnections = Integer.parseInt(maxConnectionsProperty);
         }
-        String timeOutProperty = readProperty(TIMEOUT_PROPERTY_NAME);
+        String timeOutProperty = propertyHolder.getProperty(TIMEOUT_PROPERTY_NAME);
         if (timeOutProperty != null && Integer.parseInt(timeOutProperty) > 0) {
             timeOut = Integer.parseInt(timeOutProperty);
         }
     }
 
     private String readPropertyWithValidation(String propertyName) {
-        String property = readProperty(propertyName);
+        String property = propertyHolder.getProperty(propertyName);
         if (property == null) {
             throw new RuntimeException(String.format("Mandatory property %s was not found", propertyName));
         }
         return property;
     }
 
-    private String readProperty(String propertyName) {
-        PropertyHolder propertyHolder = new PropertyHolder();
-        return propertyHolder.getProperty(propertyName);
-    }
-
 
     @Override
     public Connection getConnection() throws DatabaseException, TimeOutException {
+        Connection connection;
+
         try {
-            LOGGER.log(Level.TRACE, "Available connections {}", availableConnections.size());
+            LOGGER.log(Level.TRACE, "Available connections {}. All open connections {}",
+                    availableConnections.size(), connectionCount);
             locker.lock();
-            LOGGER.log(Level.TRACE, "All open connections {}", connectionCount);
             if (!availableConnections.isEmpty()) {
-                return getWhenAvailableConnectionsIsNotEmpty();
+                connection = getAvailableConnection();
             } else if (connectionCount.get() < maxConnections) {
-                getWhenAvailableConnectionsIsEmpty();
+                connection = getNewConnection();
             } else {
-                return getAfterFreed();
+                connection = getAfterFreed();
             }
         } catch (InterruptedException e) {
-            throw new DatabaseException(String.format("Thread %s was interrupted", Thread.currentThread().getName()));
+            throw new DatabaseException(String.format("Thread %s was interrupted", Thread.currentThread().getName()), e);
         } catch (SQLException e) {
             throw new DatabaseException("Database access error", e);
         } finally {
             locker.unlock();
         }
 
-        waitForConnectionCreate();
-
-        return getConnection();
+        busyConnections.push(connection);
+        return new ConnectionWrapper(connection);
     }
 
-    private Connection getWhenAvailableConnectionsIsNotEmpty() throws SQLException, DatabaseException, TimeOutException {
+    private Connection getAvailableConnection() throws SQLException, DatabaseException, TimeOutException {
         Connection connection;
         connection = availableConnections.pop();
         if (connection.isClosed()) {
             connectionCount.decrementAndGet();
             return getConnection();
         } else {
-            busyConnections.push(connection);
             LOGGER.log(Level.DEBUG, "Get connection. Available connections count: {}", availableConnections.size());
             return connection;
         }
     }
 
-    private void getWhenAvailableConnectionsIsEmpty() {
+    private Connection getNewConnection() {
+        Connection connection = createConnection();
         connectionCount.incrementAndGet();
-        makeBackGroundConnection();
-    }
-
-    private Connection getAfterFreed() throws TimeOutException, InterruptedException {
-        waitForConnectionFound();
-        LOGGER.log(Level.DEBUG, "Get connection. Available connections count: {}", availableConnections.size());
-        Connection connection = availableConnections.pop();
-        busyConnections.add(connection);
+        LOGGER.log(Level.DEBUG, "New connection is available. Available connections count: {}", availableConnections.size());
         return connection;
     }
 
-    private void waitForConnectionFound() throws InterruptedException, TimeOutException {
+    private Connection getAfterFreed() throws TimeOutException, InterruptedException {
         while (availableConnections.isEmpty()) {
             if (!condition.await(timeOut, TimeUnit.SECONDS)) {
                 throw new TimeOutException(String.format("Time out in thread: %s", Thread.currentThread().getName()));
             }
         }
-    }
-
-    private void waitForConnectionCreate() throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Waiting for connection creating");
-        try {
-            creationLocker.lock();
-            if (!creationCondition.await(timeOut, TimeUnit.SECONDS)) {
-                throw new TimeOutException(String.format("Time out in thread: %s", Thread.currentThread().getName()));
-            }
-        } catch (InterruptedException e) {
-            throw new DatabaseException(String.format("Thread %s was interrupted", Thread.currentThread().getName()));
-        } finally {
-            creationLocker.unlock();
-        }
-    }
-
-    private void makeBackGroundConnection() {
-        new Thread(this).start();
+        LOGGER.log(Level.DEBUG, "Get connection. Available connections count: {}", availableConnections.size());
+        return availableConnections.pop();
     }
 
     @Override
     public void releaseConnection(Connection connection) throws DatabaseException {
         try {
             locker.lock();
+            if (connection.getClass() != ConnectionWrapper.class) {
+                throw new DatabaseException(String.format("Connection %s does not in the pool", connection));
+            }
+            connection = ((ConnectionWrapper) connection).getConnection();
             if (!busyConnections.remove(connection)) {
                 throw new DatabaseException(String.format("Connection %s does not in the pool", connection));
             }
@@ -182,6 +160,7 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
     }
 
     @Override
+    @BeforeDestroy
     public void closeAllConnections() {
         try {
             locker.lock();
@@ -193,15 +172,14 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
         } finally {
             locker.unlock();
         }
-        LOGGER.log(Level.INFO, "All connection was closed");
+        LOGGER.log(Level.INFO, "All connections were closed");
     }
 
     private void closeConnections(ArrayDeque<Connection> connections) {
         connections.forEach(connection -> {
             try {
                 if (!connection.isClosed()) {
-                    ConnectionWrapper connectionWrapper = (ConnectionWrapper) connection;
-                    connectionWrapper.realClose();
+                    connection.close();
                 }
             } catch (SQLException e) {
                 LOGGER.log(Level.WARN, "Can't close connection {}", connection);
@@ -218,20 +196,7 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
             throw new RuntimeException(String.format("Can't connect to database. Url: %s, user: %s", url, user), e);
         }
         LOGGER.log(Level.TRACE, "New connection was created.");
-        return new ConnectionWrapper(connection);
-    }
-
-    @Override
-    public void run() {
-        try {
-            Connection connection = createConnection();
-            creationLocker.lock();
-            availableConnections.add(connection);
-        } finally {
-            creationCondition.signalAll();
-            creationLocker.unlock();
-        }
-        LOGGER.log(Level.DEBUG, "New connection is available. Available connections count: {}", availableConnections.size());
+        return connection;
     }
 
 
@@ -240,6 +205,10 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
 
         ConnectionWrapper(Connection connection) {
             this.connection = connection;
+        }
+
+        Connection getConnection() {
+            return connection;
         }
 
         @Override
@@ -284,11 +253,7 @@ public class ConnectionPoolImpl implements ConnectionPool, Runnable {//TODO some
 
         @Override
         public void close() {
-
-        }
-
-        void realClose() throws SQLException {
-            connection.close();
+            throw new RuntimeException("ConnectionClosing is unsupported operation");
         }
 
         @Override

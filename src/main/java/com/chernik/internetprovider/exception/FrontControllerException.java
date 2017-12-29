@@ -16,12 +16,12 @@ public class FrontControllerException extends InternetProviderException {
         this.statusCode = statusCode;
     }
 
-    public FrontControllerException(String message, Throwable cause, String statusCode) {
+    public FrontControllerException(String message, String statusCode, Throwable cause) {
         super(message, cause);
         this.statusCode = statusCode;
     }
 
-    public FrontControllerException(Throwable cause, String statusCode) {
+    public FrontControllerException(String statusCode, Throwable cause) {
         super(cause);
         this.statusCode = statusCode;
     }

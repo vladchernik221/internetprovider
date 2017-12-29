@@ -2,7 +2,19 @@
         "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
-<web-app>
+<web-app
+        xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+        version="2.4">
+    <filter>
+        <filter-name>LoggingFilter</filter-name>
+        <filter-class>com.chernik.internetprovider.servlet.filter.LoginFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>LoggingFilter</filter-name>
+        <servlet-name>front-controller</servlet-name>
+    </filter-mapping>
     <listener>
         <listener-class>com.chernik.internetprovider.servlet.StartupListener</listener-class>
     </listener>
