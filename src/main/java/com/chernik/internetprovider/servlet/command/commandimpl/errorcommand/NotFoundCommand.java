@@ -22,7 +22,7 @@ public class NotFoundCommand implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(NOT_FOUND_JSP);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", NOT_FOUND_JSP);
+        LOGGER.log(Level.TRACE, "Forward to pageNumber: {}", NOT_FOUND_JSP);
         dispatcher.forward(request, response);
     }
 }

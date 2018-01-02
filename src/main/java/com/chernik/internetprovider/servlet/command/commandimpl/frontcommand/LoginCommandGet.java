@@ -23,7 +23,7 @@ public class LoginCommandGet implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(LOGIN_PAGE);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", LOGIN_PAGE);
+        LOGGER.log(Level.TRACE, "Forward to pageNumber: {}", LOGIN_PAGE);
         dispatcher.forward(request, response);
     }
 }

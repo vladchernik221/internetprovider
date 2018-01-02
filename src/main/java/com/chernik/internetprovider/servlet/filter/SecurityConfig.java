@@ -9,7 +9,9 @@ import com.chernik.internetprovider.servlet.command.HttpRequestType;
 public class SecurityConfig {
     @AfterCreate
     public void initConfig(SecurityConfigHandlerImpl securityConfigHandlerImpl) {
-        securityConfigHandlerImpl.enable()
-                .antMatcher(HttpRequestType.GET, "/test").withRole(UserRole.ADMIN, UserRole.SELLER);
+        securityConfigHandlerImpl
+                //.enable()
+                .antMatcher(HttpRequestType.GET, "/test").withRole(UserRole.ADMIN, UserRole.SELLER)
+                .antMatcher(HttpRequestType.POST, "/tariffPlan/new").withRole(UserRole.ADMIN);
     }
 }

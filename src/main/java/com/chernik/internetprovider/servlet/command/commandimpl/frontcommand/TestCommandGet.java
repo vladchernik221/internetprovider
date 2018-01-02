@@ -23,7 +23,7 @@ public class TestCommandGet implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(TEST_FOUND_JSP);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", TEST_FOUND_JSP);
+        LOGGER.log(Level.TRACE, "Forward to pageNumber: {}", TEST_FOUND_JSP);
         dispatcher.forward(request, response);
     }
 }

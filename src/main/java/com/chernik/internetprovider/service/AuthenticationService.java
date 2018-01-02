@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servicelayer.service;
+package com.chernik.internetprovider.service;
 
 import com.chernik.internetprovider.exception.FrontControllerException;
 import com.chernik.internetprovider.persistence.entity.User;

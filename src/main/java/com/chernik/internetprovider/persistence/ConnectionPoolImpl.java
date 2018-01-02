@@ -159,7 +159,6 @@ public class ConnectionPoolImpl implements ConnectionPool {
         LOGGER.log(Level.DEBUG, "Release connection. Available connections count: {}", availableConnections.size());
     }
 
-    @Override
     @BeforeDestroy
     public void closeAllConnections() {
         try {

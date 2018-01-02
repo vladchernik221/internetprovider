@@ -2,19 +2,20 @@ package com.chernik.internetprovider.persistence.repository;
 
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
+import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface TariffPlanRepository {
     Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
-    TariffPlan update(TariffPlan tariffPlan);
+    void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
-    List<TariffPlan> getPage(Pageable pageable);
+    Page<TariffPlan> getTariffPlanPage(Boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
 
-    TariffPlan getById(Long id);
+    Optional<TariffPlan> getById(Long id) throws DatabaseException, TimeOutException;
 
-    void archivedTariffPlan(TariffPlan tariffPlan);
+    boolean isTariffPlanWithNameExist(String name) throws DatabaseException, TimeOutException;
 }

@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servicelayer.serviceImpl;
+package com.chernik.internetprovider.service.impl;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
@@ -7,7 +7,7 @@ import com.chernik.internetprovider.exception.FrontControllerException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.repository.UserRepository;
-import com.chernik.internetprovider.servicelayer.service.AuthenticationService;
+import com.chernik.internetprovider.service.AuthenticationService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -21,7 +21,7 @@ public class ForbiddenCommand implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(FORBIDDEN_JSP);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", FORBIDDEN_JSP);
+        LOGGER.log(Level.TRACE, "Forward to pageNumber: {}", FORBIDDEN_JSP);
         dispatcher.forward(request, response);
     }
 }

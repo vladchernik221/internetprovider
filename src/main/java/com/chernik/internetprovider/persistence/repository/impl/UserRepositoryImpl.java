@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.persistence.dao;
+package com.chernik.internetprovider.persistence.repository.impl;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Repository;
@@ -19,8 +19,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Repository
-public class UserDao implements UserRepository {
-    private final static Logger LOGGER = LogManager.getLogger(UserDao.class);
+public class UserRepositoryImpl implements UserRepository {
+    private final static Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class);
 
     private final static String SELECT_USER_BY_LOGIN_AND_PASSWORD =
             "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `login`=? AND `password`=MD5(?)";

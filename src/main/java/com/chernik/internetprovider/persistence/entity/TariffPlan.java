@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 @NoArgsConstructor
 public class TariffPlan {
-    private Long tariffPlan;
+    private Long tariffPlanId;
     private String name;
     private String description;
     private Integer downSpeed;

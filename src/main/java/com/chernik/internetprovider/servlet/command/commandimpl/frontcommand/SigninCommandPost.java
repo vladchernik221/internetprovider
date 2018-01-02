@@ -3,7 +3,7 @@ package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand;
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.exception.FrontControllerException;
 import com.chernik.internetprovider.persistence.entity.User;
-import com.chernik.internetprovider.servicelayer.service.AuthenticationService;
+import com.chernik.internetprovider.service.AuthenticationService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
