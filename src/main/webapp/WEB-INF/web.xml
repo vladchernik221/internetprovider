@@ -23,6 +23,10 @@
         <servlet-class>com.chernik.internetprovider.servlet.FrontControllerServlet</servlet-class>
     </servlet>
     <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
         <servlet-name>front-controller</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>

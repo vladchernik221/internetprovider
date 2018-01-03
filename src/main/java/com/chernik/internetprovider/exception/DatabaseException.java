@@ -1,8 +1,6 @@
 package com.chernik.internetprovider.exception;
 
-import com.chernik.internetprovider.exception.InternetProviderException;
-
-public class DatabaseException extends InternetProviderException {
+public class DatabaseException extends BaseException {
     public DatabaseException() {
     }
 

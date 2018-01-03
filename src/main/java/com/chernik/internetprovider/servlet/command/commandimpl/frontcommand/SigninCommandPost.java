@@ -1,12 +1,12 @@
 package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand;
 
 import com.chernik.internetprovider.context.Autowired;
-import com.chernik.internetprovider.exception.FrontControllerException;
+import com.chernik.internetprovider.context.HttpRequestProcessor;
+import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.AuthenticationService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
-import com.chernik.internetprovider.context.HttpRequestProcessor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,7 @@ public class SigninCommandPost implements Command {
     }
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, FrontControllerException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
@@ -54,7 +54,7 @@ public class SigninCommandPost implements Command {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/loginPage.jsp");
             PrintWriter out = response.getWriter();
             out.println("<font color=red>Either user name or password is wrong.</font>");
-            dispatcher.include(request, response);
+            //dispatcher.include(request, response);
         }
     }
 }

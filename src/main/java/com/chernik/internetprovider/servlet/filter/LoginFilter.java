@@ -1,12 +1,11 @@
 package com.chernik.internetprovider.servlet.filter;
 
-import com.chernik.internetprovider.exception.FrontControllerException;
+import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.servlet.command.CommandHandler;
 import com.chernik.internetprovider.servlet.command.HttpRequestParameter;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,8 +42,8 @@ public class LoginFilter implements Filter {
         } else {
             try {
                 errorHandler.getCommand(new HttpRequestParameter("403")).execute(request, response);
-            } catch (FrontControllerException e) {
-                LOGGER.log(Level.ERROR, "{} does not support", "403");
+            } catch (BaseException e) {
+                e.printStackTrace();//TODO exception
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command;
+package com.chernik.internetprovider.servlet.command.commandimpl.errorcommand;
 
 import com.chernik.internetprovider.exception.BaseException;
 
@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public interface Command {
-    void execute(HttpServletRequest request, HttpServletResponse response)
+public interface ErrorCommand {
+    void execute(HttpServletRequest request, HttpServletResponse response, BaseException e)
             throws ServletException, IOException, BaseException;
 }

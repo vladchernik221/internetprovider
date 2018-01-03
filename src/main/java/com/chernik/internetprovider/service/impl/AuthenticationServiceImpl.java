@@ -2,9 +2,7 @@ package com.chernik.internetprovider.service.impl;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
-import com.chernik.internetprovider.exception.DatabaseException;
-import com.chernik.internetprovider.exception.FrontControllerException;
-import com.chernik.internetprovider.exception.TimeOutException;
+import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.repository.UserRepository;
 import com.chernik.internetprovider.service.AuthenticationService;
@@ -20,16 +18,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private UserRepository userRepository;
 
     @Override
-    public User authenticate(String login, String password) throws FrontControllerException {
+    public User authenticate(String login, String password) throws BaseException {
         LOGGER.log(Level.DEBUG, "Authentication user with login: {}", login);
-        User user;
-        try {
-            user = userRepository.getUserByLoginAndPassword(login, password);
-        } catch (DatabaseException e) {
-            throw new FrontControllerException(e.getMessage(), "500", e);
-        } catch (TimeOutException e) {
-            throw new FrontControllerException("Timeout while waiting for database connection", "408", e);
-        }
-        return user;
+        return userRepository.getUserByLoginAndPassword(login, password);
     }
 }

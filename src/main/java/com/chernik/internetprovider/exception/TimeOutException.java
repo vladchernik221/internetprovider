@@ -1,6 +1,8 @@
 package com.chernik.internetprovider.exception;
 
-public class TimeOutException extends InternetProviderException  {
+import javax.servlet.http.HttpServletResponse;
+
+public class TimeOutException extends BaseException {
     public TimeOutException() {
     }
 
@@ -14,5 +16,10 @@ public class TimeOutException extends InternetProviderException  {
 
     public TimeOutException(Throwable cause) {
         super(cause);
+    }
+
+    @Override
+    public int getStatusCode() {
+        return HttpServletResponse.SC_REQUEST_TIMEOUT;
     }
 }

@@ -2,15 +2,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
+    <link type="image/x-icon" rel="shortcut icon" href="/static/image/meow.ico"/>
     <title>Title</title>
 </head>
 <body>
 <c:choose>
     <c:when test="${sessionScope.user == null}">
         <form method="post" action="/signin">
-            login: <input type="text" name="login"/>
+            <label>login:
+                <input type="text" name="login">
+            </label>
             <br/>
-            password: <input type="password" name="password"/>
+            <label>password:
+                <input type="password" name="password">
+            </label>
             <br/>
             <input type="submit" value="Login" name="auth"/>
         </form>
