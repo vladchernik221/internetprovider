@@ -1,8 +1,8 @@
 package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand;
 
+import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
-import com.chernik.internetprovider.context.HttpRequestProcessor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,17 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/loginPage", method = HttpRequestType.GET)
-public class LoginCommandGet implements Command {
-    private final static Logger LOGGER = LogManager.getLogger(LoginCommandGet.class);
+@HttpRequestProcessor(uri = "/", method = HttpRequestType.GET)
+public class IndexPageCommandGet implements Command{
 
-    private final static String LOGIN_PAGE = "/WEB-INF/jsp/login.jsp";
+    private final static Logger LOGGER = LogManager.getLogger(IndexPageCommandGet.class);
+
+    private final static String INDEX_PAGE = "/WEB-INF/jsp/index.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(LOGIN_PAGE);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", LOGIN_PAGE);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(INDEX_PAGE);
+        LOGGER.log(Level.TRACE, "Forward to page: {}", INDEX_PAGE);
         dispatcher.forward(request, response);
     }
 }

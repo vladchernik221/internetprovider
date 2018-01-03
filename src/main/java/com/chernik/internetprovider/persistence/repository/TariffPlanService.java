@@ -8,7 +8,7 @@ import com.chernik.internetprovider.persistence.entity.TariffPlan;
 
 import java.util.Optional;
 
-public interface TariffPlanRepository {
+public interface TariffPlanService {
     Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
     void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;

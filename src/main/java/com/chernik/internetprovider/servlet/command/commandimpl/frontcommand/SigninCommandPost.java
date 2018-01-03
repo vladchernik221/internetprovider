@@ -42,7 +42,7 @@ public class SigninCommandPost implements Command {
             session.setAttribute("user", user);
             session.setMaxInactiveInterval(1_800);//TODO to properties
 
-            response.sendRedirect(request.getHeader("Referer"));//TODO constant
+            response.sendRedirect("/");//TODO constant
         } else if (user != null) {
             LOGGER.log(Level.TRACE, "Not successful authentication user: {} is blocked", user.getLogin());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/loginPage.jsp");

@@ -9,19 +9,18 @@ import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
-import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
-import com.chernik.internetprovider.service.TariffPlanService;
+import com.chernik.internetprovider.persistence.repository.TariffPlanService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 
 @Service
-public class TariffPlanServiceImpl implements TariffPlanService {
+public class TariffPlanServiceImpl implements com.chernik.internetprovider.service.TariffPlanService {
     private final static Logger LOGGER = LogManager.getLogger(TariffPlanServiceImpl.class);
 
     @Autowired
-    private TariffPlanRepository tariffPlanRepository;
+    private TariffPlanService tariffPlanRepository;
 
     @Override
     public Long createNewTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, UnableSaveEntityException {

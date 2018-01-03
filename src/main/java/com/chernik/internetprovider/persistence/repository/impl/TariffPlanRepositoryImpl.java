@@ -9,7 +9,7 @@ import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.persistence.entityfield.TariffPlanField;
-import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
+import com.chernik.internetprovider.persistence.repository.TariffPlanService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,17 +20,24 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TariffPlanRepositoryImpl implements TariffPlanRepository {
+public class TariffPlanRepositoryImpl implements TariffPlanService {
     private final static Logger LOGGER = LogManager.getLogger(TariffPlan.class);
 
-    private final static String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `mounthly_fee`, `archived`) VALUE (?,?,?,?,?,?,?,?)";
+    private final static String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived`) VALUE (?,?,?,?,?,?,?,?)";
+
     private final static String IS_EXIST_TARIFF_PLAN_WITH_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `name`=?)";
-    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `mounthly_fee`=?, `archived`=? WHERE `tariff_plan_id`=?";
-    private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE = "SELECT `name`, `down_speed`, `up_speed`, `included_traffic`, `mounthly_fee` FROM tariff_plan WHERE `archived`=0 LIMIT ? OFFSET ?";
-    private final static String GET_TARIFF_PLANS_PAGE = "SELECT `name`, `down_speed`, `up_speed`, `included_traffic`, `mounthly_fee` FROM tariff_plan LIMIT ? OFFSET ?";
+
+    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=?, `archived`=? WHERE `tariff_plan_id`=?";
+
+    private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM tariff_plan WHERE `archived`=0 LIMIT ? OFFSET ?";
+
+    private final static String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM tariff_plan LIMIT ? OFFSET ?";
+
     private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM tariff_plan WHERE `archived`=0";
+
     private final static String GET_TARIFF_PLANS_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM tariff_plan";
-    private final static String GET_TARIFF_PLAN = "SELECT `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `mounthly_fee`, `archived` FROM tariff_plan WHERE `tariff_plan_id`=?";
+
+    private final static String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM tariff_plan WHERE `tariff_plan_id`=?";
 
     @Autowired
     private ConnectionPool connectionPool;
@@ -106,13 +113,13 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public Page<TariffPlan> getTariffPlanPage(Boolean archived, Pageable pageable) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Getting page of tariff plans. Page number is {}, pageNumber size is {}, contain archived {}", pageable.getPageNumber(), pageable.getPageSize(), archived);
+        LOGGER.log(Level.TRACE, "Getting page of tariff plans. Page number is {}, page size is {}, contain archived {}", pageable.getPageNumber(), pageable.getPageSize(), archived);
         Connection connection = connectionPool.getConnection();
         Page<TariffPlan> tariffPlanPage = new Page<>();
-        try (PreparedStatement statement = createPreparedStatementForGetting(connection, archived, pageable);
-             ResultSet resultSet = statement.executeQuery();
-             PreparedStatement countStatement = createCountStatement(connection, archived, pageable);
-             ResultSet countResultSet = countStatement.executeQuery()) {
+        try (PreparedStatement countStatement = createCountStatement(connection, archived, pageable);
+             ResultSet countResultSet = countStatement.executeQuery();
+             PreparedStatement statement = createPreparedStatementForGetting(connection, archived, pageable);
+             ResultSet resultSet = statement.executeQuery()) {
 
             if (countResultSet.next()) {
                 tariffPlanPage.setPagesCount(countResultSet.getInt(1));
@@ -122,7 +129,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
             List<TariffPlan> tariffPlans = new ArrayList<>(pageable.getPageSize());
             while (resultSet.next()) {
-                tariffPlans.add(createTariffPlan(resultSet));
+                tariffPlans.add(createShortTariffPlan(resultSet));
             }
 
             tariffPlanPage.setData(tariffPlans);
@@ -160,7 +167,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         try (PreparedStatement statement = createPreparedStatementForGettingOne(connection, id);
              ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
-                tariffPlan = createTariffPlan(resultSet);
+                tariffPlan = createShortTariffPlan(resultSet);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error while execute database query", e);
@@ -185,7 +192,11 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement statement = createPreparedStatementForExist(connection, name);
              ResultSet resultSet = statement.executeQuery()) {
-            isExist = resultSet.getBoolean(1);
+            if (resultSet.next()) {
+                isExist = resultSet.getBoolean(1);
+            } else {
+                throw new DatabaseException("Error while execute database query");
+            }
         } catch (SQLException e) {
             throw new DatabaseException("Error while execute database query", e);
         } finally {
@@ -217,7 +228,18 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         return generatedId;
     }
 
-    private TariffPlan createTariffPlan(ResultSet resultSet) throws SQLException {
+    private TariffPlan createShortTariffPlan(ResultSet resultSet) throws SQLException {
+        TariffPlan tariffPlan = new TariffPlan();
+        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
+        tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
+        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
+        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
+        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
+        tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
+        return tariffPlan;
+    }
+
+    private TariffPlan createFullTariffPlan(ResultSet resultSet) throws SQLException {
         TariffPlan tariffPlan = new TariffPlan();
         tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
         tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
