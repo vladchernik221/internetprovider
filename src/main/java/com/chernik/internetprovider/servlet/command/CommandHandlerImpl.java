@@ -1,9 +1,11 @@
 package com.chernik.internetprovider.servlet.command;
 
 import com.chernik.internetprovider.context.AfterCreate;
+import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.EntityNotFoundException;
+import com.chernik.internetprovider.service.RegularExpressionService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,14 +18,23 @@ import java.util.Map;
 public class CommandHandlerImpl implements CommandHandler {
     private final static Logger LOGGER = LogManager.getLogger(CommandHandlerImpl.class);
 
-    private Map<HttpRequestParameter, Command> commands = new HashMap<>();
+    private final static String DYNAMIC_URI_REGULAR_EXPRESSION = ".*\\{.+}.*";
 
+    private Map<HttpRequestParameter, Command> commands = new HashMap<>();
+    private RegexHandler dynamicCommands = new RegexHandler();
+
+    @Autowired
+    private RegularExpressionService regularExpressionService;
 
     @AfterCreate
     public void registerCommands(List<Command> commandList) {
         commandList.forEach(command -> {
             HttpRequestProcessor processor = command.getClass().getAnnotation(HttpRequestProcessor.class);
-            commands.put(new HttpRequestParameter(processor.uri().toLowerCase(), processor.method()), command);
+            String uri = processor.uri().toLowerCase();
+            commands.put(new HttpRequestParameter(uri, processor.method()), command);
+            if (regularExpressionService.checkToRegularExpression(uri, DYNAMIC_URI_REGULAR_EXPRESSION)) {
+                dynamicCommands.put(uri);
+            }
             LOGGER.log(Level.DEBUG, "Mapped {{}, {}} onto {}", processor.uri(), processor.method(), command.getClass());
         });
     }
@@ -32,7 +43,13 @@ public class CommandHandlerImpl implements CommandHandler {
     public Command getCommand(HttpRequestParameter parameter) throws EntityNotFoundException {
         Command command = commands.get(parameter);
         if (command == null) {
-            throw new EntityNotFoundException();//TODO entity
+            String dynamicUri = dynamicCommands.get(parameter.getUri());
+            if (dynamicUri != null) {
+                HttpRequestParameter dynamicParameter = new HttpRequestParameter(dynamicUri, parameter.getType());
+                command = commands.get(dynamicParameter);//TODO it might be null
+            } else {
+                throw new EntityNotFoundException();//TODO entity
+            }
         }
         return command;
     }

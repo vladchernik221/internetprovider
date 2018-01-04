@@ -9,7 +9,7 @@ import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.persistence.entityfield.TariffPlanField;
-import com.chernik.internetprovider.persistence.repository.TariffPlanService;
+import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,24 +20,29 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TariffPlanRepositoryImpl implements TariffPlanService {
+public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private final static Logger LOGGER = LogManager.getLogger(TariffPlan.class);
 
-    private final static String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived`) VALUE (?,?,?,?,?,?,?,?)";
+
+    private final static String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived`) VALUES(?,?,?,?,?,?,?,?)";
+
+    private final static String IS_EXIST_TARIFF_PLAN_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`=?)";
 
     private final static String IS_EXIST_TARIFF_PLAN_WITH_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `name`=?)";
 
-    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=?, `archived`=? WHERE `tariff_plan_id`=?";
+    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=? WHERE `tariff_plan_id`=?";
 
-    private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM tariff_plan WHERE `archived`=0 LIMIT ? OFFSET ?";
+    private final static String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `archived`=? WHERE `tariff_plan_id`=?";
 
-    private final static String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM tariff_plan LIMIT ? OFFSET ?";
+    private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` WHERE `archived`=0 LIMIT ? OFFSET ?";
 
-    private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM tariff_plan WHERE `archived`=0";
+    private final static String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` LIMIT ? OFFSET ?";
 
-    private final static String GET_TARIFF_PLANS_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM tariff_plan";
+    private final static String GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan` WHERE `archived`=0";
 
-    private final static String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM tariff_plan WHERE `tariff_plan_id`=?";
+    private final static String GET_TARIFF_PLANS_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan`";
+
+    private final static String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `tariff_plan_id`=?";
 
     @Autowired
     private ConnectionPool connectionPool;
@@ -66,14 +71,29 @@ public class TariffPlanRepositoryImpl implements TariffPlanService {
     private PreparedStatement createPreparedStatementForCreation(Connection connection, TariffPlan tariffPlan) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_TARIFF_PLAN, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, tariffPlan.getName());
-        statement.setString(2, tariffPlan.getDescription());
+        String description = tariffPlan.getDescription();
+        if (description != null) {
+            statement.setString(2, description);
+        } else {
+            statement.setNull(2, Types.VARCHAR);
+        }
         statement.setInt(3, tariffPlan.getDownSpeed());
         statement.setInt(4, tariffPlan.getUpSpeed());
-        statement.setInt(5, tariffPlan.getIncludedTraffic());
-        statement.setInt(6, tariffPlan.getPriceOverTraffic());
+        Integer includedTraffic = tariffPlan.getIncludedTraffic();
+        if (includedTraffic != null) {
+            statement.setInt(5, tariffPlan.getIncludedTraffic());
+        } else {
+            statement.setNull(5, Types.INTEGER);
+        }
+        Integer priceOverTraffic = tariffPlan.getPriceOverTraffic();
+        if (includedTraffic != null) {
+            statement.setInt(6, priceOverTraffic);
+        } else {
+            statement.setNull(6, Types.INTEGER);
+        }
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
         statement.setBoolean(8, tariffPlan.getArchived());
-        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -98,15 +118,55 @@ public class TariffPlanRepositoryImpl implements TariffPlanService {
     private PreparedStatement createPreparedStatementForUpdating(Connection connection, TariffPlan tariffPlan) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(UPDATE_TARIFF_PLAN);
         statement.setString(1, tariffPlan.getName());
-        statement.setString(2, tariffPlan.getDescription());
+        String description = tariffPlan.getDescription();
+        if (description != null) {
+            statement.setString(2, description);
+        } else {
+            statement.setNull(2, Types.VARCHAR);
+        }
         statement.setInt(3, tariffPlan.getDownSpeed());
         statement.setInt(4, tariffPlan.getUpSpeed());
-        statement.setInt(5, tariffPlan.getIncludedTraffic());
-        statement.setInt(6, tariffPlan.getPriceOverTraffic());
+        Integer includedTraffic = tariffPlan.getIncludedTraffic();
+        if (includedTraffic != null) {
+            statement.setInt(5, tariffPlan.getIncludedTraffic());
+        } else {
+            statement.setNull(5, Types.INTEGER);
+        }
+        Integer priceOverTraffic = tariffPlan.getPriceOverTraffic();
+        if (includedTraffic != null) {
+            statement.setInt(6, priceOverTraffic);
+        } else {
+            statement.setNull(6, Types.INTEGER);
+        }
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
         statement.setBoolean(8, tariffPlan.getArchived());
-        statement.setLong(9, tariffPlan.getTariffPlanId());
-        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
+    }
+
+
+    @Override
+    public void archived(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Archiving tariff plan. Set archived to {}", tariffPlan.getArchived());
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement statement = createPreparedStatementForArchived(connection, tariffPlan)) {
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new DatabaseException("Archived tariff plan failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Archiving tariff plan complete successful");
+    }
+
+    private PreparedStatement createPreparedStatementForArchived(Connection connection, TariffPlan tariffPlan) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(ARCHIVE_TARIFF_PLAN);
+        statement.setBoolean(1, tariffPlan.getArchived());
+        statement.setLong(2, tariffPlan.getTariffPlanId());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -155,19 +215,20 @@ public class TariffPlanRepositoryImpl implements TariffPlanService {
                 connection.prepareStatement(GET_TARIFF_PLANS_WITHOUT_ARCHIVED_PAGE);
         statement.setInt(1, pageable.getPageSize());
         statement.setInt(2, pageable.getPageNumber() * pageable.getPageSize());
-        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public Optional<TariffPlan> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting tariff plan by id {}", id);
         Connection connection = connectionPool.getConnection();
         TariffPlan tariffPlan = null;
         try (PreparedStatement statement = createPreparedStatementForGettingOne(connection, id);
              ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
-                tariffPlan = createShortTariffPlan(resultSet);
+                tariffPlan = createFullTariffPlan(resultSet);
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error while execute database query", e);
@@ -181,16 +242,17 @@ public class TariffPlanRepositoryImpl implements TariffPlanService {
     private PreparedStatement createPreparedStatementForGettingOne(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_TARIFF_PLAN);
         statement.setLong(1, id);
-        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public boolean isTariffPlanWithNameExist(String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check tariff plan existing by name {}", name);
         boolean isExist;
         Connection connection = connectionPool.getConnection();
-        try (PreparedStatement statement = createPreparedStatementForExist(connection, name);
+        try (PreparedStatement statement = createPreparedStatementForExistByName(connection, name);
              ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 isExist = resultSet.getBoolean(1);
@@ -202,13 +264,43 @@ public class TariffPlanRepositoryImpl implements TariffPlanService {
         } finally {
             connectionPool.releaseConnection(connection);
         }
+        LOGGER.log(Level.TRACE, "Existing is {}", isExist);
         return isExist;
     }
 
-    private PreparedStatement createPreparedStatementForExist(Connection connection, String name) throws SQLException {
+    private PreparedStatement createPreparedStatementForExistByName(Connection connection, String name) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(IS_EXIST_TARIFF_PLAN_WITH_NAME);
         statement.setString(1, name);
-        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
+    }
+
+
+    @Override
+    public boolean isTariffPlanWithIdExist(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check tariff plan existing by id {}", id);
+        boolean isExist;
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement statement = createPreparedStatementForExistById(connection, id);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                isExist = resultSet.getBoolean(1);
+            } else {
+                throw new DatabaseException("Error while execute database query");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Existing is {}", isExist);
+        return isExist;
+    }
+
+    private PreparedStatement createPreparedStatementForExistById(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(IS_EXIST_TARIFF_PLAN_WITH_ID);
+        statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

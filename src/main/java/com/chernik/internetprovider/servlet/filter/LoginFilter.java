@@ -6,6 +6,7 @@ import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.servlet.command.CommandHandler;
 import com.chernik.internetprovider.servlet.command.HttpRequestParameter;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +44,8 @@ public class LoginFilter implements Filter {
             try {
                 errorHandler.getCommand(new HttpRequestParameter("403")).execute(request, response);
             } catch (BaseException e) {
-                e.printStackTrace();//TODO exception
+                LOGGER.log(Level.ERROR, "Error {} does not support", e.getStatusCode());
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error {} does not support");
             }
         }
     }

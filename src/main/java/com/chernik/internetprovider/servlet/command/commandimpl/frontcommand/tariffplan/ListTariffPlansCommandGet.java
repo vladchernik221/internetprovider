@@ -5,7 +5,7 @@ import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.Pageable;
-import com.chernik.internetprovider.persistence.repository.TariffPlanService;
+import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
 import org.apache.logging.log4j.Level;
@@ -25,7 +25,7 @@ public class ListTariffPlansCommandGet implements Command {
     private final static String TARIFF_LIST_PAGE = "/WEB-INF/jsp/tariffList.jsp";
 
     @Autowired
-    private TariffPlanService tariffPlanService;
+    private TariffPlanRepository tariffPlanService;
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

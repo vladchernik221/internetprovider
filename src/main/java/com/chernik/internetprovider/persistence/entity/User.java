@@ -11,5 +11,5 @@ public class User {
     private String password;
     private UserRole userRole;
     private Boolean blocked;
-    private ContractAnnex contractAnnex;
+    private Contract contract;
 }

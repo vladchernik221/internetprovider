@@ -50,7 +50,7 @@
     <div class="container">
         <header class="major">
             <h2>Тарифные планы</h2>
-            <a href="/tariffForm" class="button">Создать тарифный план</a>
+            <a href="/tariff_plan/new" class="button">Создать тарифный план</a>
         </header>
         <table class="list">
             <tr>
@@ -63,7 +63,7 @@
                 <th></th>
             </tr>
             <c:forEach items="${tariffPlans.data}" var="tariffPlan">
-                <tr onclick="redirect('tariff')">
+                <tr onclick="redirect('/tariff_plan/${tariffPlan.tariffPlanId}')">
                     <td>${tariffPlan.name}</td>
                     <td>${tariffPlan.monthlyFee}</td>
                     <td>${tariffPlan.downSpeed}</td>

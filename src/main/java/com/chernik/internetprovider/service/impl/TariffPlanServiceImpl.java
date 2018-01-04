@@ -9,7 +9,7 @@ import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
-import com.chernik.internetprovider.persistence.repository.TariffPlanService;
+import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,7 +20,7 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     private final static Logger LOGGER = LogManager.getLogger(TariffPlanServiceImpl.class);
 
     @Autowired
-    private TariffPlanService tariffPlanRepository;
+    private TariffPlanRepository tariffPlanRepository;
 
     @Override
     public Long createNewTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, UnableSaveEntityException {
@@ -33,7 +33,7 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
 
     @Override
     public void updateTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException {
-        if (tariffPlanRepository.isTariffPlanWithNameExist(tariffPlan.getName())) {//TODO by id
+        if (tariffPlanRepository.isTariffPlanWithIdExist(tariffPlan.getTariffPlanId())) {
             tariffPlanRepository.update(tariffPlan);
         } else {
             throw new EntityNotFoundException(String.format("Tariff plan with name: %s does not exist", tariffPlan.getName()));
@@ -58,6 +58,6 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     @Override
     public void archiveTariffPlan(TariffPlan tariffPlan) throws TimeOutException, EntityNotFoundException, DatabaseException {
         tariffPlan.setArchived(!tariffPlan.getArchived());
-        updateTariffPlan(tariffPlan);
+        tariffPlanRepository.archived(tariffPlan);
     }
 }

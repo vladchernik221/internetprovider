@@ -17,9 +17,9 @@ public class ContextInitializer {
     private Reflections ref = new Reflections();
 
     private Map<Class<?>, Object> components = new HashMap<>();
-    private Map<Object, Field> withAutowired = new HashMap<>();
-    private Map<Object, Method> withAfterCreate = new HashMap<>();
-    private Map<Object, Method> withBeforeDestroy = new HashMap<>();
+    private Map<Field, Object> withAutowired = new HashMap<>();
+    private Map<Method, Object> withAfterCreate = new HashMap<>();
+    private Map<Method, Object> withBeforeDestroy = new HashMap<>();
 
     public Object getComponent(Class<?> clazz) {
         return components.get(getImplementation(clazz));
@@ -88,21 +88,21 @@ public class ContextInitializer {
     private void addAutowireField(Class<?> clazz, Object component) {
         Reflections autowiredRef = new Reflections(clazz.getCanonicalName(), new FieldAnnotationsScanner());
         autowiredRef.getFieldsAnnotatedWith(Autowired.class)
-                .forEach(field -> withAutowired.put(component, field));
+                .forEach(field -> withAutowired.put(field, component));
     }
 
     private void addLifeCycleMethod(Class<?> clazz, Object component) {
         Reflections afterCreateRef = new Reflections(clazz.getCanonicalName(), new MethodAnnotationsScanner());
         afterCreateRef.getMethodsAnnotatedWith(AfterCreate.class)
-                .forEach(method -> withAfterCreate.put(component, method));
+                .forEach(method -> withAfterCreate.put(method, component));
         afterCreateRef.getMethodsAnnotatedWith(BeforeDestroy.class)
-                .forEach(method -> withBeforeDestroy.put(component, method));
+                .forEach(method -> withBeforeDestroy.put(method, component));
     }
 
 
     private void autowireComponents() {
         LOGGER.log(Level.TRACE, "Autowiring components to fields");
-        withAutowired.forEach((value, field) -> {
+        withAutowired.forEach((field, value) -> {
             try {
                 field.setAccessible(true);
                 Object settingValue = getComponentOrImpemetation(field.getType());
@@ -118,8 +118,8 @@ public class ContextInitializer {
     }
 
 
-    private void invokeLifeCycleMethod(Map<Object, Method> lifeCycle) {
-        lifeCycle.forEach((value, method) -> {
+    private void invokeLifeCycleMethod(Map<Method, Object> lifeCycle) {
+        lifeCycle.forEach((method, value) -> {
             Parameter[] inputParameters = method.getParameters();
             List<Object> parameters = new ArrayList<>();
             Arrays.stream(inputParameters).forEach(inputParameter -> {

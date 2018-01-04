@@ -61,6 +61,7 @@ public class FrontControllerServlet extends HttpServlet {
             errorCommand.execute(request, response, error);
         } catch (BaseException e) {
             LOGGER.log(Level.ERROR, "Error {} does not support", e.getStatusCode());
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error {} does not support");
         }
     }
 }
