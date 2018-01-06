@@ -13,9 +13,9 @@ public interface TariffPlanRepository {
 
     void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
-    void archived(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
+    void archive(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
-    Page<TariffPlan> getTariffPlanPage(Boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
+    Page<TariffPlan> getTariffPlanPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
 
     Optional<TariffPlan> getById(Long id) throws DatabaseException, TimeOutException;
 

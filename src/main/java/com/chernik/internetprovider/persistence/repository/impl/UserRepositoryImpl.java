@@ -57,7 +57,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
             LOGGER.log(Level.TRACE, "Found user: {}", user);
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when user by login and password", e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
@@ -85,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
             }
             generatedId = getGeneratedId(statement);
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when create user", e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
@@ -120,10 +120,10 @@ public class UserRepositoryImpl implements UserRepository {
         try (PreparedStatement statement = createStatementForUpdatingPassword(connection, user, newPassword)) {
             int affectedRows = statement.executeUpdate();
             if (affectedRows == 0) {
-                throw new DatabaseException("Updating tariff plan failed, no rows affected.");
+                throw new DatabaseException("Updating user password failed, no rows affected.");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when update user password", e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
@@ -162,7 +162,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             userPage.setData(users);
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when get user page", e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
@@ -196,7 +196,7 @@ public class UserRepositoryImpl implements UserRepository {
                 throw new DatabaseException("Ban user failed, no rows affected.");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when ban user", e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
@@ -213,7 +213,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean isUserWithIdExists(Long id) throws DatabaseException, TimeOutException {//TODO duplicate
-        LOGGER.log(Level.TRACE, "Check tariff plan existing by id {}", id);
+        LOGGER.log(Level.TRACE, "Check user existing by id {}", id);
         boolean isExist;
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement statement = createPreparedStatementForExistById(connection, id);
@@ -221,10 +221,10 @@ public class UserRepositoryImpl implements UserRepository {
             if (resultSet.next()) {
                 isExist = resultSet.getBoolean(1);
             } else {
-                throw new DatabaseException("Error while execute database query");
+                throw new DatabaseException("Error while execute database query, when check user with id exist");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when check user with id exist", e);
         } finally {
             connectionPool.releaseConnection(connection);
         }
@@ -256,10 +256,10 @@ public class UserRepositoryImpl implements UserRepository {
             if (generatedKeys.next()) {
                 generatedId = generatedKeys.getLong(1);
             } else {
-                throw new DatabaseException("Creating failed, no ID obtained.");
+                throw new DatabaseException("Getting user generated key failed, no ID obtained.");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query", e);
+            throw new DatabaseException("Error while execute database query, when get user generated key", e);
         }
         LOGGER.log(Level.TRACE, "Generated id: {}", generatedId);
         return generatedId;

@@ -58,6 +58,6 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     @Override
     public void archiveTariffPlan(TariffPlan tariffPlan) throws TimeOutException, EntityNotFoundException, DatabaseException {
         tariffPlan.setArchived(!tariffPlan.getArchived());
-        tariffPlanRepository.archived(tariffPlan);
+        tariffPlanRepository.archive(tariffPlan);
     }
 }

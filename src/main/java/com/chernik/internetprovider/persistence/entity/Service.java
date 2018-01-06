@@ -3,6 +3,8 @@ package com.chernik.internetprovider.persistence.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 public class Service {
@@ -10,5 +12,5 @@ public class Service {
     private String name;
     private String description;
     private Boolean archived;
-    private Integer price;
+    private BigDecimal price;
 }
