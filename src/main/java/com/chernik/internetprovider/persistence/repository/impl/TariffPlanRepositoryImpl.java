@@ -83,7 +83,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
-        commonRepository.update(tariffPlan, this::createPreparedStatementForUpdating);
+        commonRepository.executeUpdate(tariffPlan, this::createPreparedStatementForUpdating);
     }
 
     private PreparedStatement createPreparedStatementForUpdating(Connection connection, TariffPlan tariffPlan) throws SQLException {
@@ -119,7 +119,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public void archive(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
-        commonRepository.update(tariffPlan, this::createPreparedStatementForArchived);
+        commonRepository.executeUpdate(tariffPlan, this::createPreparedStatementForArchived);
     }
 
     private PreparedStatement createPreparedStatementForArchived(Connection connection, TariffPlan tariffPlan) throws SQLException {
@@ -157,6 +157,17 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         return statement;
     }
 
+    private TariffPlan createShortTariffPlan(ResultSet resultSet) throws SQLException {
+        TariffPlan tariffPlan = new TariffPlan();
+        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
+        tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
+        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
+        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
+        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
+        tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
+        return tariffPlan;
+    }
+
 
     @Override
     public Optional<TariffPlan> getById(Long id) throws DatabaseException, TimeOutException {
@@ -168,6 +179,20 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
+    }
+
+    private TariffPlan createFullTariffPlan(ResultSet resultSet) throws SQLException {
+        TariffPlan tariffPlan = new TariffPlan();
+        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
+        tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
+        tariffPlan.setDescription(resultSet.getString(TariffPlanField.DESCRIPTION.toString()));
+        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
+        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
+        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
+        tariffPlan.setPriceOverTraffic(resultSet.getInt(TariffPlanField.PRICE_OVER_TRAFFIC.toString()));
+        tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
+        tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));
+        return tariffPlan;
     }
 
 
@@ -194,31 +219,5 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
-    }
-
-
-    private TariffPlan createShortTariffPlan(ResultSet resultSet) throws SQLException {
-        TariffPlan tariffPlan = new TariffPlan();
-        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
-        tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
-        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
-        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
-        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
-        tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
-        return tariffPlan;
-    }
-
-    private TariffPlan createFullTariffPlan(ResultSet resultSet) throws SQLException {
-        TariffPlan tariffPlan = new TariffPlan();
-        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
-        tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
-        tariffPlan.setDescription(resultSet.getString(TariffPlanField.DESCRIPTION.toString()));
-        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
-        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
-        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
-        tariffPlan.setPriceOverTraffic(resultSet.getInt(TariffPlanField.PRICE_OVER_TRAFFIC.toString()));
-        tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
-        tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));
-        return tariffPlan;
     }
 }

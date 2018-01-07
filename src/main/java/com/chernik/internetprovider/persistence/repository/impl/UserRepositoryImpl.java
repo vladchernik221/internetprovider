@@ -84,7 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void updatePassword(User user, String newPassword) throws DatabaseException, TimeOutException {
-        commonRepository.update(user, newPassword, this::createStatementForUpdatingPassword);
+        commonRepository.executeUpdate(user, newPassword, this::createStatementForUpdatingPassword);
     }
 
     private PreparedStatement createStatementForUpdatingPassword(Connection connection, User user, String newPassword) throws SQLException {
@@ -119,7 +119,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void banUser(User user, boolean baned) throws DatabaseException, TimeOutException {
-        commonRepository.update(user, baned, this::createStatementForBan);
+        commonRepository.executeUpdate(user, baned, this::createStatementForBan);
     }
 
     private PreparedStatement createStatementForBan(Connection connection, User user, boolean baned) throws SQLException {
@@ -145,8 +145,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     private User createUser(ResultSet resultSet) throws SQLException {
-        User user;
-        user = new User();
+        User user = new User();
         user.setUserId(resultSet.getLong(UserField.USER_ID.toString()));
         user.setLogin(resultSet.getString(UserField.LOGIN.toString()));
         user.setUserRole(UserRole.valueOf(resultSet.getString(UserField.ROLE.toString())));

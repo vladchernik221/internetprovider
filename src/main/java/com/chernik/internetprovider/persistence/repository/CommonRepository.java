@@ -46,7 +46,7 @@ public class CommonRepository {
         return generatedId;
     }
 
-    public <T> void update(T entity, BiThrowableFunctional<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+    public <T> void executeUpdate(T entity, BiThrowableFunctional<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Updating {}", entity);
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement statement = statementFunctional.apply(connection, entity)) {
@@ -62,7 +62,7 @@ public class CommonRepository {
         LOGGER.log(Level.TRACE, "Updating complete successful");
     }
 
-    public <T, E> void update(T first, E second, TriThrowableFunctional<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+    public <T, E> void executeUpdate(T first, E second, TriThrowableFunctional<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Updating {}, {}", first, second);
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement statement = statementFunctional.apply(connection, first, second)) {

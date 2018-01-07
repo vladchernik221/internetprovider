@@ -70,7 +70,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public void update(Service service) throws DatabaseException, TimeOutException {
-        commonRepository.update(service, this::createPreparedStatementForUpdating);
+        commonRepository.executeUpdate(service, this::createPreparedStatementForUpdating);
     }
 
     private PreparedStatement createPreparedStatementForUpdating(Connection connection, Service service) throws SQLException {
@@ -92,7 +92,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public void archive(Service service) throws DatabaseException, TimeOutException {
-        commonRepository.update(service, this::createPreparedStatementForArchived);
+        commonRepository.executeUpdate(service, this::createPreparedStatementForArchived);
     }
 
     private PreparedStatement createPreparedStatementForArchived(Connection connection, Service service) throws SQLException {
@@ -131,6 +131,14 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         return statement;
     }
 
+    private Service createShortService(ResultSet resultSet) throws SQLException {
+        Service service = new Service();
+        service.setServiceId(resultSet.getLong(ServiceField.SERVICE_ID.toString()));
+        service.setName(resultSet.getString(ServiceField.NAME.toString()));
+        service.setPrice(resultSet.getBigDecimal(ServiceField.PRICE.toString()));
+        return service;
+    }
+
 
     @Override
     public Optional<Service> getById(Long id) throws DatabaseException, TimeOutException {
@@ -142,6 +150,16 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
+    }
+
+    private Service createFullService(ResultSet resultSet) throws SQLException {
+        Service service = new Service();
+        service.setServiceId(resultSet.getLong(ServiceField.SERVICE_ID.toString()));
+        service.setName(resultSet.getString(ServiceField.NAME.toString()));
+        service.setDescription(resultSet.getString(ServiceField.DESCRIPTION.toString()));
+        service.setPrice(resultSet.getBigDecimal(ServiceField.PRICE.toString()));
+        service.setArchived(resultSet.getBoolean(ServiceField.ARCHIVED.toString()));
+        return service;
     }
 
 
@@ -168,24 +186,5 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
-    }
-
-
-    private Service createShortService(ResultSet resultSet) throws SQLException {
-        Service service = new Service();
-        service.setServiceId(resultSet.getLong(ServiceField.SERVICE_ID.toString()));
-        service.setName(resultSet.getString(ServiceField.NAME.toString()));
-        service.setPrice(resultSet.getBigDecimal(ServiceField.PRICE.toString()));
-        return service;
-    }
-
-    private Service createFullService(ResultSet resultSet) throws SQLException {
-        Service service = new Service();
-        service.setServiceId(resultSet.getLong(ServiceField.SERVICE_ID.toString()));
-        service.setName(resultSet.getString(ServiceField.NAME.toString()));
-        service.setDescription(resultSet.getString(ServiceField.DESCRIPTION.toString()));
-        service.setPrice(resultSet.getBigDecimal(ServiceField.PRICE.toString()));
-        service.setArchived(resultSet.getBoolean(ServiceField.ARCHIVED.toString()));
-        return service;
     }
 }
