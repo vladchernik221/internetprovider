@@ -51,7 +51,7 @@ public class LoginCommandPost implements Command {
         if (user.isPresent() && !user.get().getBlocked()) {
             LOGGER.log(Level.TRACE, "Successful authentication user: {}", user.get().getLogin());
             HttpSession session = request.getSession();
-            session.setAttribute("user", user);
+            session.setAttribute("user", user.get());
             session.setMaxInactiveInterval(sessionTimeout);
             response.sendRedirect(INDEX_PAGE);
         } else if (user.isPresent()) {

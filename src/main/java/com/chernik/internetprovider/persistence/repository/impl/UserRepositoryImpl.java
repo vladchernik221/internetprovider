@@ -4,20 +4,18 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Repository;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
-import com.chernik.internetprovider.persistence.ConnectionPool;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.persistence.entityfield.UserField;
+import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.UserRepository;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -42,26 +40,12 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Autowired
-    private ConnectionPool connectionPool;
+    private CommonRepository commonRepository;
 
 
     @Override
     public Optional<User> getUserByLoginAndPassword(String login, String password) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Finding user with login: {}", login);
-        User user = null;
-        Connection connection = connectionPool.getConnection();
-        try (PreparedStatement statement = createStatementForGettingByLoginAndPassword(connection, login, password);
-             ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                user = createUser(resultSet);
-            }
-            LOGGER.log(Level.TRACE, "Found user: {}", user);
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when user by login and password", e);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
-        return Optional.ofNullable(user);
+        return commonRepository.getByParameters(login, password, this::createStatementForGettingByLoginAndPassword, this::createUser);
     }
 
     private PreparedStatement createStatementForGettingByLoginAndPassword(Connection connection, String login, String password) throws SQLException {
@@ -75,22 +59,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Long create(User user) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Inserting user {}", user);
-        Connection connection = connectionPool.getConnection();
-        Long generatedId;
-        try (PreparedStatement statement = createStatementForInserting(connection, user)) {
-            int affectedRow = statement.executeUpdate();
-            if (affectedRow == 0) {
-                throw new DatabaseException("Creating user failed, no rows affected.");
-            }
-            generatedId = getGeneratedId(statement);
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when create user", e);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
-        LOGGER.log(Level.TRACE, "Inserting user complete successful");
-        return generatedId;
+        return commonRepository.create(user, this::createStatementForInserting);
     }
 
     private PreparedStatement createStatementForInserting(Connection connection, User user) throws SQLException {
@@ -115,19 +84,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void updatePassword(User user, String newPassword) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Updating user {}", user);
-        Connection connection = connectionPool.getConnection();
-        try (PreparedStatement statement = createStatementForUpdatingPassword(connection, user, newPassword)) {
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DatabaseException("Updating user password failed, no rows affected.");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when update user password", e);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
-        LOGGER.log(Level.TRACE, "Updating user complete successful");
+        commonRepository.update(user, newPassword, this::createStatementForUpdatingPassword);
     }
 
     private PreparedStatement createStatementForUpdatingPassword(Connection connection, User user, String newPassword) throws SQLException {
@@ -141,33 +98,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Page<User> getUsers(Pageable pageable) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Getting page of user. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
-        Connection connection = connectionPool.getConnection();
-        Page<User> userPage = new Page<>();
-        try (PreparedStatement countStatement = createCountStatement(connection, pageable);
-             ResultSet countResultSet = countStatement.executeQuery();
-             PreparedStatement statement = createPreparedStatementForGetting(connection, pageable);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            if (countResultSet.next()) {
-                userPage.setPagesCount(countResultSet.getInt(1));
-            } else {
-                throw new DatabaseException("Getting user pages count failed");
-            }
-
-            List<User> users = new ArrayList<>();
-            while (resultSet.next()) {
-                users.add(createUser(resultSet));//TODO contract
-            }
-
-            userPage.setData(users);
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when get user page", e);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
-        LOGGER.log(Level.TRACE, "Getting users complete successful");
-        return userPage;
+        return commonRepository.getEntityPage(pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createUser);
     }
 
     private PreparedStatement createCountStatement(Connection connection, Pageable pageable) throws SQLException {
@@ -188,18 +119,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void banUser(User user, boolean baned) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Ban user. Set baned to {}", baned);
-        Connection connection = connectionPool.getConnection();
-        try (PreparedStatement statement = createStatementForBan(connection, user, baned)) {
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new DatabaseException("Ban user failed, no rows affected.");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when ban user", e);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
+        commonRepository.update(user, baned, this::createStatementForBan);
     }
 
     private PreparedStatement createStatementForBan(Connection connection, User user, boolean baned) throws SQLException {
@@ -212,24 +132,8 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public boolean isUserWithIdExists(Long id) throws DatabaseException, TimeOutException {//TODO duplicate
-        LOGGER.log(Level.TRACE, "Check user existing by id {}", id);
-        boolean isExist;
-        Connection connection = connectionPool.getConnection();
-        try (PreparedStatement statement = createPreparedStatementForExistById(connection, id);
-             ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                isExist = resultSet.getBoolean(1);
-            } else {
-                throw new DatabaseException("Error while execute database query, when check user with id exist");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when check user with id exist", e);
-        } finally {
-            connectionPool.releaseConnection(connection);
-        }
-        LOGGER.log(Level.TRACE, "Existing is {}", isExist);
-        return isExist;
+    public boolean isUserWithIdExists(Long id) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 
     private PreparedStatement createPreparedStatementForExistById(Connection connection, Long id) throws SQLException {
@@ -248,20 +152,5 @@ public class UserRepositoryImpl implements UserRepository {
         user.setUserRole(UserRole.valueOf(resultSet.getString(UserField.ROLE.toString())));
         user.setBlocked(resultSet.getBoolean(UserField.BLOCKED.toString()));
         return user;
-    }
-
-    private Long getGeneratedId(PreparedStatement statement) throws DatabaseException {//TODO something with duplicate
-        Long generatedId;
-        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                generatedId = generatedKeys.getLong(1);
-            } else {
-                throw new DatabaseException("Getting user generated key failed, no ID obtained.");
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when get user generated key", e);
-        }
-        LOGGER.log(Level.TRACE, "Generated id: {}", generatedId);
-        return generatedId;
     }
 }
