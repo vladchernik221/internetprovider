@@ -5,7 +5,7 @@
     <title>Title</title>
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="/static/js_test/test.js"></script>
-    <link type="image/x-icon" rel="shortcut icon" href="/static/image/meow.ico"/>
+    <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 </head>
 <body>
 test

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Описание тарифа</title>
 
-    <link type="image/x-icon" rel="shortcut icon" href="/static/image/meow.ico"/>
+    <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
     <link href="/static/css/reset.css" rel="stylesheet"/>
     <link href="/static/css/skel.css" rel="stylesheet"/>
@@ -16,33 +16,8 @@
 </head>
 <body>
 <!-- Header -->
-<header id="header" class="transparent top">
-    <div class="home"><a href="/">На главную</a></div>
-    <div class="nav">
-        <ul>
-            <c:choose>
-                <c:when test="${sessionScope.user != null}">
-                    <li>
-                        <a href="#">Личный кабинет</a>
-                    </li>
-                    <li>
-                        <a href="#">Кабинет сотрудника</a>
-                    </li>
-                    <li>
-                        <a href="#">Сменить пароль</a>
-                    </li>
-                    <li>
-                        <a href="/logout" class="button">Выйти</a>
-                    </li>
-                </c:when>
-                <c:otherwise>
-                    <li>
-                        <a href="/loginPage" class="button">Войти</a>
-                    </li>
-                </c:otherwise>
-            </c:choose>
-        </ul>
-    </div>
+<header id="header">
+    <jsp:include page="header.jsp" />
 </header>
 
 <!-- Main part -->
@@ -116,10 +91,6 @@
 </section>
 
 <!-- Footer -->
-<footer id="footer">
-    <div class="container">
-        &copy; Internet Provider. Разработано Владиславом Черником.
-    </div>
-</footer>
+<jsp:include page="footer.jsp" />
 </body>
 </html>

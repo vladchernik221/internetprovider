@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Авторизация</title>
 
-    <link type="image/x-icon" rel="shortcut icon" href="/static/image/meow.ico"/>
+    <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
     <link href="/static/css/reset.css" rel="stylesheet"/>
     <link href="/static/css/skel.css" rel="stylesheet"/>
