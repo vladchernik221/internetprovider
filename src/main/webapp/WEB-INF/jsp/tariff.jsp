@@ -26,7 +26,7 @@
         <div class="row"><div class="align-left col-2">
                 <a href="/tariff_plan" class="button small">К списку</a>
             </div><div class="align-right actions col-2">
-                <a href="#" class="button small">Редактировать</a>
+                <a href="/tariff_plan/${tariffPlan.tariffPlanId}/edit" class="button small">Редактировать</a>
                 <c:choose>
                     <c:when test="${!tariffPlan.archived}">
                         <button class="button small">Поместить в архив</button>

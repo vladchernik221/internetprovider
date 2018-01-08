@@ -13,6 +13,7 @@
 
     <script src="/static/js/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/tariffForm.js"></script>
 </head>
 <body>
 <!-- Header -->
@@ -24,40 +25,47 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2>Создание тарифного плана</h2>
+        <c:choose>
+            <c:when test="${tariffPlan == null}">
+                <h2>Создание тарифного плана</h2>
+            </c:when>
+            <c:otherwise>
+                <h2>Редактирование тарифного плана</h2>
+            </c:otherwise>
+        </c:choose>
         </header>
-        <form action="/tariff_plan/new" method="post">
+        <form action="/tariff_plan/new" method="post" id="tariff_plan_form">
             <div class="row">
-                <input type="text" name="name" placeholder="Название" required />
+                <input type="text" name="name" placeholder="Название" value="${tariffPlan.name}" required />
                 <label>Название</label>
             </div>
             <div class="row">
-                <textarea name="description" placeholder="Описание" rows="6"></textarea>
+                <textarea name="description" placeholder="Описание" value="${tariffPlan.description}" rows="6"></textarea>
                 <label>Описание</label>
             </div>
             <div class="row">
-                <input type="text" name="monthlyFee" placeholder="Абонентская плата" pattern="^\d*(\.\d{0,2})?$"  required />
+                <input type="text" name="monthlyFee" placeholder="Абонентская плата" pattern="^\d*(\.\d{0,2})?$"  value="${tariffPlan.monthlyFee}" required />
                 <label>Абонентская плата</label>
             </div>
             <div class="row"><div class="col-2">
-                <input type="text" name="downSpeed" placeholder="Скорость передачи" pattern="^\d*(\.\d{0,2})?$" required />
+                <input type="text" name="downSpeed" placeholder="Скорость передачи" pattern="^\d*$" value="${tariffPlan.downSpeed}" required />
                 <label>Скорость передачи</label>
             </div><div class="col-2">
-                <input type="text" name="upSpeed" placeholder="Скорость отдачи" pattern="^\d*(\.\d{0,2})?$" required />
+                <input type="text" name="upSpeed" placeholder="Скорость отдачи" pattern="^\d*$" value="${tariffPlan.upSpeed}" required />
                 <label>Скорость отдачи</label>
             </div></div>
             <div class="row"><div class="col-2">
-                <input type="radio" name="isLimit" value="true" id="isLimit-true" />
+                <input type="radio" name="isLimit" value="true" id="isLimit-true" onchange="change_is_limit(true)" <c:if test="${tariffPlan.includedTraffic != null}">checked</c:if> />
                 <label for="isLimit-true">Лимитный</label>
             </div><div class="col-2">
-                <input type="radio" name="isLimit" value="false" id="isLimit-false" checked />
+                <input type="radio" name="isLimit" value="false" id="isLimit-false" onchange="change_is_limit(false)" <c:if test="${tariffPlan.includedTraffic == null}">checked</c:if> />
                 <label for="isLimit-false">Безлимитный</label>
             </div></div>
-            <div class="row"><div class="col-2">
-                <input type="text" name="includedTraffic" placeholder="Включенный трафик, Мб" pattern="^\d*$" />
+            <div class="row only-for-limit"><div class="col-2">
+                <input type="text" name="includedTraffic" placeholder="Включенный трафик, Мб" pattern="^\d*$" value="${tariffPlan.includedTraffic}" />
                 <label>Включенный трафик, Мб</label>
             </div><div class="col-2">
-                <input type="text" name="priceOverTraffic" placeholder="Цена за Мб после превышения трафика" pattern="^\d*(\.\d{0,2})?$" />
+                <input type="text" name="priceOverTraffic" placeholder="Цена за Мб после превышения трафика" pattern="^\d*(\.\d{0,2})?$" value="${tariffPlan.priceOverTraffic}" />
                 <label>Цена за Мб после превышения трафика</label>
             </div></div>
             <div class="row">
@@ -76,7 +84,7 @@
                     </select>
                 </div>
             </div>
-            <input class="big" type="submit" value="Создать" />
+            <input class="big" type="submit" value="Сохранить" />
             <input class="big" type="reset" value="Очистить" />
         </form>
     </div>
