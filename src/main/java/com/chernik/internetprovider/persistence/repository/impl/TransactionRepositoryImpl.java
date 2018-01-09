@@ -21,14 +21,14 @@ import java.sql.SQLException;
 
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
-    private final static Logger LOGGER = LogManager.getLogger(TransactionRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(TransactionRepositoryImpl.class);
 
-    private final static String CREATE_TRANSACTION = "INSERT INTO `transaction`(`type`, `amount`, `date`, `account_id`) VALUES (?,?,?,?)";
+    private static final String CREATE_TRANSACTION = "INSERT INTO `transaction`(`type`, `amount`, `date`, `account_id`) VALUES (?,?,?,?)";
 
-    private final static String GET_TRANSACTION_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `transaction`";
+    private static final String GET_TRANSACTION_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `transaction`";
 
     //TODO account
-    private final static String GET_TRANSACTION_PAGE = "SELECT `transaction_id`, `type`, `amount`, `date` FROM `transaction` LIMIT ? OFFSET ?";
+    private static final String GET_TRANSACTION_PAGE = "SELECT `transaction_id`, `type`, `amount`, `date` FROM `transaction` LIMIT ? OFFSET ?";
 
 
     @Autowired

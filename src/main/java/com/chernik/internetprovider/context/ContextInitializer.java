@@ -12,7 +12,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 public class ContextInitializer {
-    private final static Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
+    private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
 
     private Reflections ref = new Reflections();
 

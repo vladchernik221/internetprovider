@@ -11,8 +11,8 @@
     <link href="/static/css/style.css" rel="stylesheet"/></head>
 <body>
 <header class="major">
-    <h1>Ошибка ${statusCode}</h1>
-    <p>${message}</p>
+    <h1>Ошибка ${requestScope['javax.servlet.error.status_code']}</h1>
+    <p>${requestScope['javax.servlet.error.message']}</p>
 </header>
 <div class="align-center">
     <img src="/static/images/error.jpg"><br/>

@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand.test;
+package com.chernik.internetprovider.servlet.command.commandimpl.test;
 
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;

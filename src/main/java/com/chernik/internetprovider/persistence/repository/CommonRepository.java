@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @Repository
 public class CommonRepository {
-    private final static Logger LOGGER = LogManager.getLogger(CommonRepository.class);
+    private static final Logger LOGGER = LogManager.getLogger(CommonRepository.class);
 
     @Autowired
     private ConnectionPool connectionPool;

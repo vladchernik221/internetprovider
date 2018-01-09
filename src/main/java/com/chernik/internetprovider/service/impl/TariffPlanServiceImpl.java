@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 public class TariffPlanServiceImpl implements com.chernik.internetprovider.service.TariffPlanService {
-    private final static Logger LOGGER = LogManager.getLogger(TariffPlanServiceImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(TariffPlanServiceImpl.class);
 
     @Autowired
     private TariffPlanRepository tariffPlanRepository;

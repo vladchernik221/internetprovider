@@ -19,28 +19,28 @@ import java.util.Optional;
 
 @Repository
 public class ServiceRepositoryImpl implements ServiceRepository {
-    private final static Logger LOGGER = LogManager.getLogger(ServiceRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(ServiceRepositoryImpl.class);
 
 
-    private final static String CREATE_SERVICE = "INSERT INTO `service`(`name`, `description`, `price`, `archived`) VALUES(?,?,?,?)";
+    private static final String CREATE_SERVICE = "INSERT INTO `service`(`name`, `description`, `price`, `archived`) VALUES(?,?,?,?)";
 
-    private final static String UPDATE_SERVICE = "UPDATE `service` SET `name`=?, `description`=?, `price`=?, `archived`=? WHERE `service_id`=?";
+    private static final String UPDATE_SERVICE = "UPDATE `service` SET `name`=?, `description`=?, `price`=?, `archived`=? WHERE `service_id`=?";
 
-    private final static String GET_SERVICE_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` WHERE `archived`=0";
+    private static final String GET_SERVICE_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` WHERE `archived`=0";
 
-    private final static String GET_SERVICE_PAGE = "SELECT `service_id`, `name`, `price` FROM `service` WHERE `archived`=0 LIMIT ? OFFSET ?";
+    private static final String GET_SERVICE_PAGE = "SELECT `service_id`, `name`, `price` FROM `service` WHERE `archived`=0 LIMIT ? OFFSET ?";
 
-    private final static String GET_SERVICE_WITH_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service`";
+    private static final String GET_SERVICE_WITH_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service`";
 
-    private final static String GET_SERVICE_WITH_ARCHIVED_PAGE = "SELECT `service_id`, `name`, `price` FROM `service` LIMIT ? OFFSET ?";
+    private static final String GET_SERVICE_WITH_ARCHIVED_PAGE = "SELECT `service_id`, `name`, `price` FROM `service` LIMIT ? OFFSET ?";
 
-    private final static String GET_SERVICE_BY_ID = "SELECT `service_id`, `name`, `description`, `price`, `archived` FROM `service` WHERE `service_id`=?";
+    private static final String GET_SERVICE_BY_ID = "SELECT `service_id`, `name`, `description`, `price`, `archived` FROM `service` WHERE `service_id`=?";
 
-    private final static String ARCHIVE_SERVICE = "UPDATE `service` SET `archived`=? WHERE service_id=?";
+    private static final String ARCHIVE_SERVICE = "UPDATE `service` SET `archived`=? WHERE service_id=?";
 
-    private final static String EXISTS_SERVICE_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `name`=?)";
+    private static final String EXISTS_SERVICE_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `name`=?)";
 
-    private final static String EXISTS_SERVICE_BY_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`=?)";
+    private static final String EXISTS_SERVICE_BY_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`=?)";
 
 
     @Autowired

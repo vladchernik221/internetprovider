@@ -2,7 +2,6 @@ package com.chernik.internetprovider.servlet;
 
 import com.chernik.internetprovider.context.ContextInitializer;
 import com.chernik.internetprovider.servlet.command.CommandHandler;
-import com.chernik.internetprovider.servlet.command.commandimpl.errorcommand.ErrorCommand;
 import com.chernik.internetprovider.servlet.filter.SecurityConfigHandler;
 
 import javax.servlet.ServletContextEvent;
@@ -18,8 +17,6 @@ public class StartupListener implements ServletContextListener {
         servletContextEvent.getServletContext().setAttribute("commandHandler", commandHandler);
         SecurityConfigHandler securityConfigHandler = (SecurityConfigHandler) contextInitializer.getComponent(SecurityConfigHandler.class);
         servletContextEvent.getServletContext().setAttribute("securityHandler", securityConfigHandler);
-        ErrorCommand errorCommand = (ErrorCommand) contextInitializer.getComponent(ErrorCommand.class);
-        servletContextEvent.getServletContext().setAttribute("errorCommand", errorCommand);
     }
 
     @Override

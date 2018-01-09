@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand.tariffplan;
+package com.chernik.internetprovider.servlet.command.commandimpl.tariffplan;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/tariff-plan/{\\d+}", method = HttpRequestType.GET)
 public class TariffPlanByIdCommandGet implements Command {
-    private final static String TARIFF_PLAN_PAGE = "/WEB-INF/jsp/tariff.jsp";
+    private static final String TARIFF_PLAN_PAGE = "/WEB-INF/jsp/tariff.jsp";
 
     @Autowired
     private TariffPlanService tariffPlanService;

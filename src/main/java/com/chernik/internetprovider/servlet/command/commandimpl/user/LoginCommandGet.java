@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand.user;
+package com.chernik.internetprovider.servlet.command.commandimpl.user;
 
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
@@ -15,9 +15,9 @@ import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/loginPage", method = HttpRequestType.GET)
 public class LoginCommandGet implements Command {
-    private final static Logger LOGGER = LogManager.getLogger(LoginCommandGet.class);
+    private static final Logger LOGGER = LogManager.getLogger(LoginCommandGet.class);
 
-    private final static String LOGIN_PAGE = "/WEB-INF/jsp/login.jsp";
+    private static final String LOGIN_PAGE = "/WEB-INF/jsp/login.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

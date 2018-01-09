@@ -1,12 +1,10 @@
 package com.chernik.internetprovider.persistence;
 
 import com.chernik.internetprovider.context.AfterCreate;
-import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.BeforeDestroy;
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
-import com.chernik.internetprovider.property.PropertyHolder;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,6 +13,7 @@ import java.sql.*;
 import java.util.ArrayDeque;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,19 +23,17 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 public class ConnectionPoolImpl implements ConnectionPool {
-    private final static Logger LOGGER = LogManager.getLogger(ConnectionPoolImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(ConnectionPoolImpl.class);
 
-    private final static String DATABASE_CONNECTION_FORMAT = "%s?user=%s&password=%s&" +
+    private static final String PROPERTY_FILE_NAME = "application";
+    private static final String DATABASE_CONNECTION_FORMAT = "%s?user=%s&password=%s&" +
             "verifyServerCertificate=false&useSSL=true&serverTimezone=UTC";
-    private final static String DRIVER_PROPERTY_NAME = "database.driver";
-    private final static String URL_PROPERTY_NAME = "database.url";
-    private final static String USER_PROPERTY_NAME = "database.user";
-    private final static String PASSWORD_PROPERTY_NAME = "database.password";
-    private final static String MAX_CONNECTIONS_PROPERTY_NAME = "database.connections.count";
-    private final static String TIMEOUT_PROPERTY_NAME = "database.connections.timeOut";
-
-    @Autowired
-    private PropertyHolder propertyHolder;
+    private static final String DRIVER_PROPERTY_NAME = "database.driver";
+    private static final String URL_PROPERTY_NAME = "database.url";
+    private static final String USER_PROPERTY_NAME = "database.user";
+    private static final String PASSWORD_PROPERTY_NAME = "database.password";
+    private static final String MAX_CONNECTIONS_PROPERTY_NAME = "database.connections.count";
+    private static final String TIMEOUT_PROPERTY_NAME = "database.connections.timeOut";
 
     private Lock locker = new ReentrantLock();
     private Condition condition = locker.newCondition();
@@ -53,30 +50,32 @@ public class ConnectionPoolImpl implements ConnectionPool {
 
     @AfterCreate
     public void initDatabaseProperty() {
-        String driver = readPropertyWithValidation(DRIVER_PROPERTY_NAME);
+        ResourceBundle bundle = ResourceBundle.getBundle(PROPERTY_FILE_NAME);
+
+        String driver = readPropertyWithValidation(bundle, DRIVER_PROPERTY_NAME);
         try {
             Class.forName(driver).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             LOGGER.log(Level.FATAL, "Can't find database driver {}", driver);
             throw new RuntimeException(String.format("Can't find database driver %s", driver), e);
         }
-        url = readPropertyWithValidation(URL_PROPERTY_NAME);
-        user = readPropertyWithValidation(USER_PROPERTY_NAME);
-        password = readPropertyWithValidation(PASSWORD_PROPERTY_NAME);
+        url = readPropertyWithValidation(bundle, URL_PROPERTY_NAME);
+        user = readPropertyWithValidation(bundle, USER_PROPERTY_NAME);
+        password = readPropertyWithValidation(bundle, PASSWORD_PROPERTY_NAME);
 
-        String maxConnectionsProperty = propertyHolder.getProperty(MAX_CONNECTIONS_PROPERTY_NAME);
-        if (maxConnectionsProperty != null && Integer.parseInt(maxConnectionsProperty) > 0) {
+        String maxConnectionsProperty = bundle.getString(MAX_CONNECTIONS_PROPERTY_NAME);
+        if (!maxConnectionsProperty.isEmpty() && Integer.parseInt(maxConnectionsProperty) > 0) {
             maxConnections = Integer.parseInt(maxConnectionsProperty);
         }
-        String timeOutProperty = propertyHolder.getProperty(TIMEOUT_PROPERTY_NAME);
-        if (timeOutProperty != null && Integer.parseInt(timeOutProperty) > 0) {
+        String timeOutProperty = bundle.getString(TIMEOUT_PROPERTY_NAME);
+        if (!timeOutProperty.isEmpty() && Integer.parseInt(timeOutProperty) > 0) {
             timeOut = Integer.parseInt(timeOutProperty);
         }
     }
 
-    private String readPropertyWithValidation(String propertyName) {
-        String property = propertyHolder.getProperty(propertyName);
-        if (property == null) {
+    private String readPropertyWithValidation(ResourceBundle bundle, String propertyName) {
+        String property = bundle.getString(propertyName);
+        if (property.isEmpty()) {
             throw new RuntimeException(String.format("Mandatory property %s was not found", propertyName));
         }
         return property;

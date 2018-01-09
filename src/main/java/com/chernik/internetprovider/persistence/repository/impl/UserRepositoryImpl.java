@@ -20,23 +20,23 @@ import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
-    private final static Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class);
 
 
-    private final static String SELECT_USER_BY_LOGIN_AND_PASSWORD =
+    private static final String SELECT_USER_BY_LOGIN_AND_PASSWORD =
             "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `login`=? AND `password`=MD5(?)";
 
-    private final static String CREATE_USER = "INSERT INTO `user`(`login`, `password`, `role`, `blocked`, `contract_id`) VALUES(?,MD5(?),?,?,?)";
+    private static final String CREATE_USER = "INSERT INTO `user`(`login`, `password`, `role`, `blocked`, `contract_id`) VALUES(?,MD5(?),?,?,?)";
 
-    private final static String UPDATE_PASSWORD = "UPDATE `user` SET `password`=MD5(?) WHERE `user_id`=?";
+    private static final String UPDATE_PASSWORD = "UPDATE `user` SET `password`=MD5(?) WHERE `user_id`=?";
 
-    private final static String GET_USER_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `user`";
+    private static final String GET_USER_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `user`";
 
-    private final static String GET_USERS_PAGE = "SELECT `login`, `role`, `blocked`, `contract_id` FROM `user` LIMIT ? OFFSET ?";
+    private static final String GET_USERS_PAGE = "SELECT `login`, `role`, `blocked`, `contract_id` FROM `user` LIMIT ? OFFSET ?";
 
-    private final static String BAN_USER = "UPDATE `user` SET `blocked`=? WHERE `user_id`=?";
+    private static final String BAN_USER = "UPDATE `user` SET `blocked`=? WHERE `user_id`=?";
 
-    private final static String IS_EXIST_TARIFF_PLAN_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `user_id`=?)";
+    private static final String IS_EXIST_TARIFF_PLAN_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `user_id`=?)";
 
 
     @Autowired

@@ -1,16 +1,15 @@
 package com.chernik.internetprovider.servlet;
 
 import com.chernik.internetprovider.exception.BaseException;
+import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.CommandHandler;
 import com.chernik.internetprovider.servlet.command.HttpRequestParameter;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
-import com.chernik.internetprovider.servlet.command.commandimpl.errorcommand.ErrorCommand;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,26 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class FrontControllerServlet extends HttpServlet {
-    private final static Logger LOGGER = LogManager.getLogger(FrontControllerServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger(FrontControllerServlet.class);
 
     private CommandHandler commandHandler;
-    private ErrorCommand errorCommand;
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        initHandler();
-    }
 
     @Override
     public void init() throws ServletException {
         super.init();
-        initHandler();
-    }
-
-    private void initHandler() {
         commandHandler = (CommandHandler) getServletContext().getAttribute("commandHandler");
-        errorCommand = (ErrorCommand) getServletContext().getAttribute("errorCommand");
     }
 
 
@@ -49,19 +36,15 @@ public class FrontControllerServlet extends HttpServlet {
                     HttpRequestType.valueOf(request.getMethod()));
             Command command = commandHandler.getCommand(parameter);
             command.execute(request, response);
+        } catch (UnableSaveEntityException e) {
+            response.setStatus(e.getStatusCode());
+            response.getWriter().write(e.getMessage());
         } catch (BaseException e) {
             LOGGER.log(Level.WARN, e.getMessage());
-            error(e, request, response);
-        }
-    }
-
-
-    private void error(BaseException error, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            errorCommand.execute(request, response, error);
-        } catch (BaseException e) {
-            LOGGER.log(Level.ERROR, "Error {} does not support", e.getStatusCode());
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error {} does not support");
+            response.sendError(e.getStatusCode(), e.getMessage());
+        } catch (Exception e) {
+            LOGGER.log(Level.WARN, e.getMessage());
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 }

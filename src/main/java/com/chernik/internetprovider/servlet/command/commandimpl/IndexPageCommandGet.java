@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand;
+package com.chernik.internetprovider.servlet.command.commandimpl;
 
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.servlet.command.Command;
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/", method = HttpRequestType.GET)
-public class IndexPageCommandGet implements Command{
+public class IndexPageCommandGet implements Command {
 
-    private final static Logger LOGGER = LogManager.getLogger(IndexPageCommandGet.class);
+    private static final Logger LOGGER = LogManager.getLogger(IndexPageCommandGet.class);
 
-    private final static String INDEX_PAGE = "/WEB-INF/jsp/index.jsp";
+    private static final String INDEX_PAGE = "/WEB-INF/jsp/index.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

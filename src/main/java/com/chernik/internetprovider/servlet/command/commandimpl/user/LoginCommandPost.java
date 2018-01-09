@@ -1,11 +1,10 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand.user;
+package com.chernik.internetprovider.servlet.command.commandimpl.user;
 
 import com.chernik.internetprovider.context.AfterCreate;
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
-import com.chernik.internetprovider.property.PropertyHolder;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.HttpRequestType;
@@ -19,25 +18,29 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 @HttpRequestProcessor(uri = "/signin", method = HttpRequestType.POST)
 public class LoginCommandPost implements Command {
-    private final static Logger LOGGER = LogManager.getLogger(LoginCommandPost.class);
+    private static final Logger LOGGER = LogManager.getLogger(LoginCommandPost.class);
 
-    private final static String INDEX_PAGE = "/";
+    private static final String INDEX_PAGE = "/";
+    private static final String PROPERTY_FILE_NAME = "application";
+    private static final int DEFAULT_SESSION_TIMEOUT = 1_800;
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private PropertyHolder propertyHolder;
 
-    private int sessionTimeout = 1_800;
+    private int sessionTimeout;
 
     @AfterCreate
-    public void initParameters() {
-        String sessionTimeoutProperty = propertyHolder.getProperty("session.timeOut");
-        if (sessionTimeoutProperty != null) {
+    public void initParameters() {//TODO property might be not int
+        ResourceBundle bundle = ResourceBundle.getBundle(PROPERTY_FILE_NAME);
+        String sessionTimeoutProperty = bundle.getString("session.timeOut");
+        if (!sessionTimeoutProperty.isEmpty()) {
             sessionTimeout = Integer.valueOf(sessionTimeoutProperty);
+        } else {
+            sessionTimeout = DEFAULT_SESSION_TIMEOUT;
         }
     }
 

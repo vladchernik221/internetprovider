@@ -19,28 +19,28 @@ import java.util.Optional;
 
 @Repository
 public class TariffPlanRepositoryImpl implements TariffPlanRepository {
-    private final static Logger LOGGER = LogManager.getLogger(TariffPlan.class);
+    private static final Logger LOGGER = LogManager.getLogger(TariffPlan.class);
 
 
-    private final static String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived`) VALUES(?,?,?,?,?,?,?,?)";
+    private static final String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived`) VALUES(?,?,?,?,?,?,?,?)";
 
-    private final static String IS_EXIST_TARIFF_PLAN_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`=?)";
+    private static final String IS_EXIST_TARIFF_PLAN_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`=?)";
 
-    private final static String IS_EXIST_TARIFF_PLAN_WITH_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `name`=?)";
+    private static final String IS_EXIST_TARIFF_PLAN_WITH_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `name`=?)";
 
-    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=? WHERE `tariff_plan_id`=?";
+    private static final String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=? WHERE `tariff_plan_id`=?";
 
-    private final static String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `archived`=? WHERE `tariff_plan_id`=?";
+    private static final String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `archived`=? WHERE `tariff_plan_id`=?";
 
-    private final static String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` WHERE `archived`=0 LIMIT ? OFFSET ?";
+    private static final String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` WHERE `archived`=0 LIMIT ? OFFSET ?";
 
-    private final static String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` LIMIT ? OFFSET ?";
+    private static final String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` LIMIT ? OFFSET ?";
 
-    private final static String GET_TARIFF_PLANS_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan` WHERE `archived`=0";
+    private static final String GET_TARIFF_PLANS_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan` WHERE `archived`=0";
 
-    private final static String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan`";
+    private static final String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan`";
 
-    private final static String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `tariff_plan_id`=?";
+    private static final String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `tariff_plan_id`=?";
 
 
     @Autowired

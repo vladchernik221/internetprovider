@@ -16,9 +16,9 @@ import java.util.Map;
 
 @Component
 public class CommandHandlerImpl implements CommandHandler {
-    private final static Logger LOGGER = LogManager.getLogger(CommandHandlerImpl.class);
+    private static final Logger LOGGER = LogManager.getLogger(CommandHandlerImpl.class);
 
-    private final static String DYNAMIC_URI_REGULAR_EXPRESSION = ".*\\{.+}.*";
+    private static final String DYNAMIC_URI_REGULAR_EXPRESSION = ".*\\{.+}.*";
 
     private Map<HttpRequestParameter, Command> commands = new HashMap<>();
     private RegexHandler dynamicCommands = new RegexHandler();

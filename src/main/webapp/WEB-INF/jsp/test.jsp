@@ -21,5 +21,8 @@ test
     <input type="submit" value="Login" name="auth"/>
     <input type="text" value="" id="res">
 </form>
+<div>
+    ${requestScope['javax.servlet.error.message']}
+</div>
 </body>
 </html>

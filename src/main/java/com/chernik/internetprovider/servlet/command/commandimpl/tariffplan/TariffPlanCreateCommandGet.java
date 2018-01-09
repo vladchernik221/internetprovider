@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.frontcommand.tariffplan;
+package com.chernik.internetprovider.servlet.command.commandimpl.tariffplan;
 
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.servlet.command.Command;
@@ -15,9 +15,9 @@ import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/tariff-plan/new", method = HttpRequestType.GET)
 public class TariffPlanCreateCommandGet implements Command{
-    private final static Logger LOGGER = LogManager.getLogger(TariffPlanCreateCommandGet.class);
+    private static final Logger LOGGER = LogManager.getLogger(TariffPlanCreateCommandGet.class);
 
-    private final static String TARIFF_FORM_PAGE = "/WEB-INF/jsp/tariffForm.jsp";
+    private static final String TARIFF_FORM_PAGE = "/WEB-INF/jsp/tariffForm.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

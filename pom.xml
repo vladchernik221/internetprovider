@@ -13,7 +13,7 @@
         <mokito.version>2.1.0</mokito.version>
         <mysql-connector.version>8.0.8-dmr</mysql-connector.version>
         <lombok.version>1.16.18</lombok.version>
-        <servlet.version>3.0.1</servlet.version>
+        <servlet.version>3.1.0</servlet.version>
         <jstl.version>1.2</jstl.version>
         <reflections.version>0.9.11</reflections.version>
     </properties>
