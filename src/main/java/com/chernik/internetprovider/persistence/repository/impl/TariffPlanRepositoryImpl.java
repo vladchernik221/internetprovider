@@ -28,7 +28,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private final static String IS_EXIST_TARIFF_PLAN_WITH_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `name`=?)";
 
-    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=?, `archived`=? WHERE `tariff_plan_id`=?";
+    private final static String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=? WHERE `tariff_plan_id`=?";
 
     private final static String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `archived`=? WHERE `tariff_plan_id`=?";
 
@@ -110,8 +110,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
             statement.setNull(6, Types.INTEGER);
         }
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
-        statement.setBoolean(8, tariffPlan.getArchived());
-        statement.setLong(9, tariffPlan.getTariffPlanId());
+        statement.setLong(8, tariffPlan.getTariffPlanId());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }

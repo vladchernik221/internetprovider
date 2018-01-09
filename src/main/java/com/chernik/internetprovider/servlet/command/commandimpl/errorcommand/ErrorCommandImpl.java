@@ -23,7 +23,7 @@ public class ErrorCommandImpl implements ErrorCommand {
         RequestDispatcher dispatcher = request.getRequestDispatcher(ERROR_JSP);
         request.setAttribute("statusCode", e.getStatusCode());
         request.setAttribute("message", e.getMessage());
-        LOGGER.log(Level.TRACE, "Forward to error page. Status code: {}", ERROR_JSP);
+        LOGGER.log(Level.TRACE, "Forward to error page. Status code: {}", e.getStatusCode());
         dispatcher.forward(request, response);
     }
 }

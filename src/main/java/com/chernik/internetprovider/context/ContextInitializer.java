@@ -89,6 +89,10 @@ public class ContextInitializer {
         Reflections autowiredRef = new Reflections(clazz.getCanonicalName(), new FieldAnnotationsScanner());
         autowiredRef.getFieldsAnnotatedWith(Autowired.class)
                 .forEach(field -> withAutowired.put(field, component));
+        Class<?> superClazz = clazz.getSuperclass();
+        if (superClazz != null) {
+            addAutowireField(superClazz, component);
+        }
     }
 
     private void addLifeCycleMethod(Class<?> clazz, Object component) {

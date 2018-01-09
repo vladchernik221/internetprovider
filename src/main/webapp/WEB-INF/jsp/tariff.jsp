@@ -11,8 +11,9 @@
     <link href="/static/css/skel.css" rel="stylesheet"/>
     <link href="/static/css/style.css" rel="stylesheet"/>
 
-    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/tariff.js"></script>
 </head>
 <body>
 <!-- Header -->
@@ -27,14 +28,12 @@
                 <a href="/tariff_plan" class="button small">К списку</a>
             </div><div class="align-right actions col-2">
                 <a href="/tariff_plan/${tariffPlan.tariffPlanId}/edit" class="button small">Редактировать</a>
-                <c:choose>
-                    <c:when test="${!tariffPlan.archived}">
-                        <button class="button small">Поместить в архив</button>
-                    </c:when>
-                    <c:otherwise>
-                        <button class="button small">Извлечь из архива</button>
-                    </c:otherwise>
-                </c:choose>
+                <button class="button small" onclick="change_archived(${tariffPlan.tariffPlanId})">
+                    <c:choose>
+                        <c:when test="${!tariffPlan.archived}">Поместить в архив</c:when>
+                        <c:otherwise>Извлечь из архива</c:otherwise>
+                    </c:choose>
+                </button>
             </div></div>
         <c:if test="${tariffPlan.archived}">
             <h2 class="warn">Находится в архиве</h2>

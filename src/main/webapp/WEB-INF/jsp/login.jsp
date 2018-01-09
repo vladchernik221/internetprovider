@@ -11,7 +11,7 @@
     <link href="/static/css/style.css" rel="stylesheet"/>
     <link href="/static/css/login.css" rel="stylesheet"/>
 
-    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
 </head>
 <body>

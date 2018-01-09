@@ -38,3 +38,19 @@ $(document).on("click", ".slider .nav span", function() {
     var slide_index = $(this).attr("rel");
     change_slide(slide_index, slider);
 });
+
+// Modal
+
+function show_modal() {
+    var modal = $("#modal");
+    var overlay = $("#overlay");
+    modal.css({opacity: 1, visibility: "visible"});
+    overlay.css({opacity: 1, visibility: "visible"});
+}
+
+function close_modal(event) {
+    var modal = $("#modal");
+    var overlay = $("#overlay");
+    modal.css({opacity: 0, visibility: "hidden"});
+    overlay.css({opacity: 0, visibility: "hidden"});
+}

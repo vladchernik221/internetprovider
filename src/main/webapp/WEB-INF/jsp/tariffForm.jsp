@@ -11,7 +11,7 @@
     <link href="/static/css/skel.css" rel="stylesheet" />
     <link href="/static/css/style.css" rel="stylesheet" />
 
-    <script src="/static/js/jquery-3.2.1.min.js"></script>
+    <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
     <script src="/static/js/tariffForm.js"></script>
 </head>
@@ -34,7 +34,14 @@
             </c:otherwise>
         </c:choose>
         </header>
-        <form action="/tariff_plan/new" method="post" id="tariff_plan_form">
+        <c:choose>
+            <c:when test="${tariffPlan == null}">
+                <form id="tariff_plan_form" onsubmit="send(event)" method="POST" action="/tariff_plan/new">
+            </c:when>
+            <c:otherwise>
+                <form id="tariff_plan_form" onsubmit="send(event)" method="PUT" action="/tariff_plan/${tariffPlan.tariffPlanId}">
+            </c:otherwise>
+        </c:choose>
             <div class="row">
                 <input type="text" name="name" placeholder="Название" value="${tariffPlan.name}" required />
                 <label>Название</label>
@@ -89,6 +96,9 @@
         </form>
     </div>
 </section>
+
+<!-- Modal window -->
+<jsp:include page="modal.jsp" />
 
 <!-- Footer -->
 <jsp:include page="footer.jsp" />

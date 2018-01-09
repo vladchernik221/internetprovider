@@ -50,7 +50,7 @@ public class FrontControllerServlet extends HttpServlet {
             Command command = commandHandler.getCommand(parameter);
             command.execute(request, response);
         } catch (BaseException e) {
-            LOGGER.log(Level.WARN, "Request: {}, method: {} does not support", request.getRequestURI(), request.getMethod());
+            LOGGER.log(Level.WARN, e.getMessage());
             error(e, request, response);
         }
     }

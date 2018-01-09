@@ -4,7 +4,7 @@ import com.chernik.internetprovider.context.AfterCreate;
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
-import com.chernik.internetprovider.exception.EntityNotFoundException;
+import com.chernik.internetprovider.exception.CommandNotFoundException;
 import com.chernik.internetprovider.service.RegularExpressionService;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +40,7 @@ public class CommandHandlerImpl implements CommandHandler {
     }
 
     @Override
-    public Command getCommand(HttpRequestParameter parameter) throws EntityNotFoundException {
+    public Command getCommand(HttpRequestParameter parameter) throws CommandNotFoundException {
         Command command = commands.get(parameter);
         if (command == null) {
             String dynamicUri = dynamicCommands.get(parameter.getUri());
@@ -48,7 +48,7 @@ public class CommandHandlerImpl implements CommandHandler {
                 HttpRequestParameter dynamicParameter = new HttpRequestParameter(dynamicUri, parameter.getType());
                 command = commands.get(dynamicParameter);//TODO it might be null
             } else {
-                throw new EntityNotFoundException();//TODO entity
+                throw new CommandNotFoundException(String.format("Request: %s, method: %s does not support", parameter.getUri(), parameter.getType()));
             }
         }
         return command;
