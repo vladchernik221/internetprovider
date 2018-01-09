@@ -18,7 +18,7 @@ public abstract class Mapper<T> {
 
     public abstract T create(HttpServletRequest request) throws BadRequestException;
 
-    protected String getMandatoryString(String data) throws BadRequestException {
+    String getMandatoryString(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
             return data;
         } else {
@@ -26,11 +26,11 @@ public abstract class Mapper<T> {
         }
     }
 
-    protected String getNotMandatoryString(String data) {
+    String getNotMandatoryString(String data) {
         return data != null && !data.isEmpty() ? data : null;
     }
 
-    protected Integer getMandatoryInt(String data) throws BadRequestException {
+    Integer getMandatoryInt(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
             if (regularExpressionService.checkToRegularExpression(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
                 return Integer.valueOf(data);
@@ -42,7 +42,7 @@ public abstract class Mapper<T> {
         }
     }
 
-    protected Integer getNotMandatoryInt(String data) throws BadRequestException {
+    Integer getNotMandatoryInt(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
             if (regularExpressionService.checkToRegularExpression(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
                 return Integer.valueOf(data);
@@ -54,7 +54,7 @@ public abstract class Mapper<T> {
         }
     }
 
-    protected BigDecimal getBigDecimal(String data) throws BadRequestException {
+    BigDecimal getBigDecimal(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
             if (regularExpressionService.checkToRegularExpression(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
                 return BigDecimal.valueOf(Double.valueOf(data));

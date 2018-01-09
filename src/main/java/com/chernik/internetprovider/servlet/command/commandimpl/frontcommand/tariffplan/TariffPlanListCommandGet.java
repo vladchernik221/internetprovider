@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan", method = HttpRequestType.GET)
-public class ListTariffPlansCommandGet implements Command {
-    private final static Logger LOGGER = LogManager.getLogger(ListTariffPlansCommandGet.class);
+@HttpRequestProcessor(uri = "/tariff_plan", method = HttpRequestType.GET)//TODO with parameter withArchived
+public class TariffPlanListCommandGet implements Command {
+    private final static Logger LOGGER = LogManager.getLogger(TariffPlanListCommandGet.class);
 
     private final static String TARIFF_LIST_PAGE = "/WEB-INF/jsp/tariffList.jsp";
 

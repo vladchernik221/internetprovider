@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/tariff_plan/new", method = HttpRequestType.GET)
-public class NewTariffPlanCommandGet implements Command{
-    private final static Logger LOGGER = LogManager.getLogger(NewTariffPlanCommandGet.class);
+public class TariffPlanCreateCommandGet implements Command{
+    private final static Logger LOGGER = LogManager.getLogger(TariffPlanCreateCommandGet.class);
 
     private final static String TARIFF_FORM_PAGE = "/WEB-INF/jsp/tariffForm.jsp";
 

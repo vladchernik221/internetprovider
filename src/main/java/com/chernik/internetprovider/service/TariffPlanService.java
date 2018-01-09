@@ -17,5 +17,5 @@ public interface TariffPlanService {
 
     TariffPlan getTariffPlan(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException;
 
-    void archiveTariffPlan(TariffPlan tariffPlan) throws TimeOutException, EntityNotFoundException, DatabaseException;
+    void archiveTariffPlan(Long id) throws TimeOutException, EntityNotFoundException, DatabaseException;
 }

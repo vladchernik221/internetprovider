@@ -15,6 +15,7 @@
     <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/lib/pagination-plugin.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/tariff.js"></script>
     <script src="/static/js/pagination.js"></script>
 </head>
 <body>
