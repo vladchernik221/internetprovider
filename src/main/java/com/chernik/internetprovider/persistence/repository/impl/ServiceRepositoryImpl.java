@@ -105,9 +105,9 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
 
     @Override
-    public Page<Service> getServicePage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException {
+    public Page<Service> getPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting page of services. Page number is {}, page size is {}, contain archive {}", pageable.getPageNumber(), pageable.getPageSize(), archived);
-        return commonRepository.getEntityPage(archived, pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createShortService);
+        return commonRepository.getPage(archived, pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createShortService);
     }
 
     private PreparedStatement createCountStatement(Connection connection, Boolean archived, Pageable pageable) throws SQLException {
@@ -164,7 +164,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
 
     @Override
-    public boolean isServiceWithNameExist(String name) throws DatabaseException, TimeOutException {
+    public boolean existWithName(String name) throws DatabaseException, TimeOutException {
         return commonRepository.exist(name, this::createPreparedStatementForExistByName);
     }
 
@@ -177,7 +177,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
 
     @Override
-    public boolean isServiceWithIdExist(Long id) throws DatabaseException, TimeOutException {
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 

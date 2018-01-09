@@ -15,11 +15,11 @@ public interface TariffPlanRepository {
 
     void archive(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
-    Page<TariffPlan> getTariffPlanPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
+    Page<TariffPlan> getPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
 
     Optional<TariffPlan> getById(Long id) throws DatabaseException, TimeOutException;
 
-    boolean isTariffPlanWithNameExist(String name) throws DatabaseException, TimeOutException;
+    boolean existWithName(String name) throws DatabaseException, TimeOutException;
 
-    boolean isTariffPlanWithIdExist(Long id) throws DatabaseException, TimeOutException;
+    boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 }

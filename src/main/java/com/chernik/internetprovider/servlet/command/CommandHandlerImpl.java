@@ -20,7 +20,7 @@ public class CommandHandlerImpl implements CommandHandler {
 
     private static final String DYNAMIC_URI_REGULAR_EXPRESSION = ".*\\{.+}.*";
 
-    private Map<HttpRequestParameter, Command> commands = new HashMap<>();
+    private Map<RequestParameter, Command> commands = new HashMap<>();
     private RegexHandler dynamicCommands = new RegexHandler();
 
     @Autowired
@@ -31,7 +31,7 @@ public class CommandHandlerImpl implements CommandHandler {
         commandList.forEach(command -> {
             HttpRequestProcessor processor = command.getClass().getAnnotation(HttpRequestProcessor.class);
             String uri = processor.uri().toLowerCase();
-            commands.put(new HttpRequestParameter(uri, processor.method()), command);
+            commands.put(new RequestParameter(uri, processor.method()), command);
             if (regularExpressionService.checkToRegularExpression(uri, DYNAMIC_URI_REGULAR_EXPRESSION)) {
                 dynamicCommands.put(uri);
             }
@@ -40,12 +40,12 @@ public class CommandHandlerImpl implements CommandHandler {
     }
 
     @Override
-    public Command getCommand(HttpRequestParameter parameter) throws CommandNotFoundException {
+    public Command getCommand(RequestParameter parameter) throws CommandNotFoundException {
         Command command = commands.get(parameter);
         if (command == null) {
             String dynamicUri = dynamicCommands.get(parameter.getUri());
             if (dynamicUri != null) {
-                HttpRequestParameter dynamicParameter = new HttpRequestParameter(dynamicUri, parameter.getType());
+                RequestParameter dynamicParameter = new RequestParameter(dynamicUri, parameter.getType());
                 command = commands.get(dynamicParameter); //TODO can be null when URI exist but Type is different
             } else {
                 throw new CommandNotFoundException(String.format("Request: %s, method: %s does not support", parameter.getUri(), parameter.getType()));

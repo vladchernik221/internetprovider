@@ -4,8 +4,8 @@ import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.servlet.command.CommandHandler;
-import com.chernik.internetprovider.servlet.command.HttpRequestParameter;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestParameter;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,14 +35,14 @@ public class LoginFilter implements Filter {
 
         User user = (User) session.getAttribute("user");
         UserRole userRole = user != null ? user.getUserRole() : UserRole.UNAUTHORIZED;
-        boolean isAvailable = securityConfigHandler.isAvailable(HttpRequestType.valueOf(request.getMethod()),
+        boolean isAvailable = securityConfigHandler.isAvailable(RequestType.valueOf(request.getMethod()),
                 request.getRequestURI(), userRole);
 
         if (isAvailable) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             try {
-                errorHandler.getCommand(new HttpRequestParameter("403")).execute(request, response);
+                errorHandler.getCommand(new RequestParameter("403")).execute(request, response);
             } catch (BaseException e) {
                 LOGGER.log(Level.ERROR, "Error {} does not support", e.getStatusCode());
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error {} does not support");

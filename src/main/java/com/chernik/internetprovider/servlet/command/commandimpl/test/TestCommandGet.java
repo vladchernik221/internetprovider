@@ -3,7 +3,7 @@ package com.chernik.internetprovider.servlet.command.commandimpl.test;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/test", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/test", method = RequestType.GET)
 public class TestCommandGet implements Command {
     private static final Logger LOGGER = LogManager.getLogger(TestCommandGet.class);
 

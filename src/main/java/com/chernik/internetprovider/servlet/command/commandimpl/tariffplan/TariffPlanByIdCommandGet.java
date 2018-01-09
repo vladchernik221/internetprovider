@@ -6,7 +6,7 @@ import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.service.TariffPlanService;
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff-plan/{\\d+}", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/tariff-plan/{\\d+}", method = RequestType.GET)
 public class TariffPlanByIdCommandGet implements Command {
     private static final String TARIFF_PLAN_PAGE = "/WEB-INF/jsp/tariff.jsp";
 

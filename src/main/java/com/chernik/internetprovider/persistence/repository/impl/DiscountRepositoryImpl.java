@@ -83,8 +83,8 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
 
     @Override
-    public Page<Discount> getDiscounts(Pageable pageable) throws DatabaseException, TimeOutException {
-        return commonRepository.getEntityPage(pageable, this::createPreparedStatementForPageCount, this::createPreparedStatementForPage, this::createDiscount);
+    public Page<Discount> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
+        return commonRepository.getPage(pageable, this::createPreparedStatementForPageCount, this::createPreparedStatementForPage, this::createDiscount);
     }
 
     private PreparedStatement createPreparedStatementForPageCount(Connection connection, Pageable pageable) throws SQLException {
@@ -102,7 +102,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
 
     @Override
-    public Optional<Discount> getDiscount(Long id) throws DatabaseException, TimeOutException {
+    public Optional<Discount> getById(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.getByParameters(id, this::createStatementForGetting, this::createDiscount);
     }
 
@@ -125,7 +125,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     }
 
     @Override
-    public boolean isDiscountExistWithId(Long id) throws DatabaseException, TimeOutException {
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, this::createStatementForExistById);
     }
 

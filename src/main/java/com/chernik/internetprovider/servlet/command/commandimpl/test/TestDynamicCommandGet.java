@@ -4,13 +4,13 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.service.RegularExpressionService;
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/test/{\\d+}", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/test/{\\d+}", method = RequestType.GET)
 public class TestDynamicCommandGet implements Command {
 
     @Autowired

@@ -4,8 +4,8 @@ import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.CommandHandler;
-import com.chernik.internetprovider.servlet.command.HttpRequestParameter;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestParameter;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,8 +32,8 @@ public class FrontControllerServlet extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOGGER.log(Level.TRACE, "Request: {}, method: {} came", request.getRequestURI(), request.getMethod());
         try {
-            HttpRequestParameter parameter = new HttpRequestParameter(request.getRequestURI().toLowerCase(),
-                    HttpRequestType.valueOf(request.getMethod()));
+            RequestParameter parameter = new RequestParameter(request.getRequestURI().toLowerCase(),
+                    RequestType.valueOf(request.getMethod()));
             Command command = commandHandler.getCommand(parameter);
             command.execute(request, response);
         } catch (UnableSaveEntityException e) {

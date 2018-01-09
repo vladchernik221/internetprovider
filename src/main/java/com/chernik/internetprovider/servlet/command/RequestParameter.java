@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class HttpRequestParameter {
+public class RequestParameter {
     private String uri;
-    private HttpRequestType type;
+    private RequestType type;
 
-    public HttpRequestParameter(String uri) {
+    public RequestParameter(String uri) {
         this.uri = uri;
     }
 }

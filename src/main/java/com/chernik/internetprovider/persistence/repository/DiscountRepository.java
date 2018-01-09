@@ -13,11 +13,11 @@ public interface DiscountRepository {
 
     void update(Discount discount) throws DatabaseException, TimeOutException;
 
-    Page<Discount> getDiscounts(Pageable pageable) throws DatabaseException, TimeOutException;
+    Page<Discount> getPage(Pageable pageable) throws DatabaseException, TimeOutException;
 
-    Optional<Discount> getDiscount(Long id) throws DatabaseException, TimeOutException;
+    Optional<Discount> getById(Long id) throws DatabaseException, TimeOutException;
 
     void remove(Discount discount) throws DatabaseException, TimeOutException;
 
-    boolean isDiscountExistWithId(Long id) throws DatabaseException, TimeOutException;
+    boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 }

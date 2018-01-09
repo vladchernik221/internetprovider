@@ -3,7 +3,7 @@ package com.chernik.internetprovider.servlet.filter;
 import com.chernik.internetprovider.context.AfterCreate;
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.persistence.entity.UserRole;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 
 @Component
 public class SecurityConfig {
@@ -11,7 +11,7 @@ public class SecurityConfig {
     public void initConfig(SecurityConfigHandlerImpl securityConfigHandlerImpl) {
         securityConfigHandlerImpl
                 //.enable()
-                .antMatcher(HttpRequestType.GET, "/test").withRole(UserRole.ADMIN, UserRole.SELLER)
-                .antMatcher(HttpRequestType.POST, "/tariffPlan/new").withRole(UserRole.ADMIN);
+                .antMatcher(RequestType.GET, "/test").withRole(UserRole.ADMIN, UserRole.SELLER)
+                .antMatcher(RequestType.POST, "/tariffPlan/new").withRole(UserRole.ADMIN);
     }
 }

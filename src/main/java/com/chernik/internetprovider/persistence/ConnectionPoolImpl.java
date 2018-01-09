@@ -10,10 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.ArrayDeque;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,8 +41,8 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private int maxConnections = 20;
     private int timeOut = 5;
 
-    private ArrayDeque<Connection> availableConnections = new ArrayDeque<>();
-    private ArrayDeque<Connection> busyConnections = new ArrayDeque<>();
+    private Deque<Connection> availableConnections = new ArrayDeque<>();
+    private Deque<Connection> busyConnections = new ArrayDeque<>();
     private AtomicInteger connectionCount = new AtomicInteger();
 
     @AfterCreate
@@ -173,7 +170,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
         LOGGER.log(Level.INFO, "All connections were closed");
     }
 
-    private void closeConnections(ArrayDeque<Connection> connections) {
+    private void closeConnections(Deque<Connection> connections) {
         connections.forEach(connection -> {
             try {
                 if (!connection.isClosed()) {

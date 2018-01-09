@@ -6,14 +6,14 @@ import com.chernik.internetprovider.exception.*;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.service.TariffPlanService;
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import com.chernik.internetprovider.servlet.mapper.TariffPlanMapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff-plan/new", method = HttpRequestType.POST)
+@HttpRequestProcessor(uri = "/tariff-plan/new", method = RequestType.POST)
 public class TariffPlanCreateCommandPost implements Command {
 
     @Autowired

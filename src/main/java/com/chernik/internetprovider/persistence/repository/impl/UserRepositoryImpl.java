@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public Optional<User> getUserByLoginAndPassword(String login, String password) throws DatabaseException, TimeOutException {
+    public Optional<User> getByLoginAndPassword(String login, String password) throws DatabaseException, TimeOutException {
         return commonRepository.getByParameters(login, password, this::createStatementForGettingByLoginAndPassword, this::createUser);
     }
 
@@ -97,8 +97,8 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public Page<User> getUsers(Pageable pageable) throws DatabaseException, TimeOutException {
-        return commonRepository.getEntityPage(pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createUser);
+    public Page<User> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
+        return commonRepository.getPage(pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createUser);
     }
 
     private PreparedStatement createCountStatement(Connection connection, Pageable pageable) throws SQLException {
@@ -118,7 +118,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public void banUser(User user, boolean baned) throws DatabaseException, TimeOutException {
+    public void ban(User user, boolean baned) throws DatabaseException, TimeOutException {
         commonRepository.executeUpdate(user, baned, this::createStatementForBan);
     }
 
@@ -132,7 +132,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public boolean isUserWithIdExists(Long id) throws DatabaseException, TimeOutException {
+    public boolean existsWithName(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 

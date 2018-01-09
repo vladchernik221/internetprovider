@@ -2,31 +2,31 @@ package com.chernik.internetprovider.servlet.filter;
 
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.persistence.entity.UserRole;
-import com.chernik.internetprovider.servlet.command.HttpRequestParameter;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestParameter;
+import com.chernik.internetprovider.servlet.command.RequestType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class SecurityConfigHandlerImpl implements SecurityConfigHandler {//TODO log
-    private Map<HttpRequestParameter, List<UserRole>> securityConfig = new HashMap<>();
-    private List<HttpRequestParameter> bufferPatterns;
+    private Map<RequestParameter, List<UserRole>> securityConfig = new HashMap<>();
+    private List<RequestParameter> bufferPatterns;
     private boolean enable;
 
     @Override
-    public boolean isAvailable(HttpRequestType method, String uri, UserRole userRole) {
-        List<UserRole> userRoles = securityConfig.get(new HttpRequestParameter(uri, method));
+    public boolean isAvailable(RequestType method, String uri, UserRole userRole) {
+        List<UserRole> userRoles = securityConfig.get(new RequestParameter(uri, method));
         return userRoles == null || userRoles.contains(userRole) || !enable;
     }
 
 
-    public SecurityConfigHandlerImpl antMatcher(HttpRequestType method, String... patterns) {
+    public SecurityConfigHandlerImpl antMatcher(RequestType method, String... patterns) {
         if (bufferPatterns == null) {
             bufferPatterns = new LinkedList<>();
         }
         bufferPatterns.addAll(Arrays.stream(patterns)
-                .map(s -> new HttpRequestParameter(s, method)).collect(Collectors.toList()));
+                .map(s -> new RequestParameter(s, method)).collect(Collectors.toList()));
         return this;
     }
 

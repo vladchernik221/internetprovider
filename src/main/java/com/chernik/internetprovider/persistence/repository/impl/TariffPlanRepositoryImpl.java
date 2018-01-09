@@ -131,8 +131,8 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
 
     @Override
-    public Page<TariffPlan> getTariffPlanPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException {
-        return commonRepository.getEntityPage(archived, pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createShortTariffPlan);
+    public Page<TariffPlan> getPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException {
+        return commonRepository.getPage(archived, pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createShortTariffPlan);
     }
 
     private PreparedStatement createCountStatement(Connection connection, Boolean archived, Pageable pageable) throws SQLException {
@@ -196,7 +196,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
 
     @Override
-    public boolean isTariffPlanWithNameExist(String name) throws DatabaseException, TimeOutException {
+    public boolean existWithName(String name) throws DatabaseException, TimeOutException {
         return commonRepository.exist(name, this::createPreparedStatementForExistByName);
     }
 
@@ -209,7 +209,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
 
     @Override
-    public boolean isTariffPlanWithIdExist(Long id) throws DatabaseException, TimeOutException {
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 

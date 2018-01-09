@@ -2,7 +2,7 @@ package com.chernik.internetprovider.servlet.command.commandimpl;
 
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/", method = RequestType.GET)
 public class IndexPageCommandGet implements Command {
 
     private static final Logger LOGGER = LogManager.getLogger(IndexPageCommandGet.class);

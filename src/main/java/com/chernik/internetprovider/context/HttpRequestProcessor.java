@@ -1,6 +1,6 @@
 package com.chernik.internetprovider.context;
 
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface HttpRequestProcessor {
     String uri();
 
-    HttpRequestType method() default HttpRequestType.ALL;
+    RequestType method() default RequestType.ERROR;
 }

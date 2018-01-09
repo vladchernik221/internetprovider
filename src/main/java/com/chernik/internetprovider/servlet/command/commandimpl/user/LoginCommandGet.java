@@ -1,7 +1,7 @@
 package com.chernik.internetprovider.servlet.command.commandimpl.user;
 
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/loginPage", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/loginPage", method = RequestType.GET)
 public class LoginCommandGet implements Command {
     private static final Logger LOGGER = LogManager.getLogger(LoginCommandGet.class);
 

@@ -22,6 +22,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> authenticate(String login, String password) throws BaseException {
         LOGGER.log(Level.DEBUG, "Authentication user with login: {}", login);
-        return userRepository.getUserByLoginAndPassword(login, password);
+        return userRepository.getByLoginAndPassword(login, password);
     }
 }

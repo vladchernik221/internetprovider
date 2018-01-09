@@ -52,7 +52,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public Page<Transaction> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
-        return commonRepository.getEntityPage(pageable, this::createPreparedStatementForGettingPageCount, this::createPreparedStatementForGettingPage, this::createTransaction);
+        return commonRepository.getPage(pageable, this::createPreparedStatementForGettingPageCount, this::createPreparedStatementForGettingPage, this::createTransaction);
     }
 
     private PreparedStatement createPreparedStatementForGettingPageCount(Connection connection, Pageable pageable) throws SQLException {

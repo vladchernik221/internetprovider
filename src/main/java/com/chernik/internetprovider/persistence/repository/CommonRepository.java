@@ -134,7 +134,7 @@ public class CommonRepository {
         return Optional.ofNullable(entity);
     }
 
-    public <T> Page<T> getEntityPage(Pageable pageable, BiThrowableFunctional<Connection, Pageable, PreparedStatement> countStatementFunctional, BiThrowableFunctional<Connection, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+    public <T> Page<T> getPage(Pageable pageable, BiThrowableFunctional<Connection, Pageable, PreparedStatement> countStatementFunctional, BiThrowableFunctional<Connection, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting page. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
         Connection connection = connectionPool.getConnection();
         Page<T> entityPage = new Page<>();
@@ -164,7 +164,7 @@ public class CommonRepository {
         return entityPage;
     }
 
-    public <T, E> Page<T> getEntityPage(E parameter, Pageable pageable, TriThrowableFunctional<Connection, E, Pageable, PreparedStatement> countStatementFunctional, TriThrowableFunctional<Connection, E, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+    public <T, E> Page<T> getPage(E parameter, Pageable pageable, TriThrowableFunctional<Connection, E, Pageable, PreparedStatement> countStatementFunctional, TriThrowableFunctional<Connection, E, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting page. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
         Connection connection = connectionPool.getConnection();
         Page<T> entityPage = new Page<>();

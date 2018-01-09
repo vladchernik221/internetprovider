@@ -7,7 +7,7 @@ import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
-import com.chernik.internetprovider.servlet.command.HttpRequestType;
+import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-@HttpRequestProcessor(uri = "/signin", method = HttpRequestType.POST)
+@HttpRequestProcessor(uri = "/signin", method = RequestType.POST)
 public class LoginCommandPost implements Command {
     private static final Logger LOGGER = LogManager.getLogger(LoginCommandPost.class);
 

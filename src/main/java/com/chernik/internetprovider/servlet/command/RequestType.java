@@ -1,9 +1,7 @@
 package com.chernik.internetprovider.servlet.command;
 
-public enum HttpRequestType {
+public enum RequestType {
     GET,
     POST,
-    PUT,
-    DELETE,
-    ALL
+    ERROR
 }
