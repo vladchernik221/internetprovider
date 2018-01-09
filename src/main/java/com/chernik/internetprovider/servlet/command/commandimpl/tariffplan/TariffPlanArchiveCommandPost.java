@@ -19,6 +19,6 @@ public class TariffPlanArchiveCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException {
         Long id = Long.valueOf(request.getRequestURI().split("/")[2]);
-        tariffPlanService.archiveTariffPlan(id);
+        tariffPlanService.archive(id);
     }
 }

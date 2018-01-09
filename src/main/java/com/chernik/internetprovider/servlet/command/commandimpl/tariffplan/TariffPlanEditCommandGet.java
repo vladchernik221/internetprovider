@@ -30,7 +30,7 @@ public class TariffPlanEditCommandGet implements Command {
             throws ServletException, IOException, BaseException {
         String pathParameter = request.getRequestURI().split("/")[2];
         Long id = Long.valueOf(pathParameter);
-        TariffPlan tariffPlan = tariffPlanService.getTariffPlan(id);
+        TariffPlan tariffPlan = tariffPlanService.getById(id);
 
         request.setAttribute("tariffPlan", tariffPlan);
         RequestDispatcher dispatcher = request.getRequestDispatcher(TARIFF_FORM_PAGE);

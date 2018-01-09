@@ -23,7 +23,7 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     private TariffPlanRepository tariffPlanRepository;
 
     @Override
-    public Long createNewTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, UnableSaveEntityException {
+    public Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, UnableSaveEntityException {
         if (!tariffPlanRepository.existWithName(tariffPlan.getName())) {
             return tariffPlanRepository.create(tariffPlan);
         } else {
@@ -32,7 +32,7 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     }
 
     @Override
-    public void updateTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException {//TODO validating id name pair
+    public void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException {//TODO validating id name pair
         if (tariffPlanRepository.existWithId(tariffPlan.getTariffPlanId())) {
             tariffPlanRepository.update(tariffPlan);
         } else {
@@ -41,12 +41,12 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     }
 
     @Override
-    public Page<TariffPlan> getTariffPlans(Pageable pageable, Boolean archived) throws DatabaseException, TimeOutException {
+    public Page<TariffPlan> getPage(Pageable pageable, Boolean archived) throws DatabaseException, TimeOutException {
         return tariffPlanRepository.getPage(archived, pageable);
     }
 
     @Override
-    public TariffPlan getTariffPlan(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
+    public TariffPlan getById(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Optional<TariffPlan> tariffPlan = tariffPlanRepository.getById(id);
         if (!tariffPlan.isPresent()) {
             throw new EntityNotFoundException(String.format("Tariff plan with id=%d does not exist", id));
@@ -55,8 +55,8 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     }
 
     @Override
-    public void archiveTariffPlan(Long id) throws TimeOutException, EntityNotFoundException, DatabaseException {
-        TariffPlan tariffPlan = getTariffPlan(id);
+    public void archive(Long id) throws TimeOutException, EntityNotFoundException, DatabaseException {
+        TariffPlan tariffPlan = getById(id);
         tariffPlan.setArchived(!tariffPlan.getArchived());
         tariffPlanRepository.archive(tariffPlan);
     }

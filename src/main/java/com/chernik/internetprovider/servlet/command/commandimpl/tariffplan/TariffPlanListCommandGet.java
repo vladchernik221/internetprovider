@@ -36,7 +36,7 @@ public class TariffPlanListCommandGet implements Command {
             pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
         }
         RequestDispatcher dispatcher = request.getRequestDispatcher(TARIFF_LIST_PAGE);
-        Page<TariffPlan> tariffPlansPage = tariffPlanService.getTariffPlans(new Pageable(pageNumber, 10), false);//TODO to property or constant or somewhere
+        Page<TariffPlan> tariffPlansPage = tariffPlanService.getPage(new Pageable(pageNumber, 10), false);//TODO to property or constant or somewhere
         request.setAttribute("tariffPlansPage", tariffPlansPage);
         LOGGER.log(Level.TRACE, "Forward to page: {}", TARIFF_LIST_PAGE);
         dispatcher.forward(request, response);

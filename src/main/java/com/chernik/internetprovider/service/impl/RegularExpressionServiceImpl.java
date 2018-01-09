@@ -15,7 +15,7 @@ public class RegularExpressionServiceImpl implements RegularExpressionService {
 
 
     @Override
-    public boolean checkToRegularExpression(String text, String regularExpression) {
+    public boolean checkTo(String text, String regularExpression) {
         Pattern pattern = Pattern.compile(regularExpression);
         Matcher matcher = pattern.matcher(text);
 

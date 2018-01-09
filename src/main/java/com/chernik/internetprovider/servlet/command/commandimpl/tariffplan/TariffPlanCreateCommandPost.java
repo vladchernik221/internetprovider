@@ -27,7 +27,7 @@ public class TariffPlanCreateCommandPost implements Command {
         TariffPlan tariffPlan = tariffPlanMapper.create(request);
         tariffPlan.setArchived(false);
 
-        Long generatedId = tariffPlanService.createNewTariffPlan(tariffPlan);
+        Long generatedId = tariffPlanService.create(tariffPlan);
         response.getWriter().write(generatedId.toString());
     }
 }

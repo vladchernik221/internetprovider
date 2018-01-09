@@ -1,5 +1,5 @@
 package com.chernik.internetprovider.service;
 
 public interface RegularExpressionService {
-    boolean checkToRegularExpression(String text, String regularExpression);
+    boolean checkTo(String text, String regularExpression);
 }

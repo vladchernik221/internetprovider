@@ -27,6 +27,6 @@ public class TariffPlanEditCommandPost implements Command {
         TariffPlan tariffPlan = tariffPlanMapper.create(request);
         tariffPlan.setTariffPlanId(id);
 
-        tariffPlanService.updateTariffPlan(tariffPlan);
+        tariffPlanService.update(tariffPlan);
     }
 }

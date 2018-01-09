@@ -25,7 +25,7 @@ public class TariffPlanByIdCommandGet implements Command {
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         String pathParameter = request.getRequestURI().split("/")[2];
         Long id = Long.valueOf(pathParameter);
-        TariffPlan tariffPlan = tariffPlanService.getTariffPlan(id);
+        TariffPlan tariffPlan = tariffPlanService.getById(id);
 
         request.setAttribute("tariffPlan", tariffPlan);
         RequestDispatcher dispatcher = request.getRequestDispatcher(TARIFF_PLAN_PAGE);

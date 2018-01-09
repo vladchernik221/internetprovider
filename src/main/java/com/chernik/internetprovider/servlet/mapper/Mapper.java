@@ -32,7 +32,7 @@ public abstract class Mapper<T> {
 
     Integer getMandatoryInt(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkToRegularExpression(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
+            if (regularExpressionService.checkTo(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
                 return Integer.valueOf(data);
             } else {
                 throw new BadRequestException(String.format("Field: %s have wrong format", data));
@@ -44,7 +44,7 @@ public abstract class Mapper<T> {
 
     Integer getNotMandatoryInt(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkToRegularExpression(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
+            if (regularExpressionService.checkTo(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
                 return Integer.valueOf(data);
             } else {
                 throw new BadRequestException(String.format("Field: %s have wrong format", data));
@@ -56,7 +56,7 @@ public abstract class Mapper<T> {
 
     BigDecimal getBigDecimal(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkToRegularExpression(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
+            if (regularExpressionService.checkTo(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
                 return BigDecimal.valueOf(Double.valueOf(data));
             } else {
                 throw new BadRequestException(String.format("Field: %s have wrong format", data));

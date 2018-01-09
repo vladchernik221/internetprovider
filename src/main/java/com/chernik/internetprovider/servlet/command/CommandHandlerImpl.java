@@ -32,7 +32,7 @@ public class CommandHandlerImpl implements CommandHandler {
             HttpRequestProcessor processor = command.getClass().getAnnotation(HttpRequestProcessor.class);
             String uri = processor.uri().toLowerCase();
             commands.put(new RequestParameter(uri, processor.method()), command);
-            if (regularExpressionService.checkToRegularExpression(uri, DYNAMIC_URI_REGULAR_EXPRESSION)) {
+            if (regularExpressionService.checkTo(uri, DYNAMIC_URI_REGULAR_EXPRESSION)) {
                 dynamicCommands.put(uri);
             }
             LOGGER.log(Level.DEBUG, "Mapped {{}, {}} onto {}", processor.uri(), processor.method(), command.getClass());
