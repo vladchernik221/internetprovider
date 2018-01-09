@@ -25,9 +25,9 @@
 <section class="wrapper style2">
     <div class="container">
         <div class="row"><div class="align-left col-2">
-                <a href="/tariff_plan" class="button small">К списку</a>
+                <a href="/tariff-plan" class="button small">К списку</a>
             </div><div class="align-right actions col-2">
-                <a href="/tariff_plan/${tariffPlan.tariffPlanId}/edit" class="button small">Редактировать</a>
+                <a href="/tariff-plan/${tariffPlan.tariffPlanId}/edit" class="button small">Редактировать</a>
                 <button class="button small" onclick="change_archived(${tariffPlan.tariffPlanId})">
                     <c:choose>
                         <c:when test="${!tariffPlan.archived}">Поместить в архив</c:when>

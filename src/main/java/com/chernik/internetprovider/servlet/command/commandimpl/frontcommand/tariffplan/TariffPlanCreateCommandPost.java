@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan/new", method = HttpRequestType.POST)
+@HttpRequestProcessor(uri = "/tariff-plan/new", method = HttpRequestType.POST)
 public class TariffPlanCreateCommandPost implements Command {
 
     @Autowired

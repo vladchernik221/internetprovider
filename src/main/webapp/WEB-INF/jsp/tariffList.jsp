@@ -29,7 +29,7 @@
     <div class="container">
         <header class="major">
             <h2>Тарифные планы</h2>
-            <a href="/tariff_plan/new" class="button">Создать тарифный план</a>
+            <a href="/tariff-plan/new" class="button">Создать тарифный план</a>
         </header>
         <table class="list">
             <tr>
@@ -42,14 +42,14 @@
                 <th></th>
             </tr>
             <c:forEach items="${tariffPlansPage.data}" var="tariffPlan">
-                <tr onclick="redirect('/tariff_plan/${tariffPlan.tariffPlanId}')">
+                <tr onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}')">
                     <td>${tariffPlan.name}</td>
                     <td>${tariffPlan.monthlyFee}</td>
                     <td>${tariffPlan.downSpeed}</td>
                     <td>${tariffPlan.upSpeed}</td>
                     <td>${tariffPlan.includedTraffic}</td>
                     <td>
-                        <div class="icon small fa-edit" onclick="redirect('/tariff_plan/${tariffPlan.tariffPlanId}/edit')"></div>
+                        <div class="icon small fa-edit" onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}/edit', event)"></div>
                     </td>
                     <td>
                         <div class="icon small
@@ -57,7 +57,7 @@
                                 <c:when test="${!tariffPlan.archived}">fa-archive</c:when>
                                 <c:otherwise>fa-share</c:otherwise>
                             </c:choose>
-                        " onclick="change_archived(${tariffPlan.tariffPlanId})"></div>
+                        " onclick="change_archived(${tariffPlan.tariffPlanId}, event)"></div>
                     </td>
                 </tr>
             </c:forEach>

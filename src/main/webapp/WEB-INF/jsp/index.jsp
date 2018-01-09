@@ -34,7 +34,7 @@
             <h2>Информация для клиентов</h2>
             <p>Полезные сведения о тарфиных планах, предоставляемых услугах и акционных предложениях.</p>
         </header>
-        <div class="row"><section class="box col-3" onclick="redirect('/tariff_plan')">
+        <div class="row"><section class="box col-3" onclick="redirect('/tariff-plan')">
                 <div class="icon big rounded blue fa-tasks"></div>
                 <h3>Тарифные планы</h3>
                 <p>В данном разделе Вы сможете найти список тарифных планов, предоставляемых нашей компанией, с

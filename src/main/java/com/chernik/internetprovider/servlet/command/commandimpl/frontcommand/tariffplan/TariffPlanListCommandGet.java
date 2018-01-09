@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan", method = HttpRequestType.GET)//TODO with parameter withArchived
+@HttpRequestProcessor(uri = "/tariff-plan", method = HttpRequestType.GET)//TODO with parameter withArchived
 public class TariffPlanListCommandGet implements Command {
     private final static Logger LOGGER = LogManager.getLogger(TariffPlanListCommandGet.class);
 

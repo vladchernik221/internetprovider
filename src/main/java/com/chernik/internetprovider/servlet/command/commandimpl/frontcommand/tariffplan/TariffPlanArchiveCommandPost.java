@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan/{\\d+}/archive", method = HttpRequestType.POST)
+@HttpRequestProcessor(uri = "/tariff-plan/{\\d+}/archive", method = HttpRequestType.POST)
 public class TariffPlanArchiveCommandPost implements Command {
 
     @Autowired

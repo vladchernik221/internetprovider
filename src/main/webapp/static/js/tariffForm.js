@@ -27,7 +27,11 @@ function send(event) {
             if(xhr.getResponseHeader("content-type") === "text/html;charset=UTF-8") {
                 document.write(result);
             } else {
-                redirect("/tariff_plan/" + result + "/edit");
+                if(result === "") {
+                    window.location.reload(true);
+                } else {
+                    redirect("/tariff-plan/" + result + "/edit");
+                }
             }
         },
         error: function (xhr) {

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan/{\\d+}", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/tariff-plan/{\\d+}", method = HttpRequestType.GET)
 public class TariffPlanByIdCommandGet implements Command {
     private final static String TARIFF_PLAN_PAGE = "/WEB-INF/jsp/tariff.jsp";
 

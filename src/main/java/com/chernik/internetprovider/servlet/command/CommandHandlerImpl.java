@@ -46,7 +46,7 @@ public class CommandHandlerImpl implements CommandHandler {
             String dynamicUri = dynamicCommands.get(parameter.getUri());
             if (dynamicUri != null) {
                 HttpRequestParameter dynamicParameter = new HttpRequestParameter(dynamicUri, parameter.getType());
-                command = commands.get(dynamicParameter);//TODO it might be null
+                command = commands.get(dynamicParameter); //TODO can be null when URI exist but Type is different
             } else {
                 throw new CommandNotFoundException(String.format("Request: %s, method: %s does not support", parameter.getUri(), parameter.getType()));
             }

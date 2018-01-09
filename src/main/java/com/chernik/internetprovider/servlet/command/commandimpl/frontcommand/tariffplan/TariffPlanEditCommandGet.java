@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan/{\\d+}/edit", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/tariff-plan/{\\d+}/edit", method = HttpRequestType.GET)
 public class TariffPlanEditCommandGet implements Command {
     private final static Logger LOGGER = LogManager.getLogger(TariffPlanEditCommandGet.class);
 

@@ -1,4 +1,7 @@
-function redirect(name) {
+function redirect(name, event) {
+    if(event !== undefined) {
+        event.stopPropagation();
+    }
     window.location.href = name;
 }
 

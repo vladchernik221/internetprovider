@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/tariff_plan/new", method = HttpRequestType.GET)
+@HttpRequestProcessor(uri = "/tariff-plan/new", method = HttpRequestType.GET)
 public class TariffPlanCreateCommandGet implements Command{
     private final static Logger LOGGER = LogManager.getLogger(TariffPlanCreateCommandGet.class);
 

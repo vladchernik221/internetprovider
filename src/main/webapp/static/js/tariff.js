@@ -1,12 +1,15 @@
-function change_archived(tariff_plan_id) {
+function change_archived(tariff_plan_id, event) {
+    if(event !== undefined) {
+        event.stopPropagation();
+    }
     $.ajax({
         type: "POST",
-        url: "/tariff_plan/" + tariff_plan_id + "/archive",
+        url: "/tariff-plan/" + tariff_plan_id + "/archive",
         success: function (result, status, xhr) {
             if(xhr.getResponseHeader("content-type").toLowerCase() === "text/html;charset=utf-8") {
                 document.write(result);
             } else {
-                location.reload(); //TODO не работает
+                window.location.reload(true); //TODO не работает
             }
         },
         error: function (xhr) {

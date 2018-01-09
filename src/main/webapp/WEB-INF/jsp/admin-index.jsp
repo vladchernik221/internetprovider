@@ -27,7 +27,7 @@
             <h2>Кабинет администратора (менеджера по продажам)</h2>
             <p>Здесь Вы можете найти ссылки на ресурсы сервиса.</p>
         </header>
-        <div class="row"><section class="box col-3" onclick="redirect('/tariff_plan')">
+        <div class="row"><section class="box col-3" onclick="redirect('/tariff-plan')">
                 <div class="icon medium rounded grey fa-tasks"></div>
                 <h3>Тарифные планы</h3>
             </section><section class="box col-3">

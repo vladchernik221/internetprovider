@@ -36,10 +36,10 @@
         </header>
         <c:choose>
             <c:when test="${tariffPlan == null}">
-                <form id="tariff_plan_form" onsubmit="send(event)" method="POST" action="/tariff_plan/new">
+                <form id="tariff_plan_form" onsubmit="send(event)" method="POST" action="/tariff-plan/new">
             </c:when>
             <c:otherwise>
-                <form id="tariff_plan_form" onsubmit="send(event)" method="POST" action="/tariff_plan/${tariffPlan.tariffPlanId}">
+                <form id="tariff_plan_form" onsubmit="send(event)" method="POST" action="/tariff-plan/${tariffPlan.tariffPlanId}">
             </c:otherwise>
         </c:choose>
             <div class="row">
