@@ -29,10 +29,10 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public void update(Service service) throws BaseException {
-        if (serviceRepository.existWithName(service.getName())) {
+        if (serviceRepository.existWithId(service.getServiceId())) {
             serviceRepository.update(service);
         } else {
-            throw new EntityNotFoundException(String.format("Service with name: %s does not exist", service.getName()));
+            throw new EntityNotFoundException(String.format("Service with id: %s does not exist", service.getServiceId()));
         }
     }
 

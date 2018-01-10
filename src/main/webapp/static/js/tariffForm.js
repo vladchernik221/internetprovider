@@ -23,20 +23,13 @@ function send(event) {
         type: form.attr("method"),
         url: form.attr("action"),
         data: form.serialize(),
-        success: function (result, status, xhr) {
-            if(xhr.getResponseHeader("content-type") === "text/html;charset=UTF-8") {
-                document.write(result);
+        success: function (result) {
+            if(result === "") {
+                window.location.reload(true);
             } else {
-                if(result === "") {
-                    window.location.reload(true);
-                } else {
-                    redirect("/tariff-plan/" + result + "/edit");
-                }
+                redirect("/tariff-plan/" + result + "/edit");
             }
         },
-        error: function (xhr) {
-            $("#modal_message").html("Ошибка " + xhr.status + ": " + xhr.responseText);
-            show_modal();
-        }
+        error: error_handler
     });
 }

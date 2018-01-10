@@ -21,7 +21,7 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="header.jsp" />
+    <jsp:include page="../template/header.jsp" />
 </header>
 
 <!-- Main part -->
@@ -31,6 +31,8 @@
             <h2>Тарифные планы</h2>
             <a href="/tariff-plan/new" class="button">Создать тарифный план</a>
         </header>
+        <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
+        <label for="archived">Показывать архивные</label>
         <table class="list">
             <tr>
                 <th>Название</th>
@@ -70,6 +72,6 @@
 </section>
 
 <!-- Footer -->
-<jsp:include page="footer.jsp" />
+<jsp:include page="../template/footer.jsp" />
 </body>
 </html>

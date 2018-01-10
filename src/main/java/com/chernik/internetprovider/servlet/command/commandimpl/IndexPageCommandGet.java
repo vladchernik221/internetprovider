@@ -21,8 +21,7 @@ public class IndexPageCommandGet implements Command {
     private static final String INDEX_PAGE = "/WEB-INF/jsp/index.jsp";
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(INDEX_PAGE);
         LOGGER.log(Level.TRACE, "Forward to page: {}", INDEX_PAGE);
         dispatcher.forward(request, response);

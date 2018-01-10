@@ -17,7 +17,7 @@
 <body>
 <!-- Header -->
 <header id="header" class="transparent top">
-    <jsp:include page="header.jsp" />
+    <jsp:include page="template/header.jsp" />
 </header>
 
 <!-- Banner -->
@@ -39,7 +39,7 @@
                 <h3>Тарифные планы</h3>
                 <p>В данном разделе Вы сможете найти список тарифных планов, предоставляемых нашей компанией, с
                     подробным их описанием.</p>
-            </section><section class="box col-3">
+            </section><section class="box col-3" onclick="redirect('/service')">
                 <div class="icon big rounded green fa-wrench"></div>
                 <h3>Услуги</h3>
                 <p>Здесь приведен список услуг по подключению, настройке и т.д., прдоставляемых компанией своим
@@ -54,6 +54,6 @@
 </section>
 
 <!-- Footer -->
-<jsp:include page="footer.jsp" />
+<jsp:include page="template/footer.jsp" />
 </body>
 </html>

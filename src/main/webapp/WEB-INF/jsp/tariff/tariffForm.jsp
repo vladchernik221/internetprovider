@@ -18,7 +18,7 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="header.jsp" />
+    <jsp:include page="../template/header.jsp" />
 </header>
 
 <!-- Main part -->
@@ -47,7 +47,7 @@
                 <label>Название</label>
             </div>
             <div class="row">
-                <textarea name="description" placeholder="Описание" value="${tariffPlan.description}" rows="6"></textarea>
+                <textarea name="description" placeholder="Описание" rows="6">${tariffPlan.description}</textarea>
                 <label>Описание</label>
             </div>
             <div class="row">
@@ -98,9 +98,9 @@
 </section>
 
 <!-- Modal window -->
-<jsp:include page="modal.jsp" />
+<jsp:include page="../template/modal.jsp" />
 
 <!-- Footer -->
-<jsp:include page="footer.jsp" />
+<jsp:include page="../template/footer.jsp" />
 </body>
 </html>

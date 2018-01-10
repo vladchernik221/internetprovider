@@ -292,10 +292,6 @@ header.major p {
     color: #444444;
 }
 
-.icon.grey {
-    background-color: #909090;
-}
-
 .icon.blue {
     background-color: #3cadd4;
 }
@@ -306,6 +302,14 @@ header.major p {
 
 .icon.red {
     background-color: #d43c61;
+}
+
+.icon.orange {
+    background-color: #ff9f00;
+}
+
+.icon.violet {
+    background-color: #a136ff;
 }
 
 /* Button */

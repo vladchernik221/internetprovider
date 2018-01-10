@@ -17,7 +17,7 @@ import java.io.IOException;
 public class TariffPlanCreateCommandGet implements Command{
     private static final Logger LOGGER = LogManager.getLogger(TariffPlanCreateCommandGet.class);
 
-    private static final String TARIFF_FORM_PAGE = "/WEB-INF/jsp/tariffForm.jsp";
+    private static final String TARIFF_FORM_PAGE = "/WEB-INF/jsp/tariff/tariffForm.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

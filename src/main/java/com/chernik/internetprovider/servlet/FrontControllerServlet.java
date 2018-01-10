@@ -29,21 +29,23 @@ public class FrontControllerServlet extends HttpServlet {
 
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void service(HttpServletRequest request, HttpServletResponse response) throws IOException {
         LOGGER.log(Level.TRACE, "Request: {}, method: {} came", request.getRequestURI(), request.getMethod());
         try {
             RequestParameter parameter = new RequestParameter(request.getRequestURI().toLowerCase(),
                     RequestType.valueOf(request.getMethod()));
             Command command = commandHandler.getCommand(parameter);
             command.execute(request, response);
+            throw new UnsupportedOperationException("sdf");
         } catch (UnableSaveEntityException e) {
+            LOGGER.log(Level.WARN, e.getMessage(), e);
             response.setStatus(e.getStatusCode());
             response.getWriter().write(e.getMessage());
         } catch (BaseException e) {
-            LOGGER.log(Level.WARN, e.getMessage());
+            LOGGER.log(Level.ERROR, e.getMessage(), e);
             response.sendError(e.getStatusCode(), e.getMessage());
         } catch (Exception e) {
-            LOGGER.log(Level.WARN, e.getMessage());
+            LOGGER.log(Level.ERROR, e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

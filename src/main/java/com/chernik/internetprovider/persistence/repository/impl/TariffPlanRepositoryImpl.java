@@ -32,9 +32,9 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private static final String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `archived`=? WHERE `tariff_plan_id`=?";
 
-    private static final String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` WHERE `archived`=0 LIMIT ? OFFSET ?";
+    private static final String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `archived`=0 LIMIT ? OFFSET ?";
 
-    private static final String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee` FROM `tariff_plan` LIMIT ? OFFSET ?";
+    private static final String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` LIMIT ? OFFSET ?";
 
     private static final String GET_TARIFF_PLANS_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan` WHERE `archived`=0";
 
@@ -164,6 +164,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
         tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
         tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
+        tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));
         return tariffPlan;
     }
 
@@ -187,8 +188,8 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         tariffPlan.setDescription(resultSet.getString(TariffPlanField.DESCRIPTION.toString()));
         tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
         tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
-        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
-        tariffPlan.setPriceOverTraffic(resultSet.getInt(TariffPlanField.PRICE_OVER_TRAFFIC.toString()));
+        tariffPlan.setIncludedTraffic(commonRepository.getInteger(resultSet, TariffPlanField.INCLUDED_TRAFFIC.toString()));
+        tariffPlan.setPriceOverTraffic(commonRepository.getInteger(resultSet, TariffPlanField.PRICE_OVER_TRAFFIC.toString()));
         tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
         tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));
         return tariffPlan;

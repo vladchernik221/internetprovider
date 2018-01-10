@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/loginPage", method = RequestType.GET)
+@HttpRequestProcessor(uri = "/login", method = RequestType.GET)
 public class LoginCommandGet implements Command {
     private static final Logger LOGGER = LogManager.getLogger(LoginCommandGet.class);
 

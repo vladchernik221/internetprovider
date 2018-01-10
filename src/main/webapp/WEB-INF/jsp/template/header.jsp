@@ -9,7 +9,7 @@
                     <a href="#">Личный кабинет</a>
                 </li>
                 <li>
-                    <a href="#">Кабинет сотрудника</a>
+                    <a href="/employee">Кабинет сотрудника</a>
                 </li>
                 <li>
                     <a href="#">Сменить пароль</a>
@@ -20,7 +20,7 @@
             </c:when>
             <c:otherwise>
                 <li>
-                    <a href="/loginPage" class="button">Войти</a>
+                    <a href="/login" class="button">Войти</a>
                 </li>
             </c:otherwise>
         </c:choose>

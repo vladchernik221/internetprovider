@@ -18,7 +18,7 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="header.jsp" />
+    <jsp:include page="../template/header.jsp" />
 </header>
 
 <!-- Main part -->
@@ -90,6 +90,6 @@
 </section>
 
 <!-- Footer -->
-<jsp:include page="footer.jsp" />
+<jsp:include page="../template/footer.jsp" />
 </body>
 </html>

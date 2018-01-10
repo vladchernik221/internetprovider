@@ -17,7 +17,7 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="header.jsp" />
+    <jsp:include page="template/header.jsp" />
 </header>
 
 <!-- Main part -->
@@ -28,25 +28,25 @@
             <p>Здесь Вы можете найти ссылки на ресурсы сервиса.</p>
         </header>
         <div class="row"><section class="box col-3" onclick="redirect('/tariff-plan')">
-                <div class="icon medium rounded grey fa-tasks"></div>
+                <div class="icon medium rounded blue fa-tasks"></div>
                 <h3>Тарифные планы</h3>
-            </section><section class="box col-3">
-                <div class="icon medium rounded grey fa-wrench"></div>
+            </section><section class="box col-3" onclick="redirect('/service')">
+                <div class="icon medium rounded green fa-wrench"></div>
                 <h3>Услуги</h3>
             </section><section class="box col-3">
-                <div class="icon medium rounded grey fa-fire"></div>
+                <div class="icon medium rounded red fa-fire"></div>
                 <h3>Акции</h3>
             </section><section class="box col-3">
-                <div class="icon medium rounded grey fa-briefcase"></div>
+                <div class="icon medium rounded orange fa-briefcase"></div>
                 <h3>Контракты</h3>
             </section><section class="box col-3">
-                <div class="icon medium rounded grey fa-users"></div>
+                <div class="icon medium rounded violet fa-users"></div>
                 <h3>Пользователи</h3>
             </section></div>
     </div>
 </section>
 
 <!-- Footer -->
-<jsp:include page="footer.jsp" />
+<jsp:include page="template/footer.jsp" />
 </body>
 </html>

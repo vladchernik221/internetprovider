@@ -51,9 +51,20 @@ function show_modal() {
     overlay.css({opacity: 1, visibility: "visible"});
 }
 
-function close_modal(event) {
+function close_modal() {
     var modal = $("#modal");
     var overlay = $("#overlay");
     modal.css({opacity: 0, visibility: "hidden"});
     overlay.css({opacity: 0, visibility: "hidden"});
 }
+
+// AJAX
+
+error_handler = function (xhr) {
+    if(xhr.getResponseHeader("content-type") !== null && xhr.getResponseHeader("content-type") === "text/html;charset=UTF-8") {
+        document.write(xhr.responseText);
+    } else {
+        $("#modal_message").html("Ошибка " + xhr.status + ": " + xhr.responseText);
+        show_modal();
+    }
+};

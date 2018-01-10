@@ -24,15 +24,15 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     private static final String CREATE_SERVICE = "INSERT INTO `service`(`name`, `description`, `price`, `archived`) VALUES(?,?,?,?)";
 
-    private static final String UPDATE_SERVICE = "UPDATE `service` SET `name`=?, `description`=?, `price`=?, `archived`=? WHERE `service_id`=?";
+    private static final String UPDATE_SERVICE = "UPDATE `service` SET `name`=?, `description`=?, `price`=? WHERE `service_id`=?";
 
     private static final String GET_SERVICE_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` WHERE `archived`=0";
 
-    private static final String GET_SERVICE_PAGE = "SELECT `service_id`, `name`, `price` FROM `service` WHERE `archived`=0 LIMIT ? OFFSET ?";
+    private static final String GET_SERVICE_PAGE = "SELECT `service_id`, `name`, `price`, `archived` FROM `service` WHERE `archived`=0 LIMIT ? OFFSET ?";
 
     private static final String GET_SERVICE_WITH_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service`";
 
-    private static final String GET_SERVICE_WITH_ARCHIVED_PAGE = "SELECT `service_id`, `name`, `price` FROM `service` LIMIT ? OFFSET ?";
+    private static final String GET_SERVICE_WITH_ARCHIVED_PAGE = "SELECT `service_id`, `name`, `price`, `archived` FROM `service` LIMIT ? OFFSET ?";
 
     private static final String GET_SERVICE_BY_ID = "SELECT `service_id`, `name`, `description`, `price`, `archived` FROM `service` WHERE `service_id`=?";
 
@@ -83,8 +83,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
             statement.setNull(2, Types.VARCHAR);
         }
         statement.setBigDecimal(3, service.getPrice());
-        statement.setBoolean(4, service.getArchived());
-        statement.setLong(5, service.getServiceId());
+        statement.setLong(4, service.getServiceId());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
@@ -136,6 +135,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         service.setServiceId(resultSet.getLong(ServiceField.SERVICE_ID.toString()));
         service.setName(resultSet.getString(ServiceField.NAME.toString()));
         service.setPrice(resultSet.getBigDecimal(ServiceField.PRICE.toString()));
+        service.setArchived(resultSet.getBoolean(ServiceField.ARCHIVED.toString()));
         return service;
     }
 
