@@ -36,7 +36,6 @@ public class FrontControllerServlet extends HttpServlet {
                     RequestType.valueOf(request.getMethod()));
             Command command = commandHandler.getCommand(parameter);
             command.execute(request, response);
-            throw new UnsupportedOperationException("sdf");
         } catch (UnableSaveEntityException e) {
             LOGGER.log(Level.WARN, e.getMessage(), e);
             response.setStatus(e.getStatusCode());

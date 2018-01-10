@@ -17,7 +17,7 @@ public class ContextInitializer {
     private Reflections ref = new Reflections();
 
     private Map<Class<?>, Object> components = new HashMap<>();
-    private Map<Field, Object> withAutowired = new HashMap<>();
+    private List<Map.Entry<Field, Object>> withAutowired = new ArrayList<>();
     private Map<Method, Object> withAfterCreate = new HashMap<>();
     private Map<Method, Object> withBeforeDestroy = new HashMap<>();
 
@@ -88,7 +88,7 @@ public class ContextInitializer {
     private void addAutowireField(Class<?> clazz, Object component) {
         Reflections autowiredRef = new Reflections(clazz.getCanonicalName(), new FieldAnnotationsScanner());
         autowiredRef.getFieldsAnnotatedWith(Autowired.class)
-                .forEach(field -> withAutowired.put(field, component));
+                .forEach(field -> withAutowired.add(new AbstractMap.SimpleEntry<>(field, component)));
         Class<?> superClazz = clazz.getSuperclass();
         if (superClazz != null) {
             addAutowireField(superClazz, component);
@@ -106,17 +106,17 @@ public class ContextInitializer {
 
     private void autowireComponents() {
         LOGGER.log(Level.TRACE, "Autowiring components to fields");
-        withAutowired.forEach((field, value) -> {
+        withAutowired.forEach((entry) -> {
             try {
-                field.setAccessible(true);
-                Object settingValue = getComponentOrImpemetation(field.getType());
-                field.set(value, settingValue);
+                entry.getKey().setAccessible(true);
+                Object settingValue = getComponentOrImpemetation(entry.getKey().getType());
+                entry.getKey().set(entry.getValue(), settingValue);
             } catch (IllegalAccessException e) {
-                String message = String.format("Error with access to field %s", field);
+                String message = String.format("Error with access to field %s", entry.getKey());
                 LOGGER.log(Level.FATAL, message);
                 throw new RuntimeException(message, e);
             } finally {
-                field.setAccessible(false);
+                entry.getKey().setAccessible(false);
             }
         });
     }
