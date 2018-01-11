@@ -13,9 +13,6 @@ function change_archived(tariff_plan_id, event) {
 }
 
 function show_archived(checkbox) {
-    if(checkbox.checked) {
-        redirect("/tariff-plan?archived=true");
-    } else {
-        redirect("/tariff-plan?archived=false");
-    }
+    var new_status = checkbox.checked ? "true" : "false";
+    redirect(add_param_to_url([["archived", new_status], ["page", 1]]));
 }

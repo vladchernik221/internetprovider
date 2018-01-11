@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LegalEntityClientInformation {
     private Long legalEntityClientInformationId;
-    private Integer payersAccountNumber;
+    private Integer payerAccountNumber;
     private String name;
     private String checkingAccount;
     private String address;

@@ -1,10 +1,10 @@
 package com.chernik.internetprovider.persistence.entityfield;
 
 public enum ContractAnnexField {
-    CONTRACT_ID,
+    CONTRACT_ANNEX_ID,
     ADDRESS,
     CONCLUDE_DATE,
     CANCELED,
-    CLIENT_INFORMATION_ID,
-    TARIFF_PLAN_ID
+    TARIFF_PLAN_ID,
+    CONTRACT_ID
 }

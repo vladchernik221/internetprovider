@@ -68,3 +68,31 @@ error_handler = function (xhr) {
         show_modal();
     }
 };
+
+function add_param_to_url(param_array) {
+    var url_params = window.location.href.split("?");
+    var params = url_params[1];
+    param_array.forEach(function(item) {
+        var param = item[0], value = item[1];
+        var new_param = param + "=" + value;
+        if (params !== undefined) {
+            var regex = new RegExp(param + "=[^&]*");
+            if (regex.test(params)) {
+                params = params.replace(regex, new_param);
+            } else {
+                params += "&" + new_param;
+            }
+        } else {
+            params = new_param;
+        }
+    });
+    return url_params[0] + "?" + params;
+}
+
+function get_param_value_from_url(param) {
+    var regex = new RegExp("(" + param + ")=([^&]*)");
+    var result = window.location.href.match(regex);
+    if(result != null) {
+        return result[2];
+    }
+}

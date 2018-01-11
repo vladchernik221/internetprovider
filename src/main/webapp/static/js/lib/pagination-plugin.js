@@ -307,7 +307,7 @@
 				$link = $('<span class="current">' + (options.text) + '</span>');
 			} else {
 				if (o.useAnchors) {
-					$link = $('<a href="' + o.hrefTextPrefix + (pageIndex + 1) + o.hrefTextSuffix + '" class="page-link">' + (options.text) + '</a>');
+					$link = $('<a href="' + configure_url(o.hrefTextPrefix, (pageIndex + 1) + o.hrefTextSuffix) + '" class="page-link">' + (options.text) + '</a>');
 				} else {
 					$link = $('<span >' + (options.text) + '</span>');
 				}
@@ -396,3 +396,20 @@
 	};
 
 })(jQuery);
+
+function configure_url(param, value) {
+    var url_params = window.location.href.split("?");
+    var params = url_params[1];
+    var new_param = param + "=" + value;
+    if(params !== undefined) {
+        var regex = new RegExp(param + "=[^&]*");
+        if (regex.test(params)) {
+            params = params.replace(regex, new_param);
+        } else {
+            params += "&" + new_param;
+        }
+    } else {
+        params = new_param;
+    }
+    return url_params[0] + "?" + params;
+}

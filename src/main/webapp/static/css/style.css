@@ -67,6 +67,33 @@ h6 {
     font-size: 0.7em;
 }
 
+ol {
+    counter-reset: list1;
+}
+
+ol > li:before {
+    counter-increment: list1;
+    content: counter(list1) ". ";
+}
+
+ol ol {
+    counter-reset: list2;
+}
+
+ol ol > li:before {
+    counter-increment: list2;
+    content: counter(list1) "." counter(list2) ". ";
+}
+
+ol ol ol {
+    counter-reset: list3;
+}
+
+ol ol ol > li:before {
+    counter-increment: list3;
+    content: counter(list1) "." counter(list2) "." counter(list3) ". ";
+}
+
 .align-left {
     text-align: left;
 }
@@ -85,6 +112,19 @@ h6 {
 
 .hidden {
     display: none;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.important {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 /* Header */
@@ -227,6 +267,59 @@ h6 {
 
 .wrapper.style2 .actions {
     margin-bottom: 2em;
+}
+
+.wrapper.document {
+    padding-left: 4em;
+    padding-right: 4em;
+}
+
+.wrapper.document p {
+    text-indent: 2em;
+    text-align: justify;
+}
+
+.wrapper.document ol > li {
+    text-align: justify;
+}
+
+.wrapper.document ol > li > h3,
+.wrapper.document ol > li > h4 {
+    margin: 1em 0;
+    display: inline-block;
+}
+
+.wrapper.document ol > li:before {
+    font-size: 1.35em;
+    font-weight: bold;
+}
+
+.wrapper.document ol ol > li:before {
+    font-size: 1em;
+}
+
+.wrapper.document table.description th {
+    text-align: center;
+}
+
+.wrapper.document table.description th,
+.wrapper.document table.description td {
+    border: 1px solid #000000;
+}
+
+.wrapper.document table.subscription {
+    margin-top: 2em;
+    width: 80%;
+}
+
+.wrapper.document table.subscription td {
+    width: 50%;
+}
+
+.wrapper.document table.subscription tr:last-child td div {
+    width: 50%;
+    height: 2em;
+    border-bottom: 1px solid #000000;
 }
 
 /* Section */

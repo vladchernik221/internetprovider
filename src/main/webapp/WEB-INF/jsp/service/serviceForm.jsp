@@ -54,22 +54,6 @@
                 <input type="text" name="price" placeholder="Стоимость" pattern="^\d*(\.\d{0,2})?$"  value="${service.price}" required />
                 <label>Стоимость</label>
             </div>
-            <div class="row">
-                <div class="selected-item">Акция 11<div class="icon small fa-remove"></div></div>
-                <div class="selected-item">Акция 12<div class="icon small fa-remove"></div></div>
-                <div class="selected-item">Акция 13<div class="icon small fa-remove"></div></div>
-            </div>
-            <div class="row">
-                <div class="select-wrapper">
-                    <select name="category">
-                        <option value="">- Акции -</option>
-                        <option value="1">Акция 1</option>
-                        <option value="1">Акция 2</option>
-                        <option value="1">Акция 3</option>
-                        <option value="1">Акция 4</option>
-                    </select>
-                </div>
-            </div>
             <input class="big" type="submit" value="Сохранить" />
             <input class="big" type="reset" value="Очистить" />
         </form>

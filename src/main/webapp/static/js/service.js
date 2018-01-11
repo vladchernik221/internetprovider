@@ -13,11 +13,8 @@ function change_archived(service_id, event) {
 }
 
 function show_archived(checkbox) {
-    if(checkbox.checked) {
-        redirect("/service?archived=true");
-    } else {
-        redirect("/service?archived=false");
-    }
+    var new_status = checkbox.checked ? "true" : "false";
+    redirect(add_param_to_url([["archived", new_status], ["page", 1]]));
 }
 
 function send_form(event) {

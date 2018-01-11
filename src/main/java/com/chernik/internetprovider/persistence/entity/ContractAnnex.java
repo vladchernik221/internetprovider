@@ -11,7 +11,7 @@ public class ContractAnnex {
     private Long contractAnnexId;
     private String address;
     private Date concludeDate;
-    private Boolean dissolved;
+    private Boolean canceled;
     private TariffPlan tariffPlan;
     private Contract contract;
 }
