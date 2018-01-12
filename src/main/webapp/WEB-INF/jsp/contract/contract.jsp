@@ -23,6 +23,13 @@
 <!-- Main part -->
 <section class="wrapper document">
     <div class="container">
+        <div class="row"><div class="align-left col-2">
+            <a href="/contract" class="button small">К списку контрактов</a>
+            <a href="/contract/${contract.contractId}/annex" class="button small">Приложения</a>
+        </div><div class="align-right actions col-2">
+            <a href="/contract/${contract.contractId}/annex/new" class="button small">Добавить приложение</a>
+            <button class="button small" <%--onclick="change_archived(${contract.contractId})"--%>>Расторгнуть</button>
+        </div></div>
         <h2 class="uppercase">Договор № <span class="important">300500</span><br/>на оказание услуг связи</h2>
         <p>«12» января 2018 г.</p>
         <p>Закрытое акционерное общество «Internet Provider», именуемое в дальнейшем Оператор связи с одной стороны и

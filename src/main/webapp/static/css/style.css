@@ -834,3 +834,27 @@ input[type="radio"] + label:before {
     padding: 4em;
     color: #858585;
 }
+
+.lang-bar {
+    display: inline-block;
+    color: white;
+}
+
+.lang-bar > li {
+    display: inline-block;
+    padding: 0.5em 1em;
+    border: 2px solid #ffffff;
+    background-color: #cdced0;
+}
+
+.lang-bar > li.active {
+    background-color: #3cadd4;
+}
+
+.lang-bar > li:first-child {
+    border-radius: 50% 0 0 50%;
+}
+
+.lang-bar > li:last-child {
+    border-radius: 0 50% 50% 0;
+}

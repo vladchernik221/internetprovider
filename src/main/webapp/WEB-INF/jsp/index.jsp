@@ -24,7 +24,7 @@
 <section id="banner">
     <h2>Internet Provider</h2>
     <p>Добро пожаловать в информационный центр компании "Internet Provider"</p>
-    <a href="#" class="button big">Информация о компании</a>
+    <a href="/about" class="button big">Информация о компании</a>
 </section>
 
 <!-- Main part -->

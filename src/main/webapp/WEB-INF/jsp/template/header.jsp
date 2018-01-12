@@ -6,13 +6,13 @@
         <c:choose>
             <c:when test="${sessionScope.user != null}">
                 <li>
-                    <a href="#">Личный кабинет</a>
+                    <a href="/client">Личный кабинет</a>
                 </li>
                 <li>
                     <a href="/employee">Кабинет сотрудника</a>
                 </li>
                 <li>
-                    <a href="#">Сменить пароль</a>
+                    <a href="/password">Сменить пароль</a>
                 </li>
                 <li>
                     <a href="/logout" class="button">Выйти</a>

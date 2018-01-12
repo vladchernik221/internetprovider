@@ -3,7 +3,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Internet Provider</title>
+    <title>Кабинет сотрудника</title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -36,7 +36,7 @@
             </section><section class="box col-3">
                 <div class="icon medium rounded red fa-fire"></div>
                 <h3>Акции</h3>
-            </section><section class="box col-3">
+            </section><section class="box col-3" onclick="redirect('/contract')">
                 <div class="icon medium rounded orange fa-briefcase"></div>
                 <h3>Контракты</h3>
             </section><section class="box col-3">

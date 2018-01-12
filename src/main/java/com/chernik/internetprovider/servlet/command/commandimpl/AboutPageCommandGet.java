@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.servlet.command.commandimpl.contract;
+package com.chernik.internetprovider.servlet.command.commandimpl;
 
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.servlet.command.Command;
@@ -12,16 +12,17 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@HttpRequestProcessor(uri = "/contract/new", method = RequestType.GET)
-public class ContractCreateCommandGet implements Command{
-    private static final Logger LOGGER = LogManager.getLogger(ContractCreateCommandGet.class);
+@HttpRequestProcessor(uri = "/about", method = RequestType.GET)
+public class AboutPageCommandGet implements Command {
 
-    private static final String CONTRACT_FORM_PAGE = "/WEB-INF/jsp/contract/contractForm.jsp";
+    private static final Logger LOGGER = LogManager.getLogger(AboutPageCommandGet.class);
+
+    private static final String ABOUT_PAGE = "/WEB-INF/jsp/about.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(CONTRACT_FORM_PAGE);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", CONTRACT_FORM_PAGE);
+        RequestDispatcher dispatcher = request.getRequestDispatcher(ABOUT_PAGE);
+        LOGGER.log(Level.TRACE, "Forward to page: {}", ABOUT_PAGE);
         dispatcher.forward(request, response);
     }
 }

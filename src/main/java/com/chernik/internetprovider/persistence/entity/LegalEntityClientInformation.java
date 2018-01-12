@@ -9,7 +9,6 @@ public class LegalEntityClientInformation {
     private Long legalEntityClientInformationId;
     private Integer payerAccountNumber;
     private String name;
-    private String checkingAccount;
     private String address;
     private String phoneNumber;
 }

@@ -31,37 +31,44 @@
             <h2>Услуги</h2>
             <a href="/service/new" class="button">Создать услугу</a>
         </header>
-        <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
-        <label for="archived">Показывать архивные</label>
-        <table class="list">
-            <tr>
-                <th>Название</th>
-                <th>Стоимость</th>
-                <th></th>
-                <th></th>
-            </tr>
-            <c:forEach items="${servicesPage.data}" var="service">
-                <tr onclick="redirect('/service/${service.serviceId}')">
-                    <td>${service.name}</td>
-                    <td>${service.price}</td>
-                    <td>
-                        <div class="icon small fa-edit" onclick="redirect('/service/${service.serviceId}/edit', event)"></div>
-                    </td>
-                    <td>
-                        <div class="icon small
-                            <c:choose>
-                                <c:when test="${!service.archived}">fa-archive</c:when>
-                                <c:otherwise>fa-share</c:otherwise>
-                            </c:choose>
-                        " onclick="change_archived(${service.serviceId}, event)"></div>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
-        <c:if test="${servicesPage.pagesCount != 1}">
-            <div class="hidden" id="pagesCount">${servicesPage.pagesCount}</div>
-            <div id="pagination-holder"></div>
-        </c:if>
+        <c:choose>
+            <c:when test="${servicesPage.pagesCount == 0}">
+                <h2 class="warn">Не создано ни одной услуги</h2>
+            </c:when>
+            <c:otherwise>
+                <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
+                <label for="archived">Показывать архивные</label>
+                <table class="list">
+                    <tr>
+                        <th>Название</th>
+                        <th>Стоимость</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <c:forEach items="${servicesPage.data}" var="service">
+                        <tr onclick="redirect('/service/${service.serviceId}')">
+                            <td>${service.name}</td>
+                            <td>${service.price}</td>
+                            <td>
+                                <div class="icon small fa-edit" onclick="redirect('/service/${service.serviceId}/edit', event)"></div>
+                            </td>
+                            <td>
+                                <div class="icon small
+                                    <c:choose>
+                                        <c:when test="${!service.archived}">fa-archive</c:when>
+                                        <c:otherwise>fa-share</c:otherwise>
+                                    </c:choose>
+                                " onclick="change_archived(${service.serviceId}, event)"></div>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+                <c:if test="${servicesPage.pagesCount != 1}">
+                    <div class="hidden" id="pagesCount">${servicesPage.pagesCount}</div>
+                    <div id="pagination-holder"></div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </div>
 </section>
 

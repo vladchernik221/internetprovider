@@ -64,8 +64,8 @@
                 <label>Название</label>
             </div>
             <div class="row only-for-legal">
-                <input type="text" name="legalEntityClientInformation.payerAccountNumber" placeholder="Номер счета плательщика" required />
-                <label>Номер счета плательщика</label>
+                <input type="text" name="legalEntityClientInformation.payerAccountNumber" placeholder="Номер расчётного счета" required />
+                <label>Номер расчётного счёта</label>
             </div>
             <div class="row only-for-legal">
                 <input type="text" name="legalEntityClientInformation.checkingAccount" placeholder="Checking account" required />

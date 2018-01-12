@@ -31,43 +31,50 @@
             <h2>Тарифные планы</h2>
             <a href="/tariff-plan/new" class="button">Создать тарифный план</a>
         </header>
-        <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
-        <label for="archived">Показывать архивные</label>
-        <table class="list">
-            <tr>
-                <th>Название</th>
-                <th>Абонентская плата</th>
-                <th>Скорость приема</th>
-                <th>Скорость передачи</th>
-                <th>Включенный трафик</th>
-                <th></th>
-                <th></th>
-            </tr>
-            <c:forEach items="${tariffPlansPage.data}" var="tariffPlan">
-                <tr onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}')">
-                    <td>${tariffPlan.name}</td>
-                    <td>${tariffPlan.monthlyFee}</td>
-                    <td>${tariffPlan.downSpeed}</td>
-                    <td>${tariffPlan.upSpeed}</td>
-                    <td>${tariffPlan.includedTraffic}</td>
-                    <td>
-                        <div class="icon small fa-edit" onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}/edit', event)"></div>
-                    </td>
-                    <td>
-                        <div class="icon small
-                            <c:choose>
-                                <c:when test="${!tariffPlan.archived}">fa-archive</c:when>
-                                <c:otherwise>fa-share</c:otherwise>
-                            </c:choose>
-                        " onclick="change_archived(${tariffPlan.tariffPlanId}, event)"></div>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
-        <c:if test="${tariffPlansPage.pagesCount != 1}">
-            <div class="hidden" id="pagesCount">${tariffPlansPage.pagesCount}</div>
-            <div id="pagination-holder"></div>
-        </c:if>
+        <c:choose>
+            <c:when test="${tariffPlansPage.pagesCount == 0}">
+                <h2 class="warn">Не создано ни одного таифного плана</h2>
+            </c:when>
+            <c:otherwise>
+                <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
+                <label for="archived">Показывать архивные</label>
+                <table class="list">
+                    <tr>
+                        <th>Название</th>
+                        <th>Абонентская плата</th>
+                        <th>Скорость приема</th>
+                        <th>Скорость передачи</th>
+                        <th>Включенный трафик</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <c:forEach items="${tariffPlansPage.data}" var="tariffPlan">
+                        <tr onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}')">
+                            <td>${tariffPlan.name}</td>
+                            <td>${tariffPlan.monthlyFee}</td>
+                            <td>${tariffPlan.downSpeed}</td>
+                            <td>${tariffPlan.upSpeed}</td>
+                            <td>${tariffPlan.includedTraffic}</td>
+                            <td>
+                                <div class="icon small fa-edit" onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}/edit', event)"></div>
+                            </td>
+                            <td>
+                                <div class="icon small
+                                    <c:choose>
+                                        <c:when test="${!tariffPlan.archived}">fa-archive</c:when>
+                                        <c:otherwise>fa-share</c:otherwise>
+                                    </c:choose>
+                                " onclick="change_archived(${tariffPlan.tariffPlanId}, event)"></div>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </table>
+                <c:if test="${tariffPlansPage.pagesCount != 1}">
+                    <div class="hidden" id="pagesCount">${tariffPlansPage.pagesCount}</div>
+                    <div id="pagination-holder"></div>
+                </c:if>
+            </c:otherwise>
+        </c:choose>
     </div>
 </section>
 
