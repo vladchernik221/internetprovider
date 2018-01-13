@@ -11,20 +11,76 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ * Uses for initializing and configuration application context. Create objects of all classes annotated as
+ * <code>@Component</code>, <code>@Repository</code>, <code>@Service</code> or <code>@HttpRequestProcessor</code>, set
+ * appropriate of them to fields annotated as <code>@Autowired</code>, invoke methods of object life cycle.
+ *
+ * @see Autowired
+ * @see Component
+ * @see Repository
+ * @see Service
+ * @see HttpRequestProcessor
+ */
 public class ContextInitializer {
     private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
 
+    /**
+     * Uses for working with Java Reflection API.
+     */
     private Reflections ref = new Reflections();
 
+    /**
+     * Contains one object of each class annotated as <code>@Component</code>, <code>@Repository</code>,
+     * <code>@Service</code> or <code>@HttpRequestProcessor</code>. Key is class of object, value is created object.
+     *
+     * @see Component
+     * @see Repository
+     * @see Service
+     * @see HttpRequestProcessor
+     */
     private Map<Class<?>, Object> components = new HashMap<>();
+
+    /**
+     * Contains information for injecting objects via <code>@Autowired</code>. Each element of list is pair of field,
+     * annotated as <code>@Autowired</code>, and object, that contains this field.
+     *
+     * @see Autowired
+     */
     private List<Map.Entry<Field, Object>> withAutowired = new ArrayList<>();
+
+    /**
+     * Contains information for invoking methods of life cycle, that should be invoked after creating object. Each
+     * element of list is pair of method, annotated as <code>@AfterCreate</code>, and object, that contains this method.
+     *
+     * @see AfterCreate
+     */
     private Map<Method, Object> withAfterCreate = new HashMap<>();
+
+    /**
+     * Contains information for invoking methods of life cycle, that should be invoked before destroying object. Each
+     * element of list is pair of method, annotated as <code>@BeforeDestroy</code>, and object, that contains this
+     * method.
+     *
+     * @see BeforeDestroy
+     */
     private Map<Method, Object> withBeforeDestroy = new HashMap<>();
 
+    /**
+     * Gets component by its class.
+     *
+     * @param clazz class of needed component.
+     * @return instance of specified class.
+     */
     public Object getComponent(Class<?> clazz) {
         return components.get(getImplementation(clazz));
     }
 
+
+    /**
+     * Initialize context: fill map of components, inject them to appropriate fields annotated as
+     * {@link Autowired}, invoke methods annotated as {@link AfterCreate}.
+     */
     public void initialize() {
         LOGGER.log(Level.INFO, "Start initialize context");
         long startTime = System.currentTimeMillis();
@@ -39,6 +95,9 @@ public class ContextInitializer {
         LOGGER.log(Level.INFO, "Context was initialize in {} milliseconds", stopTime - startTime);
     }
 
+    /**
+     * Destroy context: invoke methods annotated as {@link BeforeDestroy}.
+     */
     public void destroy() {
         LOGGER.log(Level.INFO, "Start destroy context");
         LOGGER.log(Level.DEBUG, "Start before destroy methods");
@@ -46,7 +105,13 @@ public class ContextInitializer {
         LOGGER.log(Level.INFO, "Context was destroy");
     }
 
-
+    /**
+     * Create instances of components annotated as <code>annotation</code>. Search all classes with specified
+     * annotation, create them instances, search all fields of this component annotated as {@link Autowired} and
+     * all methods of life cycle.
+     *
+     * @param annotation specify annotation, components with that should be initialized.
+     */
     private void initComponents(Class<? extends Annotation> annotation) {
         LOGGER.log(Level.TRACE, "Finding class with annotation {}", annotation);
         ref.getTypesAnnotatedWith(annotation)
@@ -58,6 +123,14 @@ public class ContextInitializer {
                 });
     }
 
+    /**
+     * Create instance of class <code>clazz</code> via constructor without parameters.
+     *
+     * @param clazz specify class, instance of that should be created.
+     * @return created instance of <code>clazz</code>.
+     * @throws RuntimeException if constructor without parameters can't be resolve or throw exception, or if target
+     *                          class is abstract or not public.
+     */
     private Object createInstance(Class<?> clazz) {
         LOGGER.log(Level.TRACE, "Creating instance of class {}", clazz);
         Object component;
@@ -65,7 +138,7 @@ public class ContextInitializer {
             Constructor constructor = clazz.getConstructor();
             component = constructor.newInstance();
         } catch (NoSuchMethodException e) {
-            String message = String.format("Can't resolved constructor with zero parameters for class %s", clazz);
+            String message = String.format("Can't resolve constructor with zero parameters for class %s", clazz);
             LOGGER.log(Level.FATAL, message);
             throw new RuntimeException(message, e);
         } catch (IllegalAccessException e) {
@@ -85,6 +158,12 @@ public class ContextInitializer {
         return component;
     }
 
+    /**
+     * Search fields in component annotated as {@link Autowired} and add them to {@link #withAutowired} list.
+     *
+     * @param clazz     class of component for search fields.
+     * @param component instance of component for injection.
+     */
     private void addAutowireField(Class<?> clazz, Object component) {
         Reflections autowiredRef = new Reflections(clazz.getCanonicalName(), new FieldAnnotationsScanner());
         autowiredRef.getFieldsAnnotatedWith(Autowired.class)
@@ -95,6 +174,13 @@ public class ContextInitializer {
         }
     }
 
+    /**
+     * Search methods of life cycle in component annotated as {@link AfterCreate} or {@link BeforeDestroy} and add them
+     * to appropriate lists: {@link #withAfterCreate} and {@link #withBeforeDestroy}.
+     *
+     * @param clazz     class of component for search fields.
+     * @param component instance of component for injection.
+     */
     private void addLifeCycleMethod(Class<?> clazz, Object component) {
         Reflections afterCreateRef = new Reflections(clazz.getCanonicalName(), new MethodAnnotationsScanner());
         afterCreateRef.getMethodsAnnotatedWith(AfterCreate.class)
@@ -103,13 +189,18 @@ public class ContextInitializer {
                 .forEach(method -> withBeforeDestroy.put(method, component));
     }
 
-
+    /**
+     * Inject appropriate instances of components to fields from {@link #withAutowired} list. Created components are got
+     * from {@link #components} map.
+     *
+     * @throws RuntimeException if target field is not accessible.
+     */
     private void autowireComponents() {
         LOGGER.log(Level.TRACE, "Autowiring components to fields");
         withAutowired.forEach((entry) -> {
             try {
                 entry.getKey().setAccessible(true);
-                Object settingValue = getComponentOrImpemetation(entry.getKey().getType());
+                Object settingValue = getComponentOrImplementation(entry.getKey().getType());
                 entry.getKey().set(entry.getValue(), settingValue);
             } catch (IllegalAccessException e) {
                 String message = String.format("Error with access to field %s", entry.getKey());
@@ -121,7 +212,13 @@ public class ContextInitializer {
         });
     }
 
-
+    /**
+     * Invoke life cycle methods for components from specified map. If this method has parameters, they will be inject
+     * from {@link #components} map according to class of parameter.
+     *
+     * @param lifeCycle list of pairs: life cycle method that should be invoked, instance of component for that should
+     *                  be invoked.
+     */
     private void invokeLifeCycleMethod(Map<Method, Object> lifeCycle) {
         lifeCycle.forEach((method, value) -> {
             Parameter[] inputParameters = method.getParameters();
@@ -131,7 +228,7 @@ public class ContextInitializer {
                 if (List.class.isAssignableFrom(inputParameter.getType())) {
                     parameter = getAsList(inputParameter.getParameterizedType());
                 } else {
-                    parameter = getComponentOrImpemetation(inputParameter.getType());
+                    parameter = getComponentOrImplementation(inputParameter.getType());
                 }
                 parameters.add(parameter);
             });
@@ -149,6 +246,13 @@ public class ContextInitializer {
         });
     }
 
+    /**
+     * Get all components of appropriate type as <code>List</code>. Appropriate type means exactly of this class or
+     * subclasses.
+     *
+     * @param type type of components, that should be got as list
+     * @return list of found components
+     */
     private List<Object> getAsList(Type type) {
         List<Object> parameters = new ArrayList<>();
         ParameterizedType parameterizedType = (ParameterizedType) type;
@@ -162,7 +266,15 @@ public class ContextInitializer {
         return parameters;
     }
 
-    private Object getComponentOrImpemetation(Class<?> clazz) {
+    /**
+     *
+     * Get component of <code>clazz</code> if it's class, or component of class, that implements <code>clazz</code> if
+     * it's interface.
+     *
+     * @param clazz class for searching
+     * @return component appropriated specified class
+     */
+    private Object getComponentOrImplementation(Class<?> clazz) {
         Object parameter = components.get(clazz);
         if (parameter == null) {
             parameter = components.get(getImplementation(clazz));
@@ -170,9 +282,14 @@ public class ContextInitializer {
         return parameter;
     }
 
-
-    private Class<?> getImplementation(Class<?> annotation) {
-        Set classSet = ref.getSubTypesOf(annotation);
+    /**
+     * Get class, that implements specified interface.
+     *
+     * @param interfaceClass class of interface for searching.
+     * @return one class, that implements specified interface.
+     */
+    private Class<?> getImplementation(Class<?> interfaceClass) {
+        Set classSet = ref.getSubTypesOf(interfaceClass);
         return (Class<?>) classSet.toArray()[0];
     }
 }
