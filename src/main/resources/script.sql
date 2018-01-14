@@ -26,7 +26,7 @@ CREATE TABLE `tariff_plan` (
 
 CREATE TABLE `legal_entity_client_information` (
   `legal_entity_client_information_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `payer_account_number`               INT          NOT NULL,
+  `payer_account_number`               VARCHAR(75)  NOT NULL,
   `name`                               VARCHAR(75)  NOT NULL,
   `address`                            VARCHAR(45)  NOT NULL,
   `phone_number`                       VARCHAR(45)  NOT NULL,
@@ -36,13 +36,11 @@ CREATE TABLE `legal_entity_client_information` (
 
 CREATE TABLE `contract` (
   `contract_id`                        INT UNSIGNED                NOT NULL AUTO_INCREMENT,
-  `number`                             INT                         NOT NULL,
   `dissolved`                          BIT(1)                      NOT NULL,
   `client_type`                        SET ('INDIVIDUAL', 'LEGAL') NOT NULL,
   `legal_entity_client_information_id` INT UNSIGNED                NULL,
   `individual_client_information_id`   INT UNSIGNED                NULL,
   PRIMARY KEY (`contract_id`),
-  UNIQUE INDEX `number_UNIQUE` (`number` ASC),
   INDEX `fk_contract_legal_entity_client_information_idx` (`legal_entity_client_information_id` ASC),
   INDEX `fk_contract_individual_client_information_idx` (`individual_client_information_id` ASC),
   CONSTRAINT `fk_contract_legal_entity_client_information`

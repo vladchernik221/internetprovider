@@ -112,7 +112,7 @@ public class CommonRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        LOGGER.log(Level.TRACE, "Getting tariff plan complete successful");
+        LOGGER.log(Level.TRACE, "Getting complete successful");
         return Optional.ofNullable(entity);
     }
 
@@ -130,7 +130,7 @@ public class CommonRepository {
         } finally {
             connectionPool.releaseConnection(connection);
         }
-        LOGGER.log(Level.TRACE, "Getting tariff plan complete successful");
+        LOGGER.log(Level.TRACE, "Getting complete successful");
         return Optional.ofNullable(entity);
     }
 
@@ -205,10 +205,10 @@ public class CommonRepository {
             if (generatedKeys.next()) {
                 generatedId = generatedKeys.getLong(1);
             } else {
-                throw new DatabaseException("Getting tariff plan generated key failed, no ID obtained.");
+                throw new DatabaseException("Getting generated key failed, no ID obtained.");
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error while execute database query, when get tariff plan generated key", e);
+            throw new DatabaseException("Error while execute database query, when get generated key", e);
         }
         LOGGER.log(Level.TRACE, "Generated id: {}", generatedId);
         return generatedId;

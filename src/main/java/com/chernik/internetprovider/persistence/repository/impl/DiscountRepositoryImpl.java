@@ -118,7 +118,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         commonRepository.executeUpdate(discount, this::getPreparedStatementForRemove);
     }
 
-    private PreparedStatement getPreparedStatementForRemove(Connection connection, Discount discount) throws SQLException   {
+    private PreparedStatement getPreparedStatementForRemove(Connection connection, Discount discount) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(REMOVE_DISCOUNT);
         statement.setLong(1, discount.getDiscountId());
         return statement;

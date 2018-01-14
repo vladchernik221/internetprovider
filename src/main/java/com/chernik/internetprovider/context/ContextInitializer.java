@@ -55,7 +55,7 @@ public class ContextInitializer {
      *
      * @see AfterCreate
      */
-    private Map<Method, Object> withAfterCreate = new HashMap<>();
+    private List<Map.Entry<Method, Object>> withAfterCreate = new ArrayList<>();
 
     /**
      * Contains information for invoking methods of life cycle, that should be invoked before destroying object. Each
@@ -64,7 +64,7 @@ public class ContextInitializer {
      *
      * @see BeforeDestroy
      */
-    private Map<Method, Object> withBeforeDestroy = new HashMap<>();
+    private List<Map.Entry<Method, Object>> withBeforeDestroy = new ArrayList<>();
 
     /**
      * Gets component by its class.
@@ -184,9 +184,9 @@ public class ContextInitializer {
     private void addLifeCycleMethod(Class<?> clazz, Object component) {
         Reflections afterCreateRef = new Reflections(clazz.getCanonicalName(), new MethodAnnotationsScanner());
         afterCreateRef.getMethodsAnnotatedWith(AfterCreate.class)
-                .forEach(method -> withAfterCreate.put(method, component));
+                .forEach(method -> withAfterCreate.add(new AbstractMap.SimpleEntry<>(method, component)));
         afterCreateRef.getMethodsAnnotatedWith(BeforeDestroy.class)
-                .forEach(method -> withBeforeDestroy.put(method, component));
+                .forEach(method -> withBeforeDestroy.add(new AbstractMap.SimpleEntry<>(method, component)));
     }
 
     /**
@@ -219,9 +219,9 @@ public class ContextInitializer {
      * @param lifeCycle list of pairs: life cycle method that should be invoked, instance of component for that should
      *                  be invoked.
      */
-    private void invokeLifeCycleMethod(Map<Method, Object> lifeCycle) {
-        lifeCycle.forEach((method, value) -> {
-            Parameter[] inputParameters = method.getParameters();
+    private void invokeLifeCycleMethod(List<Map.Entry<Method, Object>> lifeCycle) {
+        lifeCycle.forEach((entry) -> {
+            Parameter[] inputParameters = entry.getKey().getParameters();
             List<Object> parameters = new ArrayList<>();
             Arrays.stream(inputParameters).forEach(inputParameter -> {
                 Object parameter;
@@ -233,13 +233,13 @@ public class ContextInitializer {
                 parameters.add(parameter);
             });
             try {
-                method.invoke(value, parameters.toArray());
+                entry.getKey().invoke(entry.getValue(), parameters.toArray());
             } catch (IllegalAccessException e) {
-                String message = String.format("Can't invoke method %s. Method should be public", method);
+                String message = String.format("Can't invoke method %s. Method should be public", entry.getKey());
                 LOGGER.log(Level.FATAL, message);
                 throw new RuntimeException(message, e);
             } catch (InvocationTargetException e) {
-                String message = String.format("Can't invoke method %s. Exception in method", method);
+                String message = String.format("Can't invoke method %s. Exception in method", entry.getKey());
                 LOGGER.log(Level.FATAL, message);
                 throw new RuntimeException(message, e);
             }
@@ -267,7 +267,6 @@ public class ContextInitializer {
     }
 
     /**
-     *
      * Get component of <code>clazz</code> if it's class, or component of class, that implements <code>clazz</code> if
      * it's interface.
      *

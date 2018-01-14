@@ -9,7 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Contract {
     private Long contractId;
-    private Integer number;
     private Boolean dissolved;
     private ClientType clientType;
     private LegalEntityClientInformation legalEntityClientInformation;
