@@ -8,4 +8,6 @@ public interface IndividualClientInformationService {
     Long createOrUpdate(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException;
 
     IndividualClientInformation getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
+    
+    IndividualClientInformation getById(Long id);
 }

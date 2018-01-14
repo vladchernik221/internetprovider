@@ -42,5 +42,19 @@ public class ContractIndividualLegalServiceImpl implements ContractIndividualLeg
         return contractService.create(contract);
     }
 
-
+    @Override
+    public Contract getById(Long id) {
+        Contract contract = contractService.getById(id);
+        switch (contract.getClientType()) {
+            case INDIVIDUAL:
+                IndividualClientInformation individualClientInformation = individualClientInformationService.getById(contract.getIndividualClientInformation().getIndividualClientInformationId());
+                contract.setIndividualClientInformation(individualClientInformation);
+                break;
+            case LEGAL:
+                LegalEntityClientInformation legalEntityClientInformation = legalEntityClientInformationService.getById(contract.getLegalEntityClientInformation().getLegalEntityClientInformationId());
+                contract.setLegalEntityClientInformation(legalEntityClientInformation);
+                break;
+        }
+        return contract;
+    }
 }

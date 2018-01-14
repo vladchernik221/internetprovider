@@ -23,8 +23,12 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
 
     private static final String UPDATE_INDIVIDUAL_CLIENT_INFORMATION = "UPDATE `individual_client_information` SET  `first_name`=?, `second_name`=?, `last_name`=?, `address`=?, `phone_number`=? WHERE `passport_unique_identification`=?";
 
+    private static final String GET_BY_ID = "SELECT `individual_client_information_id`, `first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number` FROM `individual_client_information` WHERE `individual_client_information_id`=?";
+
+
     @Autowired
     private CommonRepository commonRepository;
+
 
     @Override
     public Long create(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
@@ -79,6 +83,7 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         return individualClientInformation;
     }
 
+
     @Override
     public void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
         commonRepository.executeUpdate(individualClientInformation, this::createStatementForUpdate);
@@ -92,6 +97,19 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         statement.setString(4, individualClientInformation.getAddress());
         statement.setObject(5, individualClientInformation.getPhoneNumber(), Types.VARCHAR);
         statement.setString(6, individualClientInformation.getPassportUniqueIdentification());
+        return statement;
+    }
+
+
+    @Override
+    public Optional<IndividualClientInformation> getById(Long id) throws DatabaseException, TimeOutException {
+        return commonRepository.getByParameters(id, this::createPreparedStatementForGettingByID, this::createIndividualClientInformation);
+    }
+
+
+    private PreparedStatement createPreparedStatementForGettingByID(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
+        statement.setLong(1, id);
         return statement;
     }
 }

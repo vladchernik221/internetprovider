@@ -14,4 +14,6 @@ public interface LegalEntityClientInformationRepository {
     Optional<LegalEntityClientInformation> getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException;
 
     void update(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException;
+
+    Optional<LegalEntityClientInformation> getById(Long id) throws DatabaseException, TimeOutException;
 }

@@ -23,6 +23,8 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
 
     private static final String UPDATE_LEGAL_ENTITY_CLIENT_INFORMATION = "UPDATE `legal_entity_client_information` SET `name`=?, `address`=?, `phone_number`=? WHERE `payer_account_number`=?";
 
+    private static final String GET_BY_ID = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `legal_entity_client_information_id`=?";
+
 
     @Autowired
     private CommonRepository commonRepository;
@@ -65,16 +67,6 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         return statement;
     }
 
-    private LegalEntityClientInformation createLegalEntityClientInformation(ResultSet resultSet) throws SQLException {
-        LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
-        legalEntityClientInformation.setLegalEntityClientInformationId(resultSet.getLong(LegalEntityClientInformationField.LEGAL_ENTITY_CLIENT_INFORMATION_ID.toString()));
-        legalEntityClientInformation.setPayerAccountNumber(resultSet.getString(LegalEntityClientInformationField.PAYER_ACCOUNT_NUMBER.toString()));
-        legalEntityClientInformation.setName(resultSet.getString(LegalEntityClientInformationField.NAME.toString()));
-        legalEntityClientInformation.setAddress(resultSet.getString(LegalEntityClientInformationField.ADDRESS.toString()));
-        legalEntityClientInformation.setPhoneNumber(resultSet.getString(LegalEntityClientInformationField.PHONE_NUMBER.toString()));
-        return legalEntityClientInformation;
-    }
-
 
     @Override
     public void update(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
@@ -88,5 +80,27 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         statement.setString(3, legalEntityClientInformation.getPhoneNumber());
         statement.setString(4, legalEntityClientInformation.getPayerAccountNumber());
         return statement;
+    }
+
+    @Override
+    public Optional<LegalEntityClientInformation> getById(Long id) throws DatabaseException, TimeOutException {
+        return commonRepository.getByParameters(id, this::createPreparedStatementForGettingById, this::createLegalEntityClientInformation);
+    }
+
+    private PreparedStatement createPreparedStatementForGettingById(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
+        statement.setLong(1, id);
+        return statement;
+    }
+
+
+    private LegalEntityClientInformation createLegalEntityClientInformation(ResultSet resultSet) throws SQLException {
+        LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
+        legalEntityClientInformation.setLegalEntityClientInformationId(resultSet.getLong(LegalEntityClientInformationField.LEGAL_ENTITY_CLIENT_INFORMATION_ID.toString()));
+        legalEntityClientInformation.setPayerAccountNumber(resultSet.getString(LegalEntityClientInformationField.PAYER_ACCOUNT_NUMBER.toString()));
+        legalEntityClientInformation.setName(resultSet.getString(LegalEntityClientInformationField.NAME.toString()));
+        legalEntityClientInformation.setAddress(resultSet.getString(LegalEntityClientInformationField.ADDRESS.toString()));
+        legalEntityClientInformation.setPhoneNumber(resultSet.getString(LegalEntityClientInformationField.PHONE_NUMBER.toString()));
+        return legalEntityClientInformation;
     }
 }

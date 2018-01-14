@@ -14,4 +14,6 @@ public interface IndividualClientInformationRepository {
     Optional<IndividualClientInformation> getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
 
     void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException;
+
+    Optional<IndividualClientInformation> getById(Long id) throws DatabaseException, TimeOutException;
 }

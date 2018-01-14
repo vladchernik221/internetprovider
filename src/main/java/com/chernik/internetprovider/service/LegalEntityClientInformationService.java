@@ -8,4 +8,6 @@ public interface LegalEntityClientInformationService {
     Long createOrUpdate(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException;
 
     LegalEntityClientInformation getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException;
+
+    LegalEntityClientInformation getById(Long id);
 }
