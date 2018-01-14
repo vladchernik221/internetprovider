@@ -8,6 +8,7 @@ import com.chernik.internetprovider.exception.TimeOutException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.flywaydb.core.Flyway;
 
 import java.sql.*;
 import java.util.*;
@@ -68,6 +69,10 @@ public class ConnectionPoolImpl implements ConnectionPool {
         if (!timeOutProperty.isEmpty() && Integer.parseInt(timeOutProperty) > 0) {
             timeOut = Integer.parseInt(timeOutProperty);
         }
+
+        Flyway flyway = new Flyway();
+        flyway.setDataSource(url + "?verifyServerCertificate=false&useSSL=true&serverTimezone=UTC", user, password);
+        flyway.migrate();
     }
 
     private String readPropertyWithValidation(ResourceBundle bundle, String propertyName) {

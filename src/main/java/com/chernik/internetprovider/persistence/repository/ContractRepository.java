@@ -14,4 +14,6 @@ public interface ContractRepository {
     Optional<Contract> getById(Long id) throws DatabaseException, TimeOutException;
 
     boolean existsWithId(Long id) throws DatabaseException, TimeOutException;
+
+    Optional<Contract> getByClientInformation(Contract contract) throws DatabaseException, TimeOutException;
 }

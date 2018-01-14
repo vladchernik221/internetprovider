@@ -8,6 +8,8 @@ import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.persistence.repository.ContractRepository;
 import com.chernik.internetprovider.service.ContractService;
 
+import java.util.Optional;
+
 @Service
 public class ContractServiceImpl implements ContractService {
 
@@ -22,5 +24,10 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public Contract getById(Long id) throws DatabaseException, TimeOutException {
         return contractRepository.getById(id).orElse(null);
+    }
+
+    @Override
+    public Optional<Contract> getByClientInformation(Contract contract) throws DatabaseException, TimeOutException {
+        return contractRepository.getByClientInformation(contract);
     }
 }

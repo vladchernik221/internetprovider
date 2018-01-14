@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface IndividualClientInformationRepository {
     Long create(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException;
 
-    boolean existByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
-
     Optional<IndividualClientInformation> getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
 
     void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException;

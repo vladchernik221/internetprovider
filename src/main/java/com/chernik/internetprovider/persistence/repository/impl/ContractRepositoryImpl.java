@@ -26,6 +26,8 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private static final String EXISTS_CONTRACT_BY_ID = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `contract_id`=?)";
 
+    private static final String EXISTS_BU_CLIENT_INFORMATION = "SELECT `contract_id`, `dissolved`, `client_type`, `legal_entity_client_information_id`, `individual_client_information_id` FROM `contract` WHERE (`individual_client_information_id` IS NULL OR `individual_client_information_id`=?) AND (`legal_entity_client_information_id` IS NULL OR `legal_entity_client_information_id`=?)";
+
     @Autowired
     private CommonRepository commonRepository;
 
@@ -83,11 +85,13 @@ public class ContractRepositoryImpl implements ContractRepository {
         if (individualClientInformationId != null) {
             IndividualClientInformation individualClientInformation = new IndividualClientInformation();
             individualClientInformation.setIndividualClientInformationId(individualClientInformationId);
+            contract.setIndividualClientInformation(individualClientInformation);
         }
         Long legalEntityClientInformationId = (Long) resultSet.getObject(ContractField.LEGAL_ENTITY_CLIENT_INFORMATION_ID.toString());
         if (legalEntityClientInformationId != null) {
             LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
             legalEntityClientInformation.setLegalEntityClientInformationId(legalEntityClientInformationId);
+            contract.setLegalEntityClientInformation(legalEntityClientInformation);
         }
         return contract;
     }
@@ -101,6 +105,28 @@ public class ContractRepositoryImpl implements ContractRepository {
     private PreparedStatement createStatementForContractExistsById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_CONTRACT_BY_ID);
         statement.setLong(1, id);
+        return statement;
+    }
+
+    @Override
+    public Optional<Contract> getByClientInformation(Contract contract) throws DatabaseException, TimeOutException {
+        return commonRepository.getByParameters(contract, this::createPreparedStatementForExistByClientInformation, this::createContract);
+    }
+
+    private PreparedStatement createPreparedStatementForExistByClientInformation(Connection connection, Contract contract) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXISTS_BU_CLIENT_INFORMATION);
+        IndividualClientInformation individualClientInformation = contract.getIndividualClientInformation();
+        if (individualClientInformation != null) {
+            statement.setLong(1, individualClientInformation.getIndividualClientInformationId());
+        } else {
+            statement.setNull(1, Types.INTEGER);
+        }
+        LegalEntityClientInformation legalEntityClientInformation = contract.getLegalEntityClientInformation();
+        if (legalEntityClientInformation != null) {
+            statement.setLong(2, legalEntityClientInformation.getLegalEntityClientInformationId());
+        } else {
+            statement.setNull(2, Types.INTEGER);
+        }
         return statement;
     }
 }

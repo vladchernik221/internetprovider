@@ -9,8 +9,6 @@ import java.util.Optional;
 public interface LegalEntityClientInformationRepository {
     Long create(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException;
 
-    boolean existsByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException;
-
     Optional<LegalEntityClientInformation> getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException;
 
     void update(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException;

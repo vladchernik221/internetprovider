@@ -17,8 +17,6 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
 
     private static final String CREATE_INDIVIDUAL_CLIENT_INFORMATION = "INSERT INTO `individual_client_information`(`first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number`) VALUES(?,?,?,?,?,?)";
 
-    private static final String EXISTS_BY_PASSPORT_DATA = "SELECT EXISTS(SELECT 1 FROM `individual_client_information` ici JOIN `contract` c ON ici.individual_client_information_id = c.individual_client_information_id AND c.dissolved = 0 AND  ici.passport_unique_identification=?)";
-
     private static final String GET_BY_PASSPORT_DATA = "SELECT `individual_client_information_id`, `first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number` FROM `individual_client_information` WHERE `passport_unique_identification`=?";
 
     private static final String UPDATE_INDIVIDUAL_CLIENT_INFORMATION = "UPDATE `individual_client_information` SET  `first_name`=?, `second_name`=?, `last_name`=?, `address`=?, `phone_number`=? WHERE `passport_unique_identification`=?";
@@ -43,18 +41,6 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         statement.setString(4, individualClientInformation.getPassportUniqueIdentification());
         statement.setString(5, individualClientInformation.getAddress());
         statement.setObject(6, individualClientInformation.getPhoneNumber(), Types.VARCHAR);
-        return statement;
-    }
-
-
-    @Override
-    public boolean existByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException {
-        return commonRepository.exist(passportUniqueIdentification, this::createPreparedStatementForExistsByPassportData);
-    }
-
-    private PreparedStatement createPreparedStatementForExistsByPassportData(Connection connection, String passportUniqueIdentification) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(EXISTS_BY_PASSPORT_DATA);
-        statement.setString(1, passportUniqueIdentification);
         return statement;
     }
 

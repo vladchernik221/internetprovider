@@ -13,6 +13,8 @@ import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.service.IndividualClientInformationService;
 import com.chernik.internetprovider.service.LegalEntityClientInformationService;
 
+import java.util.Optional;
+
 @Service
 public class ContractIndividualLegalServiceImpl implements ContractIndividualLegalService {
 
@@ -40,7 +42,13 @@ public class ContractIndividualLegalServiceImpl implements ContractIndividualLeg
                 legalEntityClientInformation.setLegalEntityClientInformationId(id);
                 break;
         }
-        return contractService.create(contract);
+
+        Optional<Contract> contractByClientInformation = contractService.getByClientInformation(contract);
+        if (!contractByClientInformation.isPresent()) {
+            return contractService.create(contract);
+        } else {
+            return contractByClientInformation.get().getContractId();
+        }
     }
 
     @Override
