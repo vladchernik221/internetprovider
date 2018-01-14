@@ -15,13 +15,13 @@ import java.util.Optional;
 @Repository
 public class LegalEntityClientInformationRepositoryImpl implements LegalEntityClientInformationRepository {
 
-    private static final String CREATE_LEGAL_ENTITY_CLIENT_INFORMATION = "INSERT INTO `legal_entity_client_information`(`payer_account_number`, `name`, `address`, `phone_number`) VALUES(?,?,?,?)";
+    private static final String CREATE_LEGAL_ENTITY_CLIENT_INFORMATION = "INSERT INTO `legal_entity_client_information`(`payer_account_number`, `checking_account`, `name`, `address`, `phone_number`) VALUES(?,?,?,?,?)";
 
-    private static final String GET_BY_PAYER_ACCOUNT_NUMBER = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `payer_account_number`=?";
+    private static final String GET_BY_PAYER_ACCOUNT_NUMBER = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `checking_account`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `payer_account_number`=?";
 
-    private static final String UPDATE_LEGAL_ENTITY_CLIENT_INFORMATION = "UPDATE `legal_entity_client_information` SET `name`=?, `address`=?, `phone_number`=? WHERE `payer_account_number`=?";
+    private static final String UPDATE_LEGAL_ENTITY_CLIENT_INFORMATION = "UPDATE `legal_entity_client_information` SET `name`=?, `address`=?, `phone_number`=?, `checking_account`=? WHERE `payer_account_number`=?";
 
-    private static final String GET_BY_ID = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `legal_entity_client_information_id`=?";
+    private static final String GET_BY_ID = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `checking_account`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `legal_entity_client_information_id`=?";
 
 
     @Autowired
@@ -35,9 +35,10 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
     private PreparedStatement createPreparedStatementForInserting(Connection connection, LegalEntityClientInformation legalEntityClientInformation) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_LEGAL_ENTITY_CLIENT_INFORMATION, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, legalEntityClientInformation.getPayerAccountNumber());
-        statement.setString(2, legalEntityClientInformation.getName());
-        statement.setString(3, legalEntityClientInformation.getAddress());
-        statement.setString(4, legalEntityClientInformation.getPhoneNumber());
+        statement.setString(2, legalEntityClientInformation.getCheckingAccount());
+        statement.setString(3, legalEntityClientInformation.getName());
+        statement.setString(4, legalEntityClientInformation.getAddress());
+        statement.setString(5, legalEntityClientInformation.getPhoneNumber());
         return statement;
     }
 
@@ -64,7 +65,8 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         statement.setString(1, legalEntityClientInformation.getName());
         statement.setString(2, legalEntityClientInformation.getAddress());
         statement.setString(3, legalEntityClientInformation.getPhoneNumber());
-        statement.setString(4, legalEntityClientInformation.getPayerAccountNumber());
+        statement.setString(4, legalEntityClientInformation.getCheckingAccount());
+        statement.setString(5, legalEntityClientInformation.getPayerAccountNumber());
         return statement;
     }
 
@@ -84,6 +86,7 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
         legalEntityClientInformation.setLegalEntityClientInformationId(resultSet.getLong(LegalEntityClientInformationField.LEGAL_ENTITY_CLIENT_INFORMATION_ID.toString()));
         legalEntityClientInformation.setPayerAccountNumber(resultSet.getString(LegalEntityClientInformationField.PAYER_ACCOUNT_NUMBER.toString()));
+        legalEntityClientInformation.setCheckingAccount(resultSet.getString(LegalEntityClientInformationField.CHECKING_ACCOUNT.toString()));
         legalEntityClientInformation.setName(resultSet.getString(LegalEntityClientInformationField.NAME.toString()));
         legalEntityClientInformation.setAddress(resultSet.getString(LegalEntityClientInformationField.ADDRESS.toString()));
         legalEntityClientInformation.setPhoneNumber(resultSet.getString(LegalEntityClientInformationField.PHONE_NUMBER.toString()));

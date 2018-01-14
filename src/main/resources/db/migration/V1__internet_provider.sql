@@ -27,6 +27,7 @@ CREATE TABLE `tariff_plan` (
 CREATE TABLE `legal_entity_client_information` (
   `legal_entity_client_information_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `payer_account_number`               VARCHAR(75)  NOT NULL,
+  `checking_account`                   VARCHAR(75)  NOT NULL,
   `name`                               VARCHAR(75)  NOT NULL,
   `address`                            VARCHAR(45)  NOT NULL,
   `phone_number`                       VARCHAR(45)  NOT NULL,
