@@ -5,13 +5,12 @@ import com.chernik.internetprovider.context.Repository;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformation;
+import com.chernik.internetprovider.persistence.entityfield.LegalEntityClientInformationField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.LegalEntityClientInformationRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Optional;
 
 @Repository
 public class LegalEntityClientInformationRepositoryImpl implements LegalEntityClientInformationRepository {
@@ -19,6 +18,8 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
     private static final String CREATE_LEGAL_ENTITY_CLIENT_INFORMATION = "INSERT INTO `legal_entity_client_information`(`payer_account_number`, `name`, `address`, `phone_number`) VALUES(?,?,?,?)";
 
     private static final String EXISTS_BY_PAYER_ACCOUNT_NUMBER = "SELECT EXISTS(SELECT 1 FROM `legal_entity_client_information` leci JOIN `contract` c ON leci.legal_entity_client_information_id = c.legal_entity_client_information_id AND c.dissolved = 0 AND  leci.payer_account_number=?)";
+
+    private static final String GET_BY_PAYER_ACCOUNT_NUMBER = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `payer_account_number`=?";
 
 
     @Autowired
@@ -48,5 +49,27 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         PreparedStatement statement = connection.prepareStatement(EXISTS_BY_PAYER_ACCOUNT_NUMBER);
         statement.setString(1, payerAccountNumber);
         return statement;
+    }
+
+
+    @Override
+    public Optional<LegalEntityClientInformation> getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException {
+        return commonRepository.getByParameters(payerAccountNumber, this::createPreparedStatementForExistsByPayerAccountNumber, this::createLegalEntityClientInformation);
+    }
+
+    private PreparedStatement createPreparedStatementForGettingByPayerAccountNumber(Connection connection, String payerAccountNumber) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_PAYER_ACCOUNT_NUMBER);
+        statement.setString(1, payerAccountNumber);
+        return statement;
+    }
+
+    private LegalEntityClientInformation createLegalEntityClientInformation(ResultSet resultSet) throws SQLException {
+        LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
+        legalEntityClientInformation.setLegalEntityClientInformationId(resultSet.getLong(LegalEntityClientInformationField.LEGAL_ENTITY_CLIENT_INFORMATION_ID.toString()));
+        legalEntityClientInformation.setPayerAccountNumber(resultSet.getString(LegalEntityClientInformationField.PAYER_ACCOUNT_NUMBER.toString()));
+        legalEntityClientInformation.setName(resultSet.getString(LegalEntityClientInformationField.NAME.toString()));
+        legalEntityClientInformation.setAddress(resultSet.getString(LegalEntityClientInformationField.ADDRESS.toString()));
+        legalEntityClientInformation.setPhoneNumber(resultSet.getString(LegalEntityClientInformationField.PHONE_NUMBER.toString()));
+        return legalEntityClientInformation;
     }
 }

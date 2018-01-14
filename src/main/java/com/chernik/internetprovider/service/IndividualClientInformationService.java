@@ -7,4 +7,6 @@ import com.chernik.internetprovider.persistence.entity.IndividualClientInformati
 
 public interface IndividualClientInformationService {
     Long create(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException, UnableSaveEntityException;
+
+    IndividualClientInformation getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
 }

@@ -7,4 +7,6 @@ import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformat
 
 public interface LegalEntityClientInformationService {
     Long create(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException, UnableSaveEntityException;
+
+    LegalEntityClientInformation getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException;
 }

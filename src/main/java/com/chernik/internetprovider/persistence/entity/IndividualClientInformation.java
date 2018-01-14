@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class IndividualClientInformation {
-    private Long IndividualClientInformationId;
+    private Long individualClientInformationId;
     private String firstName;
     private String secondName;
     private String lastName;

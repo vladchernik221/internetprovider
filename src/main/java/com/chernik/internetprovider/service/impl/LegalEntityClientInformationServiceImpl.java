@@ -23,4 +23,9 @@ public class LegalEntityClientInformationServiceImpl implements LegalEntityClien
             throw new UnableSaveEntityException(String.format("Legal entity with payer number: %s already exists", legalEntityClientInformation.getPayerAccountNumber()));
         }
     }
+
+    @Override
+    public LegalEntityClientInformation getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException {
+        return legalEntityClientInformationRepository.getByPayerAccountNumber(payerAccountNumber).get();
+    }
 }

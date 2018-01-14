@@ -23,4 +23,9 @@ public class IndividualClientInformationServiceImpl implements IndividualClientI
             throw new UnableSaveEntityException(String.format("Individual client with passport unique identification: %s already exist", individualClientInformation.getPassportUniqueIdentification()));
         }
     }
+
+    @Override
+    public IndividualClientInformation getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException {
+        return individualClientInformationRepository.getByPassportData(passportUniqueIdentification).get();
+    }
 }

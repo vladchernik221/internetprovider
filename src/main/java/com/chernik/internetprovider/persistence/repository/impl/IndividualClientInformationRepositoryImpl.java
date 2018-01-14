@@ -5,10 +5,12 @@ import com.chernik.internetprovider.context.Repository;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
+import com.chernik.internetprovider.persistence.entityfield.IndividualClientInformationField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.IndividualClientInformationRepository;
 
 import java.sql.*;
+import java.util.Optional;
 
 @Repository
 public class IndividualClientInformationRepositoryImpl implements IndividualClientInformationRepository {
@@ -16,6 +18,8 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
     private static final String CREATE_INDIVIDUAL_CLIENT_INFORMATION = "INSERT INTO `individual_client_information`(`first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number`) VALUES(?,?,?,?,?,?)";
 
     private static final String EXISTS_BY_PASSPORT_DATA = "SELECT EXISTS(SELECT 1 FROM `individual_client_information` ici JOIN `contract` c ON ici.individual_client_information_id = c.individual_client_information_id AND c.dissolved = 0 AND  ici.passport_unique_identification=?)";
+
+    private static final String GET_BY_PASSPORT_DATA = "SELECT `individual_client_information_id`, `first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number` FROM `individual_client_information` WHERE `passport_unique_identification`=?";
 
     @Autowired
     private CommonRepository commonRepository;
@@ -46,5 +50,30 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         PreparedStatement statement = connection.prepareStatement(EXISTS_BY_PASSPORT_DATA);
         statement.setString(1, passportUniqueIdentification);
         return statement;
+    }
+
+
+    @Override
+    public Optional<IndividualClientInformation> getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException {
+        return commonRepository.getByParameters(passportUniqueIdentification, this::createPreparedStatementForGettingByPassportData, this::createIndividualClientInformation);
+    }
+
+    private PreparedStatement createPreparedStatementForGettingByPassportData(Connection connection, String passportUniqueIdentification) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_PASSPORT_DATA);
+        statement.setString(1, passportUniqueIdentification);
+        return statement;
+    }
+
+    private IndividualClientInformation createIndividualClientInformation(ResultSet resultSet) throws SQLException {
+        IndividualClientInformation individualClientInformation = new IndividualClientInformation();
+        individualClientInformation.setIndividualClientInformationId(resultSet.getLong(IndividualClientInformationField.INDIVIDUAL_CLIENT_INFORMATION_ID.toString()));
+        individualClientInformation.setPassportUniqueIdentification(resultSet.getString(IndividualClientInformationField.PASSPORT_UNIQUE_IDENTIFICATION.toString()));
+        individualClientInformation.setFirstName(resultSet.getString(IndividualClientInformationField.FIRST_NAME.toString()));
+        individualClientInformation.setSecondName(resultSet.getString(IndividualClientInformationField.SECOND_NAME.toString()));
+        individualClientInformation.setLastName(resultSet.getString(IndividualClientInformationField.LAST_NAME.toString()));
+        individualClientInformation.setAddress(resultSet.getString(IndividualClientInformationField.ADDRESS.toString()));
+        String phoneNumber = (String) resultSet.getObject(IndividualClientInformationField.PHONE_NUMBER.toString());
+        individualClientInformation.setPhoneNumber(phoneNumber);
+        return individualClientInformation;
     }
 }
