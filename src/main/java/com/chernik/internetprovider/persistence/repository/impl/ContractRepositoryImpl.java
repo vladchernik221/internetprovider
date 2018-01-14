@@ -18,7 +18,7 @@ import java.util.Optional;
 @Repository
 public class ContractRepositoryImpl implements ContractRepository {
 
-    private static final String CREATE_CONTRACT = "INSERT INTO `contract`(`dissolved`, `client_type`, `individual_client_information_id`, `legal_entity_client_information_id`) VALUES (?,?,?,?)";
+    private static final String CREATE_CONTRACT = "INSERT INTO `contract`(`client_type`, `individual_client_information_id`, `legal_entity_client_information_id`) VALUES (?,?,?)";
 
     private static final String DISSOLVE_CONTRACT = "UPDATE `contract` SET `dissolved`=1 WHERE `contract_id`=?";
 
@@ -36,17 +36,16 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private PreparedStatement createPreparedStatementForInserting(Connection connection, Contract contract) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_CONTRACT, Statement.RETURN_GENERATED_KEYS);
-        statement.setBoolean(1, contract.getDissolved());
-        statement.setString(2, contract.getClientType().toString());
+        statement.setString(1, contract.getClientType().toString());
         if (contract.getIndividualClientInformation() != null) {
-            statement.setLong(3, contract.getIndividualClientInformation().getIndividualClientInformationId());
+            statement.setLong(2, contract.getIndividualClientInformation().getIndividualClientInformationId());
         } else {
-            statement.setNull(3, Types.INTEGER);
+            statement.setNull(2, Types.INTEGER);
         }
         if (contract.getLegalEntityClientInformation() != null) {
-            statement.setLong(4, contract.getLegalEntityClientInformation().getLegalEntityClientInformationId());
+            statement.setLong(3, contract.getLegalEntityClientInformation().getLegalEntityClientInformationId());
         } else {
-            statement.setNull(4, Types.INTEGER);
+            statement.setNull(3, Types.INTEGER);
         }
         return statement;
     }

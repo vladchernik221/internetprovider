@@ -26,7 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String SELECT_USER_BY_LOGIN_AND_PASSWORD =
             "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `login`=? AND `password`=MD5(?)";
 
-    private static final String CREATE_USER = "INSERT INTO `user`(`login`, `password`, `role`, `blocked`, `contract_id`) VALUES(?,MD5(?),?,?,?)";
+    private static final String CREATE_USER = "INSERT INTO `user`(`login`, `password`, `role`, `contract_id`) VALUES(?,MD5(?),?,?)";
 
     private static final String UPDATE_PASSWORD = "UPDATE `user` SET `password`=MD5(?) WHERE `user_id`=?";
 
@@ -71,11 +71,10 @@ public class UserRepositoryImpl implements UserRepository {
             statement.setNull(2, Types.VARCHAR);
         }
         statement.setString(3, user.getUserRole().toString());
-        statement.setBoolean(4, user.getBlocked());
         if (user.getContract() != null) {
-            statement.setLong(5, user.getContract().getContractId());
+            statement.setLong(4, user.getContract().getContractId());
         } else {
-            statement.setNull(5, Types.INTEGER);
+            statement.setNull(4, Types.INTEGER);
         }
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;

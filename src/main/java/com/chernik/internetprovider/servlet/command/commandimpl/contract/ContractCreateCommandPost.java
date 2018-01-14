@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//TODO validation
 @HttpRequestProcessor(uri = "/contract/new", method = RequestType.POST)
 public class ContractCreateCommandPost implements Command {
 

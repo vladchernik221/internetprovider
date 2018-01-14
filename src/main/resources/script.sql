@@ -36,7 +36,7 @@ CREATE TABLE `legal_entity_client_information` (
 
 CREATE TABLE `contract` (
   `contract_id`                        INT UNSIGNED                NOT NULL AUTO_INCREMENT,
-  `dissolved`                          BIT(1)                      NOT NULL,
+  `dissolved`                          BIT(1)                      NOT NULL DEFAULT 0,
   `client_type`                        SET ('INDIVIDUAL', 'LEGAL') NOT NULL,
   `legal_entity_client_information_id` INT UNSIGNED                NULL,
   `individual_client_information_id`   INT UNSIGNED                NULL,
@@ -122,7 +122,7 @@ CREATE TABLE `user` (
   `user_id`     INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `login`       VARCHAR(45)  NOT NULL,
   `password`    VARCHAR(45)  NULL,
-  `role`        SET ('ADMIN', 'SELLER', 'CUSOMER'),
+  `role`        SET ('ADMIN', 'SELLER', 'CUSTOMER'),
   `blocked`     BIT(1)       NOT NULL DEFAULT 0,
   `contract_id` INT UNSIGNED NULL,
   PRIMARY KEY (`user_id`),

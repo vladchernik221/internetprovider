@@ -23,7 +23,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private static final Logger LOGGER = LogManager.getLogger(TariffPlan.class);
 
 
-    private static final String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived`) VALUES(?,?,?,?,?,?,?,?)";
+    private static final String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`) VALUES(?,?,?,?,?,?,?)";
 
     private static final String IS_EXIST_TARIFF_PLAN_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`=?)";
 
@@ -78,7 +78,6 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
             statement.setNull(6, Types.INTEGER);
         }
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
-        statement.setBoolean(8, tariffPlan.getArchived());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }

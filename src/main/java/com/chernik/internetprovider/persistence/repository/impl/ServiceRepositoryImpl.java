@@ -22,7 +22,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     private static final Logger LOGGER = LogManager.getLogger(ServiceRepositoryImpl.class);
 
 
-    private static final String CREATE_SERVICE = "INSERT INTO `service`(`name`, `description`, `price`, `archived`) VALUES(?,?,?,?)";
+    private static final String CREATE_SERVICE = "INSERT INTO `service`(`name`, `description`, `price`) VALUES(?,?,?)";
 
     private static final String UPDATE_SERVICE = "UPDATE `service` SET `name`=?, `description`=?, `price`=? WHERE `service_id`=?";
 
@@ -62,7 +62,6 @@ public class ServiceRepositoryImpl implements ServiceRepository {
             statement.setNull(2, Types.VARCHAR);
         }
         statement.setBigDecimal(3, service.getPrice());
-        statement.setBoolean(4, service.getArchived());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }

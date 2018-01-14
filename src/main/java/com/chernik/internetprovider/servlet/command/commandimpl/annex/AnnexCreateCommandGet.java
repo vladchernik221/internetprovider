@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-//TODO dissolved, archived - default value
 @HttpRequestProcessor(uri = "/contract/{\\d+}/annex/new", method = RequestType.GET)
 public class AnnexCreateCommandGet implements Command {
     private static final Logger LOGGER = LogManager.getLogger(AnnexCreateCommandGet.class);
