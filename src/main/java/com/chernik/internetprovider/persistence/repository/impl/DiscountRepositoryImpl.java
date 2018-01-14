@@ -47,12 +47,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     private PreparedStatement createStatementForInserting(Connection connection, Discount discount) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_DISCOUNT);
-        String description = discount.getDescription();
-        if (description != null) {
-            statement.setString(1, discount.getDescription());
-        } else {
-            statement.setNull(1, Types.VARCHAR);
-        }
+        statement.setObject(1, discount.getDescription(), Types.VARCHAR);
         statement.setInt(2, discount.getAmount());
         statement.setDate(3, discount.getStartDate());
         statement.setDate(4, discount.getEndDate());
@@ -68,12 +63,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     private PreparedStatement createPreparedStatementForUpdate(Connection connection, Discount discount) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(UPDATE_DISCOUNT);
-        String description = discount.getDescription();
-        if (description != null) {
-            statement.setString(1, discount.getDescription());
-        } else {
-            statement.setNull(1, Types.VARCHAR);
-        }
+        statement.setObject(1, discount.getDescription(), Types.VARCHAR);
         statement.setInt(2, discount.getAmount());
         statement.setDate(3, discount.getEndDate());
         statement.setBoolean(4, discount.getOnlyForNewClient());

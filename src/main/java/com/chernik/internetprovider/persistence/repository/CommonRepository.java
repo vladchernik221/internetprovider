@@ -213,11 +213,6 @@ public class CommonRepository {
         return entities;
     }
 
-    public Integer getInteger(ResultSet resultSet, String columnLabel) throws SQLException {
-        int value = resultSet.getInt(columnLabel);
-        return resultSet.wasNull() ? null : value;
-    }
-
     private Long getGeneratedId(PreparedStatement statement) throws DatabaseException {
         Long generatedId;
         try (ResultSet generatedKeys = statement.getGeneratedKeys()) {

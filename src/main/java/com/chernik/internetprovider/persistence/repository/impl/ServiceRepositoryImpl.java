@@ -55,12 +55,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     private PreparedStatement createPreparedStatementForCreation(Connection connection, Service service) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_SERVICE, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, service.getName());
-        String description = service.getDescription();
-        if (description != null) {
-            statement.setString(2, description);
-        } else {
-            statement.setNull(2, Types.VARCHAR);
-        }
+        statement.setObject(2, service.getDescription(), Types.VARCHAR);
         statement.setBigDecimal(3, service.getPrice());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
@@ -76,11 +71,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         PreparedStatement statement = connection.prepareStatement(UPDATE_SERVICE);
         statement.setString(1, service.getName());
         String description = service.getDescription();
-        if (description != null) {
-            statement.setString(2, description);
-        } else {
-            statement.setNull(2, Types.VARCHAR);
-        }
+        statement.setObject(2, service.getDescription(), Types.VARCHAR);
         statement.setBigDecimal(3, service.getPrice());
         statement.setLong(4, service.getServiceId());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());

@@ -57,26 +57,11 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private PreparedStatement createPreparedStatementForCreation(Connection connection, TariffPlan tariffPlan) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_TARIFF_PLAN, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, tariffPlan.getName());
-        String description = tariffPlan.getDescription();
-        if (description != null) {
-            statement.setString(2, description);
-        } else {
-            statement.setNull(2, Types.VARCHAR);
-        }
+        statement.setObject(2, tariffPlan.getDescription(), Types.VARCHAR);
         statement.setInt(3, tariffPlan.getDownSpeed());
         statement.setInt(4, tariffPlan.getUpSpeed());
-        Integer includedTraffic = tariffPlan.getIncludedTraffic();
-        if (includedTraffic != null) {
-            statement.setInt(5, tariffPlan.getIncludedTraffic());
-        } else {
-            statement.setNull(5, Types.INTEGER);
-        }
-        Integer priceOverTraffic = tariffPlan.getPriceOverTraffic();
-        if (includedTraffic != null) {
-            statement.setInt(6, priceOverTraffic);
-        } else {
-            statement.setNull(6, Types.INTEGER);
-        }
+        statement.setObject(5, tariffPlan.getIncludedTraffic(), Types.INTEGER);
+        statement.setObject(6, tariffPlan.getPriceOverTraffic(), Types.INTEGER);
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
@@ -92,25 +77,11 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         PreparedStatement statement = connection.prepareStatement(UPDATE_TARIFF_PLAN);
         statement.setString(1, tariffPlan.getName());
         String description = tariffPlan.getDescription();
-        if (description != null) {
-            statement.setString(2, description);
-        } else {
-            statement.setNull(2, Types.VARCHAR);
-        }
+        statement.setObject(2, tariffPlan.getDescription(), Types.VARCHAR);
         statement.setInt(3, tariffPlan.getDownSpeed());
         statement.setInt(4, tariffPlan.getUpSpeed());
-        Integer includedTraffic = tariffPlan.getIncludedTraffic();
-        if (includedTraffic != null) {
-            statement.setInt(5, tariffPlan.getIncludedTraffic());
-        } else {
-            statement.setNull(5, Types.INTEGER);
-        }
-        Integer priceOverTraffic = tariffPlan.getPriceOverTraffic();
-        if (includedTraffic != null) {
-            statement.setInt(6, priceOverTraffic);
-        } else {
-            statement.setNull(6, Types.INTEGER);
-        }
+        statement.setObject(5, tariffPlan.getIncludedTraffic(), Types.INTEGER);
+        statement.setObject(6, tariffPlan.getPriceOverTraffic(), Types.INTEGER);
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
         statement.setLong(8, tariffPlan.getTariffPlanId());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
@@ -162,9 +133,12 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         TariffPlan tariffPlan = new TariffPlan();
         tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
         tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
-        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
-        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
-        tariffPlan.setIncludedTraffic(resultSet.getInt(TariffPlanField.INCLUDED_TRAFFIC.toString()));
+        Integer downSpeed = (Integer) resultSet.getObject(TariffPlanField.DOWN_SPEED.toString());
+        tariffPlan.setDownSpeed(downSpeed);
+        Integer upSpeed = (Integer) resultSet.getObject(TariffPlanField.UP_SPEED.toString());
+        tariffPlan.setUpSpeed(upSpeed);
+        Integer includedTraffic = (Integer) resultSet.getObject(TariffPlanField.INCLUDED_TRAFFIC.toString());
+        tariffPlan.setIncludedTraffic(includedTraffic);
         tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
         tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));
         return tariffPlan;
@@ -185,8 +159,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private TariffPlan createFullTariffPlan(ResultSet resultSet) throws SQLException {
         TariffPlan tariffPlan = new TariffPlan();
-        Long id = (Long) resultSet.getObject(TariffPlanField.TARIFF_PLAN_ID.toString());
-        tariffPlan.setTariffPlanId(id);
+        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
         tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
         tariffPlan.setDescription(resultSet.getString(TariffPlanField.DESCRIPTION.toString()));
         Integer downSpeed = (Integer) resultSet.getObject(TariffPlanField.DOWN_SPEED.toString());
