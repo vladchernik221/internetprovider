@@ -5,6 +5,8 @@ import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 
+import java.util.List;
+
 public interface TariffPlanService {
     Long create(TariffPlan tariffPlan) throws BaseException;
 
@@ -15,4 +17,6 @@ public interface TariffPlanService {
     TariffPlan getById(Long id) throws BaseException;
 
     void archive(Long id) throws BaseException;
+
+    List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException;
 }

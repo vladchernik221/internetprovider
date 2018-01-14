@@ -9,5 +9,5 @@ public interface IndividualClientInformationService {
 
     IndividualClientInformation getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
     
-    IndividualClientInformation getById(Long id);
+    IndividualClientInformation getById(Long id) throws DatabaseException, TimeOutException;
 }

@@ -13,6 +13,7 @@ import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,5 +60,10 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
         TariffPlan tariffPlan = getById(id);
         tariffPlan.setArchived(!tariffPlan.getArchived());
         tariffPlanRepository.archive(tariffPlan);
+    }
+
+    @Override
+    public List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException {
+        return tariffPlanRepository.getAllNotArchived();
     }
 }

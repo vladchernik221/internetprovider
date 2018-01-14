@@ -9,5 +9,5 @@ public interface LegalEntityClientInformationService {
 
     LegalEntityClientInformation getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException;
 
-    LegalEntityClientInformation getById(Long id);
+    LegalEntityClientInformation getById(Long id) throws DatabaseException, TimeOutException;
 }

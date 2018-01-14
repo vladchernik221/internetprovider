@@ -7,9 +7,9 @@ import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.ConnectionPool;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
-import com.chernik.internetprovider.persistence.repository.util.BiThrowableFunctional;
+import com.chernik.internetprovider.persistence.repository.util.BiThrowableFunction;
 import com.chernik.internetprovider.persistence.repository.util.ThrowableFunction;
-import com.chernik.internetprovider.persistence.repository.util.TriThrowableFunctional;
+import com.chernik.internetprovider.persistence.repository.util.TriThrowableFunction;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,7 @@ public class CommonRepository {
     private ConnectionPool connectionPool;
 
 
-    public <T> Long create(T entity, BiThrowableFunctional<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+    public <T> Long create(T entity, BiThrowableFunction<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Inserting  {}", entity);
         Connection connection = connectionPool.getConnection();
         Long generatedId;
@@ -46,7 +46,7 @@ public class CommonRepository {
         return generatedId;
     }
 
-    public <T> void executeUpdate(T entity, BiThrowableFunctional<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+    public <T> void executeUpdate(T entity, BiThrowableFunction<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Updating {}", entity);
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement statement = statementFunctional.apply(connection, entity)) {
@@ -62,7 +62,7 @@ public class CommonRepository {
         LOGGER.log(Level.TRACE, "Updating complete successful");
     }
 
-    public <T, E> void executeUpdate(T first, E second, TriThrowableFunctional<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+    public <T, E> void executeUpdate(T first, E second, TriThrowableFunction<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Updating {}, {}", first, second);
         Connection connection = connectionPool.getConnection();
         try (PreparedStatement statement = statementFunctional.apply(connection, first, second)) {
@@ -78,7 +78,7 @@ public class CommonRepository {
         LOGGER.log(Level.TRACE, "Updating complete successful");
     }
 
-    public <T> boolean exist(T parameter, BiThrowableFunctional<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+    public <T> boolean exist(T parameter, BiThrowableFunction<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Check existing by {}", parameter);
         boolean isExist;
         Connection connection = connectionPool.getConnection();
@@ -98,7 +98,7 @@ public class CommonRepository {
         return isExist;
     }
 
-    public <T, E> Optional<T> getByParameters(E parameter, BiThrowableFunctional<Connection, E, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> entityCreateFunction) throws DatabaseException, TimeOutException {
+    public <T, E> Optional<T> getByParameters(E parameter, BiThrowableFunction<Connection, E, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> entityCreateFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting by {}", parameter);
         Connection connection = connectionPool.getConnection();
         T entity = null;
@@ -116,7 +116,7 @@ public class CommonRepository {
         return Optional.ofNullable(entity);
     }
 
-    public <T, E, U> Optional<T> getByParameters(E firstParameter, U secondParameter, TriThrowableFunctional<Connection, E, U, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> entityCreateFunction) throws DatabaseException, TimeOutException {
+    public <T, E, U> Optional<T> getByParameters(E firstParameter, U secondParameter, TriThrowableFunction<Connection, E, U, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> entityCreateFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting by {}", firstParameter);
         Connection connection = connectionPool.getConnection();
         T entity = null;
@@ -134,7 +134,7 @@ public class CommonRepository {
         return Optional.ofNullable(entity);
     }
 
-    public <T> Page<T> getPage(Pageable pageable, BiThrowableFunctional<Connection, Pageable, PreparedStatement> countStatementFunctional, BiThrowableFunctional<Connection, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+    public <T> Page<T> getPage(Pageable pageable, BiThrowableFunction<Connection, Pageable, PreparedStatement> countStatementFunctional, BiThrowableFunction<Connection, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting page. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
         Connection connection = connectionPool.getConnection();
         Page<T> entityPage = new Page<>();
@@ -164,7 +164,7 @@ public class CommonRepository {
         return entityPage;
     }
 
-    public <T, E> Page<T> getPage(E parameter, Pageable pageable, TriThrowableFunctional<Connection, E, Pageable, PreparedStatement> countStatementFunctional, TriThrowableFunctional<Connection, E, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+    public <T, E> Page<T> getPage(E parameter, Pageable pageable, TriThrowableFunction<Connection, E, Pageable, PreparedStatement> countStatementFunctional, TriThrowableFunction<Connection, E, Pageable, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting page. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
         Connection connection = connectionPool.getConnection();
         Page<T> entityPage = new Page<>();
@@ -192,6 +192,25 @@ public class CommonRepository {
         }
         LOGGER.log(Level.TRACE, "Getting complete successful");
         return entityPage;
+    }
+
+    public <T> List<T> getAll(ThrowableFunction<Connection, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting all");
+        Connection connection = connectionPool.getConnection();
+        List<T> entities = new ArrayList<>();
+        try (PreparedStatement statement = statementFunctional.apply(connection);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                entities.add(createEntityFunction.apply(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Getting complete successful");
+        return entities;
     }
 
     public Integer getInteger(ResultSet resultSet, String columnLabel) throws SQLException {

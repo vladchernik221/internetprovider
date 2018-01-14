@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -41,6 +42,8 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private static final String GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `tariff_plan`";
 
     private static final String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `tariff_plan_id`=?";
+
+    private static final String GET_ALL_NOT_ARCHIVED = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `archived`=0";
 
 
     @Autowired
@@ -183,13 +186,18 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private TariffPlan createFullTariffPlan(ResultSet resultSet) throws SQLException {
         TariffPlan tariffPlan = new TariffPlan();
-        tariffPlan.setTariffPlanId(resultSet.getLong(TariffPlanField.TARIFF_PLAN_ID.toString()));
+        Long id = (Long) resultSet.getObject(TariffPlanField.TARIFF_PLAN_ID.toString());
+        tariffPlan.setTariffPlanId(id);
         tariffPlan.setName(resultSet.getString(TariffPlanField.NAME.toString()));
         tariffPlan.setDescription(resultSet.getString(TariffPlanField.DESCRIPTION.toString()));
-        tariffPlan.setDownSpeed(resultSet.getInt(TariffPlanField.DOWN_SPEED.toString()));
-        tariffPlan.setUpSpeed(resultSet.getInt(TariffPlanField.UP_SPEED.toString()));
-        tariffPlan.setIncludedTraffic(commonRepository.getInteger(resultSet, TariffPlanField.INCLUDED_TRAFFIC.toString()));
-        tariffPlan.setPriceOverTraffic(commonRepository.getInteger(resultSet, TariffPlanField.PRICE_OVER_TRAFFIC.toString()));
+        Integer downSpeed = (Integer) resultSet.getObject(TariffPlanField.DOWN_SPEED.toString());
+        tariffPlan.setDownSpeed(downSpeed);
+        Integer upSpeed = (Integer) resultSet.getObject(TariffPlanField.UP_SPEED.toString());
+        tariffPlan.setUpSpeed(upSpeed);
+        Integer includedTraffic = (Integer) resultSet.getObject(TariffPlanField.INCLUDED_TRAFFIC.toString());
+        tariffPlan.setIncludedTraffic(includedTraffic);
+        Integer priceOverTraffic = (Integer) resultSet.getObject(TariffPlanField.PRICE_OVER_TRAFFIC.toString());
+        tariffPlan.setPriceOverTraffic(priceOverTraffic);
         tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
         tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));
         return tariffPlan;
@@ -219,5 +227,15 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
+    }
+
+
+    @Override
+    public List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException {
+        return commonRepository.getAll(this::createStatementForGetAll, this::createShortTariffPlan);
+    }
+
+    private PreparedStatement createStatementForGetAll(Connection connection) throws SQLException {
+        return connection.prepareStatement(GET_ALL_NOT_ARCHIVED);
     }
 }

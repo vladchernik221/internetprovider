@@ -7,5 +7,5 @@ import com.chernik.internetprovider.persistence.entity.Contract;
 public interface ContractService {
     Long create(Contract contract) throws DatabaseException, TimeOutException;
 
-    Contract getById(Long id);
+    Contract getById(Long id) throws DatabaseException, TimeOutException;
 }

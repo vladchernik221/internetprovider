@@ -18,4 +18,9 @@ public class ContractServiceImpl implements ContractService {
     public Long create(Contract contract) throws DatabaseException, TimeOutException {
         return contractRepository.create(contract);
     }
+
+    @Override
+    public Contract getById(Long id) throws DatabaseException, TimeOutException {
+        return contractRepository.getById(id).orElse(null);
+    }
 }

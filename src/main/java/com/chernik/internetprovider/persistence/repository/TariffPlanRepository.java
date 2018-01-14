@@ -6,6 +6,7 @@ import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TariffPlanRepository {
@@ -22,4 +23,6 @@ public interface TariffPlanRepository {
     boolean existWithName(String name) throws DatabaseException, TimeOutException;
 
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
+
+    List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException;
 }

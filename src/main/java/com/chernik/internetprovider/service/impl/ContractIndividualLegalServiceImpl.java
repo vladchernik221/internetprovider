@@ -3,6 +3,7 @@ package com.chernik.internetprovider.service.impl;
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
 import com.chernik.internetprovider.exception.DatabaseException;
+import com.chernik.internetprovider.exception.EntityNotFoundException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
@@ -43,18 +44,22 @@ public class ContractIndividualLegalServiceImpl implements ContractIndividualLeg
     }
 
     @Override
-    public Contract getById(Long id) {
+    public Contract getById(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Contract contract = contractService.getById(id);
-        switch (contract.getClientType()) {
-            case INDIVIDUAL:
-                IndividualClientInformation individualClientInformation = individualClientInformationService.getById(contract.getIndividualClientInformation().getIndividualClientInformationId());
-                contract.setIndividualClientInformation(individualClientInformation);
-                break;
-            case LEGAL:
-                LegalEntityClientInformation legalEntityClientInformation = legalEntityClientInformationService.getById(contract.getLegalEntityClientInformation().getLegalEntityClientInformationId());
-                contract.setLegalEntityClientInformation(legalEntityClientInformation);
-                break;
+        if (contract != null) {
+            switch (contract.getClientType()) {
+                case INDIVIDUAL:
+                    IndividualClientInformation individualClientInformation = individualClientInformationService.getById(contract.getIndividualClientInformation().getIndividualClientInformationId());
+                    contract.setIndividualClientInformation(individualClientInformation);
+                    break;
+                case LEGAL:
+                    LegalEntityClientInformation legalEntityClientInformation = legalEntityClientInformationService.getById(contract.getLegalEntityClientInformation().getLegalEntityClientInformationId());
+                    contract.setLegalEntityClientInformation(legalEntityClientInformation);
+                    break;
+            }
+            return contract;
+        } else {
+            throw new EntityNotFoundException(String.format("Contract with id %s does not exist", id));
         }
-        return contract;
     }
 }
