@@ -58,7 +58,7 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
 
     @Override
     public Optional<LegalEntityClientInformation> getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException {
-        return commonRepository.getByParameters(payerAccountNumber, this::createPreparedStatementForExistsByPayerAccountNumber, this::createLegalEntityClientInformation);
+        return commonRepository.getByParameters(payerAccountNumber, this::createPreparedStatementForGettingByPayerAccountNumber, this::createLegalEntityClientInformation);
     }
 
     private PreparedStatement createPreparedStatementForGettingByPayerAccountNumber(Connection connection, String payerAccountNumber) throws SQLException {

@@ -30,7 +30,7 @@ public class LegalEntityClientInformationServiceImpl implements LegalEntityClien
 
     @Override
     public LegalEntityClientInformation getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException {
-        return legalEntityClientInformationRepository.getByPayerAccountNumber(payerAccountNumber).get();
+        return legalEntityClientInformationRepository.getByPayerAccountNumber(payerAccountNumber).orElse(null);
     }
 
     @Override

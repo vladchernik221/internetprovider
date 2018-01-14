@@ -32,7 +32,7 @@ public class IndividualClientInformationCommandPost implements Command {
 
             response.getWriter().write(responseMessage);
         } else {
-            throw new BadRequestException("Missing parameter: passportUniqueIdentification");
+            throw new BadRequestException("Missing parameter: identifier");
         }
     }
 }

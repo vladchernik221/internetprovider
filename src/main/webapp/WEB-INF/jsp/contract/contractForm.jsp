@@ -36,47 +36,50 @@
                 <label for="clientType-legal">Юридическое лицо</label>
             </div></div>
             <div class="row only-for-individual">
-                <input type="text" name="individualClientInformation.secondName" placeholder="Фамилия" required />
+                <input type="text" name="individual.passportUniqueIdentification" placeholder="Личный (идентификационный) номер" required />
+                <label>Личный (идентификационный) номер</label>
+            </div>
+            <div class="row only-for-legal">
+                <input type="text" name="legal.payerAccountNumber" placeholder="УНП" required />
+                <label>УНП</label>
+            </div>
+            <div class="row">
+                <button class="button small" onclick="fill_form(event)">Автозаполнение</button>
+            </div>
+            <div class="row only-for-individual">
+                <input type="text" name="individual.secondName" placeholder="Фамилия" required />
                 <label>Фамилия</label>
             </div>
             <div class="row only-for-individual">
-                <input type="text" name="individualClientInformation.firstName" placeholder="Имя" required />
+                <input type="text" name="individual.firstName" placeholder="Имя" required />
                 <label>Имя</label>
             </div>
             <div class="row only-for-individual">
-                <input type="text" name="individualClientInformation.lastName" placeholder="Отчество" required />
+                <input type="text" name="individual.lastName" placeholder="Отчество" required />
                 <label>Отчество</label>
             </div>
             <div class="row only-for-individual">
-                <input type="text" name="individualClientInformation.passportUniqueIdentification" placeholder="Личный (идентификационный) номер" required />
-                <label>Личный (идентификационный) номер</label>
-            </div>
-            <div class="row only-for-individual">
-                <input type="text" name="individualClientInformation.address" placeholder="Адрес" required />
+                <input type="text" name="individual.address" placeholder="Адрес" required />
                 <label>Адрес</label>
             </div>
             <div class="row only-for-individual">
-                <input type="text" name="individualClientInformation.phoneNumber" placeholder="Номер телефона" required />
+                <input type="text" name="individual.phoneNumber" placeholder="Номер телефона" required />
                 <label>Номер телефона</label>
             </div>
             <div class="row only-for-legal">
-                <input type="text" name="legalEntityClientInformation.name" placeholder="Название" required />
+                <input type="text" name="legal.name" placeholder="Название" required />
                 <label>Название</label>
             </div>
             <div class="row only-for-legal">
-                <input type="text" name="legalEntityClientInformation.payerAccountNumber" placeholder="Номер расчётного счета" required />
-                <label>Номер расчётного счёта</label>
+                <input type="text" name="legal.checkingAccount" placeholder="Расчётный счёт" required />
+                <label>Расчётный счёт</label>
             </div>
             <div class="row only-for-legal">
-                <input type="text" name="legalEntityClientInformation.checkingAccount" placeholder="Checking account" required />
-                <label>Checking account</label>
-            </div>
-            <div class="row only-for-legal">
-                <input type="text" name="legalEntityClientInformation.address" placeholder="Адрес" required />
+                <input type="text" name="legal.address" placeholder="Адрес" required />
                 <label>Адрес</label>
             </div>
             <div class="row only-for-legal">
-                <input type="text" name="legalEntityClientInformation.phoneNumber" placeholder="Номер телефона" required />
+                <input type="text" name="legal.phoneNumber" placeholder="Номер телефона" required />
                 <label>Номер телефона</label>
             </div>
             <input class="big" type="submit" value="Сохранить" />

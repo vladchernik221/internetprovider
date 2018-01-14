@@ -11,10 +11,10 @@ public class LegalEntityClientInformationMapper extends Mapper<LegalEntityClient
     @Override
     public LegalEntityClientInformation create(HttpServletRequest request) throws BadRequestException {
         LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
-        legalEntityClientInformation.setName(getMandatoryString(request.getParameter("name")));
-        legalEntityClientInformation.setPayerAccountNumber(getMandatoryString(request.getParameter("payerAccountNumber")));
-        legalEntityClientInformation.setAddress(getMandatoryString(request.getParameter("address")));
-        legalEntityClientInformation.setPhoneNumber(getMandatoryString("phoneNumber"));
+        legalEntityClientInformation.setName(getMandatoryString(request.getParameter("legal.name")));
+        legalEntityClientInformation.setPayerAccountNumber(getMandatoryString(request.getParameter("legal.payerAccountNumber")));
+        legalEntityClientInformation.setAddress(getMandatoryString(request.getParameter("legal.address")));
+        legalEntityClientInformation.setPhoneNumber(getMandatoryString(request.getParameter("legal.phoneNumber")));
         return legalEntityClientInformation;
     }
 }

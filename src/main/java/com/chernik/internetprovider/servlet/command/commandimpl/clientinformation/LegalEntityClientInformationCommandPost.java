@@ -32,7 +32,7 @@ public class LegalEntityClientInformationCommandPost implements Command {
 
             response.getWriter().write(responseMessage);
         } else {
-            throw new BadRequestException("Missing parameter: payerAccountNumber");
+            throw new BadRequestException("Missing parameter: identifier");
         }
     }
 }

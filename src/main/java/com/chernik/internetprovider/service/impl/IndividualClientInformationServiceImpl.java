@@ -30,7 +30,7 @@ public class IndividualClientInformationServiceImpl implements IndividualClientI
 
     @Override
     public IndividualClientInformation getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException {
-        return individualClientInformationRepository.getByPassportData(passportUniqueIdentification).get();
+        return individualClientInformationRepository.getByPassportData(passportUniqueIdentification).orElse(null);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.chernik.internetprovider.exception.BadRequestException;
 import com.chernik.internetprovider.persistence.entity.ClientType;
 import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
+import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformation;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,9 @@ public class ContractMapper extends Mapper<Contract> {
 
     @Autowired
     private IndividualClientInformationMapper individualClientInformationMapper;
+
+    @Autowired
+    private LegalEntityClientInformationMapper legalEntityClientInformationMapper;
 
     @Override
     public Contract create(HttpServletRequest request) throws BadRequestException {
@@ -27,7 +31,8 @@ public class ContractMapper extends Mapper<Contract> {
                 contract.setIndividualClientInformation(individualClientInformation);
                 break;
             case LEGAL:
-
+                LegalEntityClientInformation legalEntityClientInformation = legalEntityClientInformationMapper.create(request);
+                contract.setLegalEntityClientInformation(legalEntityClientInformation);
                 break;
         }
         return contract;
