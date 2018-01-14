@@ -4,10 +4,11 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
-import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
 import com.chernik.internetprovider.persistence.repository.IndividualClientInformationRepository;
 import com.chernik.internetprovider.service.IndividualClientInformationService;
+
+import java.util.Optional;
 
 @Service
 public class IndividualClientInformationServiceImpl implements IndividualClientInformationService {
@@ -16,11 +17,14 @@ public class IndividualClientInformationServiceImpl implements IndividualClientI
     private IndividualClientInformationRepository individualClientInformationRepository;
 
     @Override
-    public Long create(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException, UnableSaveEntityException {
-        if (!individualClientInformationRepository.existByPassportData(individualClientInformation.getPassportUniqueIdentification())) {
+    public Long createOrUpdate(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
+        Optional<IndividualClientInformation> checkingInformation = individualClientInformationRepository.getByPassportData(individualClientInformation.getPassportUniqueIdentification());
+
+        if (!checkingInformation.isPresent()) {
             return individualClientInformationRepository.create(individualClientInformation);
         } else {
-            throw new UnableSaveEntityException(String.format("Individual client with passport unique identification: %s already exist", individualClientInformation.getPassportUniqueIdentification()));
+            individualClientInformationRepository.update(individualClientInformation);
+            return checkingInformation.get().getIndividualClientInformationId();
         }
     }
 

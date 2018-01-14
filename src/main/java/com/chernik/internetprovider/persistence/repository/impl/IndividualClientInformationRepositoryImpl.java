@@ -21,6 +21,8 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
 
     private static final String GET_BY_PASSPORT_DATA = "SELECT `individual_client_information_id`, `first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number` FROM `individual_client_information` WHERE `passport_unique_identification`=?";
 
+    private static final String UPDATE_INDIVIDUAL_CLIENT_INFORMATION = "UPDATE `individual_client_information` SET  `first_name`=?, `second_name`=?, `last_name`=?, `address`=?, `phone_number`=? WHERE `passport_unique_identification`=?";
+
     @Autowired
     private CommonRepository commonRepository;
 
@@ -75,5 +77,21 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         String phoneNumber = (String) resultSet.getObject(IndividualClientInformationField.PHONE_NUMBER.toString());
         individualClientInformation.setPhoneNumber(phoneNumber);
         return individualClientInformation;
+    }
+
+    @Override
+    public void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(individualClientInformation, this::createStatementForUpdate);
+    }
+
+    private PreparedStatement createStatementForUpdate(Connection connection, IndividualClientInformation individualClientInformation) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_INDIVIDUAL_CLIENT_INFORMATION);
+        statement.setString(1, individualClientInformation.getFirstName());
+        statement.setString(2, individualClientInformation.getSecondName());
+        statement.setString(3, individualClientInformation.getLastName());
+        statement.setString(4, individualClientInformation.getAddress());
+        statement.setObject(5, individualClientInformation.getPhoneNumber(), Types.VARCHAR);
+        statement.setString(6, individualClientInformation.getPassportUniqueIdentification());
+        return statement;
     }
 }

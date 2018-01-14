@@ -21,6 +21,8 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
 
     private static final String GET_BY_PAYER_ACCOUNT_NUMBER = "SELECT `legal_entity_client_information_id`, `payer_account_number`, `name`, `address`, `phone_number` FROM `legal_entity_client_information` WHERE `payer_account_number`=?";
 
+    private static final String UPDATE_LEGAL_ENTITY_CLIENT_INFORMATION = "UPDATE `legal_entity_client_information` SET `name`=?, `address`=?, `phone_number`=? WHERE `payer_account_number`=?";
+
 
     @Autowired
     private CommonRepository commonRepository;
@@ -71,5 +73,20 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         legalEntityClientInformation.setAddress(resultSet.getString(LegalEntityClientInformationField.ADDRESS.toString()));
         legalEntityClientInformation.setPhoneNumber(resultSet.getString(LegalEntityClientInformationField.PHONE_NUMBER.toString()));
         return legalEntityClientInformation;
+    }
+
+
+    @Override
+    public void update(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(legalEntityClientInformation, this::createPreparedStatementForUpdate);
+    }
+
+    private PreparedStatement createPreparedStatementForUpdate(Connection connection, LegalEntityClientInformation legalEntityClientInformation) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_LEGAL_ENTITY_CLIENT_INFORMATION);
+        statement.setString(1, legalEntityClientInformation.getName());
+        statement.setString(2, legalEntityClientInformation.getAddress());
+        statement.setString(3, legalEntityClientInformation.getPhoneNumber());
+        statement.setString(4, legalEntityClientInformation.getPayerAccountNumber());
+        return statement;
     }
 }

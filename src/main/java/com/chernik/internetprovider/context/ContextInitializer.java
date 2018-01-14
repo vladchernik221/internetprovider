@@ -89,7 +89,7 @@ public class ContextInitializer {
         initComponents(Service.class);
         initComponents(HttpRequestProcessor.class);
         autowireComponents();
-        LOGGER.log(Level.DEBUG, "Start after create methods");
+        LOGGER.log(Level.DEBUG, "Start after createOrUpdate methods");
         invokeLifeCycleMethod(withAfterCreate);
         long stopTime = System.currentTimeMillis();
         LOGGER.log(Level.INFO, "Context was initialize in {} milliseconds", stopTime - startTime);
@@ -107,7 +107,7 @@ public class ContextInitializer {
 
     /**
      * Create instances of components annotated as <code>annotation</code>. Search all classes with specified
-     * annotation, create them instances, search all fields of this component annotated as {@link Autowired} and
+     * annotation, createOrUpdate them instances, search all fields of this component annotated as {@link Autowired} and
      * all methods of life cycle.
      *
      * @param annotation specify annotation, components with that should be initialized.
@@ -142,15 +142,15 @@ public class ContextInitializer {
             LOGGER.log(Level.FATAL, message);
             throw new RuntimeException(message, e);
         } catch (IllegalAccessException e) {
-            String message = String.format("Can't create class %s. Constructor should be public", clazz);
+            String message = String.format("Can't createOrUpdate class %s. Constructor should be public", clazz);
             LOGGER.log(Level.FATAL, message);
             throw new RuntimeException(message, e);
         } catch (InstantiationException e) {
-            String message = String.format("Can't create class %s. Class should not be abstract", clazz);
+            String message = String.format("Can't createOrUpdate class %s. Class should not be abstract", clazz);
             LOGGER.log(Level.FATAL, message);
             throw new RuntimeException(message, e);
         } catch (InvocationTargetException e) {
-            String message = String.format("Can't create class %s. Exception in constructor", clazz);
+            String message = String.format("Can't createOrUpdate class %s. Exception in constructor", clazz);
             LOGGER.log(Level.FATAL, message);
             throw new RuntimeException(message, e);
         }

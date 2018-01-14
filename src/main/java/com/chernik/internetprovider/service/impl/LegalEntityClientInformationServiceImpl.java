@@ -4,10 +4,11 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
-import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformation;
 import com.chernik.internetprovider.persistence.repository.LegalEntityClientInformationRepository;
 import com.chernik.internetprovider.service.LegalEntityClientInformationService;
+
+import java.util.Optional;
 
 @Service
 public class LegalEntityClientInformationServiceImpl implements LegalEntityClientInformationService {
@@ -16,11 +17,14 @@ public class LegalEntityClientInformationServiceImpl implements LegalEntityClien
     private LegalEntityClientInformationRepository legalEntityClientInformationRepository;
 
     @Override
-    public Long create(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException, UnableSaveEntityException {
-        if (!legalEntityClientInformationRepository.existsByPayerAccountNumber(legalEntityClientInformation.getPayerAccountNumber())) {
+    public Long createOrUpdate(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
+        Optional<LegalEntityClientInformation> checkingInformation = legalEntityClientInformationRepository.getByPayerAccountNumber(legalEntityClientInformation.getPayerAccountNumber());
+
+        if (!checkingInformation.isPresent()) {
             return legalEntityClientInformationRepository.create(legalEntityClientInformation);
         } else {
-            throw new UnableSaveEntityException(String.format("Legal entity with payer number: %s already exists", legalEntityClientInformation.getPayerAccountNumber()));
+            legalEntityClientInformationRepository.update(legalEntityClientInformation);
+            return checkingInformation.get().getLegalEntityClientInformationId();
         }
     }
 

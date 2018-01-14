@@ -12,4 +12,6 @@ public interface IndividualClientInformationRepository {
     boolean existByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
 
     Optional<IndividualClientInformation> getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException;
+
+    void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException;
 }
