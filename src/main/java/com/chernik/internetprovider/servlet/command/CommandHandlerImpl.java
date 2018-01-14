@@ -31,9 +31,10 @@ public class CommandHandlerImpl implements CommandHandler {
         commandList.forEach(command -> {
             HttpRequestProcessor processor = command.getClass().getAnnotation(HttpRequestProcessor.class);
             String uri = processor.uri().toLowerCase();
-            commands.put(new RequestParameter(uri, processor.method()), command);
+            RequestParameter parameter = new RequestParameter(uri, processor.method());
+            commands.put(parameter, command);
             if (regularExpressionService.checkTo(uri, DYNAMIC_URI_REGULAR_EXPRESSION)) {
-                dynamicCommands.put(uri);
+                dynamicCommands.put(parameter);
             }
             LOGGER.log(Level.DEBUG, "Mapped {{}, {}} onto {}", processor.uri(), processor.method(), command.getClass());
         });
@@ -43,10 +44,9 @@ public class CommandHandlerImpl implements CommandHandler {
     public Command getCommand(RequestParameter parameter) throws CommandNotFoundException {
         Command command = commands.get(parameter);
         if (command == null) {
-            String dynamicUri = dynamicCommands.get(parameter.getUri());
-            if (dynamicUri != null) {
-                RequestParameter dynamicParameter = new RequestParameter(dynamicUri, parameter.getType());
-                command = commands.get(dynamicParameter); //TODO can be null when URI exist but Type is different
+            RequestParameter dynamicParameter = dynamicCommands.get(parameter);
+            if (dynamicParameter != null) {
+                command = commands.get(dynamicParameter);
             } else {
                 throw new CommandNotFoundException(String.format("Request: %s, method: %s does not support", parameter.getUri(), parameter.getType()));
             }

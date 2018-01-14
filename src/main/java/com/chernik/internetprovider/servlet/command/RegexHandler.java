@@ -5,17 +5,17 @@ import java.util.regex.Pattern;
 
 public class RegexHandler {
     private ArrayList<Pattern> patterns = new ArrayList<>();
-    private ArrayList<String> values = new ArrayList<>();
+    private ArrayList<RequestParameter> values = new ArrayList<>();
 
-    public void put(String uri) {
-        String uriRegularExpression = uri.replace("{", "").replace("}", "");
+    public void put(RequestParameter parameter) {
+        String uriRegularExpression = parameter.getUri().replace("{", "").replace("}", "");
         patterns.add(Pattern.compile(uriRegularExpression));
-        values.add(uri);
+        values.add(parameter);
     }
 
-    public String get(String uri) {
+    public RequestParameter get(RequestParameter parameter) {
         for (int i = 0; i < patterns.size(); i++) {
-            if (patterns.get(i).matcher(uri).matches()) {
+            if (patterns.get(i).matcher(parameter.getUri()).matches() && parameter.getType().equals(values.get(i).getType())) {
                 return values.get(i);
             }
         }

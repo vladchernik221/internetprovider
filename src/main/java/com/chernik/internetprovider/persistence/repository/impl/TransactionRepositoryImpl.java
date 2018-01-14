@@ -27,7 +27,6 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private static final String GET_TRANSACTION_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `transaction`";
 
-    //TODO account
     private static final String GET_TRANSACTION_PAGE = "SELECT `transaction_id`, `type`, `amount`, `date` FROM `transaction` LIMIT ? OFFSET ?";
 
 
