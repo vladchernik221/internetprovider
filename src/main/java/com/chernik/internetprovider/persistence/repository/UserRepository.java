@@ -19,5 +19,5 @@ public interface UserRepository {
 
     void ban(User user, boolean baned) throws DatabaseException, TimeOutException;
 
-    boolean existsWithName(Long id) throws DatabaseException, TimeOutException;
+    boolean existWithName(Long id) throws DatabaseException, TimeOutException;
 }

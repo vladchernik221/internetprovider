@@ -14,13 +14,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class TariffPlanRepositoryImpl implements TariffPlanRepository {
-    private static final Logger LOGGER = LogManager.getLogger(TariffPlan.class);
+    private static final Logger LOGGER = LogManager.getLogger(TariffPlanRepositoryImpl.class);
 
 
     private static final String CREATE_TARIFF_PLAN = "INSERT INTO `tariff_plan`(`name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`) VALUES(?,?,?,?,?,?,?)";
@@ -51,17 +52,17 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
-        return commonRepository.create(tariffPlan, this::createPreparedStatementForCreation);
+        return commonRepository.create(tariffPlan, this::createPreparedStatementForInserting);
     }
 
-    private PreparedStatement createPreparedStatementForCreation(Connection connection, TariffPlan tariffPlan) throws SQLException {
+    private PreparedStatement createPreparedStatementForInserting(Connection connection, TariffPlan tariffPlan) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_TARIFF_PLAN, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, tariffPlan.getName());
         statement.setObject(2, tariffPlan.getDescription(), Types.VARCHAR);
         statement.setInt(3, tariffPlan.getDownSpeed());
         statement.setInt(4, tariffPlan.getUpSpeed());
         statement.setObject(5, tariffPlan.getIncludedTraffic(), Types.INTEGER);
-        statement.setObject(6, tariffPlan.getPriceOverTraffic(), Types.INTEGER);
+        statement.setObject(6, tariffPlan.getPriceOverTraffic(), Types.DECIMAL);
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
@@ -76,12 +77,11 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private PreparedStatement createPreparedStatementForUpdating(Connection connection, TariffPlan tariffPlan) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(UPDATE_TARIFF_PLAN);
         statement.setString(1, tariffPlan.getName());
-        String description = tariffPlan.getDescription();
         statement.setObject(2, tariffPlan.getDescription(), Types.VARCHAR);
         statement.setInt(3, tariffPlan.getDownSpeed());
         statement.setInt(4, tariffPlan.getUpSpeed());
         statement.setObject(5, tariffPlan.getIncludedTraffic(), Types.INTEGER);
-        statement.setObject(6, tariffPlan.getPriceOverTraffic(), Types.INTEGER);
+        statement.setObject(6, tariffPlan.getPriceOverTraffic(), Types.DECIMAL);
         statement.setBigDecimal(7, tariffPlan.getMonthlyFee());
         statement.setLong(8, tariffPlan.getTariffPlanId());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
@@ -168,7 +168,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         tariffPlan.setUpSpeed(upSpeed);
         Integer includedTraffic = (Integer) resultSet.getObject(TariffPlanField.INCLUDED_TRAFFIC.toString());
         tariffPlan.setIncludedTraffic(includedTraffic);
-        Integer priceOverTraffic = (Integer) resultSet.getObject(TariffPlanField.PRICE_OVER_TRAFFIC.toString());
+        BigDecimal priceOverTraffic = (BigDecimal) resultSet.getObject(TariffPlanField.PRICE_OVER_TRAFFIC.toString());
         tariffPlan.setPriceOverTraffic(priceOverTraffic);
         tariffPlan.setMonthlyFee(resultSet.getBigDecimal(TariffPlanField.MONTHLY_FEE.toString()));
         tariffPlan.setArchived(resultSet.getBoolean(TariffPlanField.ARCHIVED.toString()));

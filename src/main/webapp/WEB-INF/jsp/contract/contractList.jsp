@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -29,7 +30,7 @@
         </header>
         <form id="contract_search" method="GET" action="/contract">
             <div class="row">
-                <input type="text" name="number" placeholder="Номер договора" value="${param.number}" required />
+                <input type="text" name="number" placeholder="Номер договора" value="${param.number}" minlength="6" maxlength="6" required />
                 <label>Номер договора</label>
             </div>
             <input class="small" type="submit" value="Найти" />
@@ -42,7 +43,7 @@
                         <th>Абонент</th>
                     </tr>
                     <tr onclick="redirect('/contract/${contract.contractId}')">
-                        <td>${contract.number}</td>
+                        <td><fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contract.contractId}" /></td>
                         <c:choose>
                             <c:when test="${contract.clientType == 'INDIVIDUAL'}">
                                 <td>${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</td>

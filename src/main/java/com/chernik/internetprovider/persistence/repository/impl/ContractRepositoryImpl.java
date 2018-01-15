@@ -22,11 +22,13 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private static final String DISSOLVE_CONTRACT = "UPDATE `contract` SET `dissolved`=1 WHERE `contract_id`=?";
 
-    private static final String GET_CONTRACT_BY_ID = "SELECT `contract_id`, `dissolved`, `client_type`, `legal_entity_client_information_id`, `individual_client_information_id` FROM `contract` WHERE `contract_id`=?";
+    private static final String GET_CONTRACT_BY_ID = "SELECT `contract_id`, `conclude_date`, `dissolved`, `client_type`, `legal_entity_client_information_id`, `individual_client_information_id` FROM `contract` WHERE `contract_id`=?";
 
     private static final String EXISTS_CONTRACT_BY_ID = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `contract_id`=?)";
 
-    private static final String EXISTS_BU_CLIENT_INFORMATION = "SELECT `contract_id`, `dissolved`, `client_type`, `legal_entity_client_information_id`, `individual_client_information_id` FROM `contract` WHERE (`individual_client_information_id` IS NULL OR `individual_client_information_id`=?) AND (`legal_entity_client_information_id` IS NULL OR `legal_entity_client_information_id`=?)";
+    private static final String EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `dissolved`=0 AND (`individual_client_information_id` IS NULL OR `individual_client_information_id`=?) AND (`legal_entity_client_information_id` IS NULL OR `legal_entity_client_information_id`=?))";
+
+    private static final String EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION_TEST = "SELECT EXISTS(SELECT 1 FROM `contract` c RIGHT JOIN `individual_client_information` ici ON c.individual_client_information_id=ici.individual_client_information_id RIGHT JOIN `legal_entity_client_information` leci ON c.legal_entity_client_information_id = leci.legal_entity_client_information_id AND `dissolved`=0 AND (ici.passport_unique_identification=? OR  leci.payer_account_number=?))";
 
     @Autowired
     private CommonRepository commonRepository;
@@ -79,6 +81,7 @@ public class ContractRepositoryImpl implements ContractRepository {
     private Contract createContract(ResultSet resultSet) throws SQLException {
         Contract contract = new Contract();
         contract.setContractId(resultSet.getLong(ContractField.CONTRACT_ID.toString()));
+        contract.setConcludeDate(resultSet.getDate(ContractField.CONCLUDE_DATE.toString()));
         contract.setDissolved(resultSet.getBoolean(ContractField.DISSOLVED.toString()));
         contract.setClientType(ClientType.valueOf(resultSet.getString(ContractField.CLIENT_TYPE.toString())));
         Long individualClientInformationId = (Long) resultSet.getObject(ContractField.INDIVIDUAL_CLIENT_INFORMATION_ID.toString());
@@ -98,7 +101,7 @@ public class ContractRepositoryImpl implements ContractRepository {
 
 
     @Override
-    public boolean existsWithId(Long id) throws DatabaseException, TimeOutException {
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, this::createStatementForContractExistsById);
     }
 
@@ -109,23 +112,23 @@ public class ContractRepositoryImpl implements ContractRepository {
     }
 
     @Override
-    public Optional<Contract> getByClientInformation(Contract contract) throws DatabaseException, TimeOutException {
-        return commonRepository.getByParameters(contract, this::createPreparedStatementForExistByClientInformation, this::createContract);
+    public boolean existNotDissolvedByClientInformation(Contract contract) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(contract, this::createPreparedStatementForExistNotDissolvedByClientInformation);
     }
 
-    private PreparedStatement createPreparedStatementForExistByClientInformation(Connection connection, Contract contract) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(EXISTS_BU_CLIENT_INFORMATION);
+    private PreparedStatement createPreparedStatementForExistNotDissolvedByClientInformation(Connection connection, Contract contract) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION);
         IndividualClientInformation individualClientInformation = contract.getIndividualClientInformation();
         if (individualClientInformation != null) {
-            statement.setLong(1, individualClientInformation.getIndividualClientInformationId());
+            statement.setString(1, individualClientInformation.getPassportUniqueIdentification());
         } else {
-            statement.setNull(1, Types.INTEGER);
+            statement.setNull(1, Types.VARCHAR);
         }
         LegalEntityClientInformation legalEntityClientInformation = contract.getLegalEntityClientInformation();
         if (legalEntityClientInformation != null) {
-            statement.setLong(2, legalEntityClientInformation.getLegalEntityClientInformationId());
+            statement.setString(2, legalEntityClientInformation.getPayerAccountNumber());
         } else {
-            statement.setNull(2, Types.INTEGER);
+            statement.setNull(2, Types.VARCHAR);
         }
         return statement;
     }

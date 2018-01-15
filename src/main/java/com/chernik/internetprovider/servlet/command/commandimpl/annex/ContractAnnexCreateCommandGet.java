@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.util.List;
 
 @HttpRequestProcessor(uri = "/contract/{\\d+}/annex/new", method = RequestType.GET)
-public class AnnexCreateCommandGet implements Command {
-    private static final Logger LOGGER = LogManager.getLogger(AnnexCreateCommandGet.class);
+public class ContractAnnexCreateCommandGet implements Command {
+    private static final Logger LOGGER = LogManager.getLogger(ContractAnnexCreateCommandGet.class);
 
     private static final String ANNEX_FORM_PAGE = "/WEB-INF/jsp/annex/annexForm.jsp";
 
@@ -31,11 +31,11 @@ public class AnnexCreateCommandGet implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DatabaseException, TimeOutException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(ANNEX_FORM_PAGE);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", ANNEX_FORM_PAGE);
 
         List<TariffPlan> tariffPlans = tariffPlanService.getAllNotArchived();
         request.setAttribute("tariffPlans", tariffPlans);
 
+        LOGGER.log(Level.TRACE, "Forward to page: {}", ANNEX_FORM_PAGE);
         dispatcher.forward(request, response);
     }
 }

@@ -54,10 +54,34 @@ public abstract class Mapper<T> {
         }
     }
 
-    BigDecimal getBigDecimal(String data) throws BadRequestException {
+    BigDecimal getMandatoryBigDecimal(String data) throws BadRequestException {
         if (data != null && !data.isEmpty()) {
             if (regularExpressionService.checkTo(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
                 return BigDecimal.valueOf(Double.valueOf(data));
+            } else {
+                throw new BadRequestException(String.format("Field: %s have wrong format", data));
+            }
+        } else {
+            throw new BadRequestException("Mandatory field does not initialize");
+        }
+    }
+
+    BigDecimal getNotMandatoryBigDecimal(String data) throws BadRequestException {
+        if (data != null && !data.isEmpty()) {
+            if (regularExpressionService.checkTo(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
+                return BigDecimal.valueOf(Double.valueOf(data));
+            } else {
+                throw new BadRequestException(String.format("Field: %s have wrong format", data));
+            }
+        } else {
+            return null;
+        }
+    }
+
+    Long getMandatoryLong(String data) throws BadRequestException {
+        if (data != null && !data.isEmpty()) {
+            if (regularExpressionService.checkTo(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
+                return Long.valueOf(data);
             } else {
                 throw new BadRequestException(String.format("Field: %s have wrong format", data));
             }

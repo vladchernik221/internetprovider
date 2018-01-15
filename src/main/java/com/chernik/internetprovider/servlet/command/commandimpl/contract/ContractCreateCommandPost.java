@@ -4,7 +4,7 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.Contract;
-import com.chernik.internetprovider.service.ContractIndividualLegalService;
+import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
 import com.chernik.internetprovider.servlet.mapper.ContractMapper;
@@ -18,7 +18,7 @@ import java.io.IOException;
 public class ContractCreateCommandPost implements Command {
 
     @Autowired
-    private ContractIndividualLegalService contractIndividualLegalService;
+    private ContractService contractService;
 
     @Autowired
     private ContractMapper contractMapper;
@@ -26,7 +26,7 @@ public class ContractCreateCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Contract contract = contractMapper.create(request);
-        Long generatedId = contractIndividualLegalService.create(contract);
+        Long generatedId = contractService.create(contract);
         response.getWriter().write(generatedId.toString());
     }
 }

@@ -17,8 +17,8 @@ public class TariffPlanMapper extends Mapper<TariffPlan>{
         tariffPlan.setDownSpeed(getMandatoryInt(request.getParameter("downSpeed")));
         tariffPlan.setUpSpeed(getMandatoryInt(request.getParameter("upSpeed")));
         tariffPlan.setIncludedTraffic(getNotMandatoryInt(request.getParameter("includedTraffic")));
-        tariffPlan.setPriceOverTraffic(getNotMandatoryInt(request.getParameter("priceOverTraffic")));
-        tariffPlan.setMonthlyFee(getBigDecimal(request.getParameter("monthlyFee")));
+        tariffPlan.setPriceOverTraffic(getNotMandatoryBigDecimal(request.getParameter("priceOverTraffic")));
+        tariffPlan.setMonthlyFee(getMandatoryBigDecimal(request.getParameter("monthlyFee")));
         return tariffPlan;
     }
 }

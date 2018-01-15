@@ -13,6 +13,7 @@
 
     <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/annex.js"></script>
 </head>
 <body>
 <!-- Header -->
@@ -26,19 +27,18 @@
         <header class="major">
             <h2>Создание приложения к контракту № 300500</h2>
         </header>
-            <form id="service_form" onsubmit="send_form(event)" method="POST" action="/contract/300/annex/new">
+            <form id="annex_form" onsubmit="send_form(event)" method="POST" action="/contract/${contractId}/annex/new">
             <div class="row">
                 <input type="text" name="address" placeholder="Адрес подключения" required />
                 <label>Адрес подключения</label>
             </div>
             <div class="row">
                 <div class="select-wrapper">
-                    <select name="tariffPlan.tariffPlanId" required>
+                    <select name="tariffPlanId" required>
                         <option value="">- Тарифный план -</option>
-                        <option value="1">Тарифный план 1</option>
-                        <option value="1">Тарифный план 2</option>
-                        <option value="1">Тарифный план 3</option>
-                        <option value="1">Тарифный план 4</option>
+                            <c:forEach items="${tariffPlans}" var="tariffPlan">
+                                <option value="${tariffPlan.tariffPlanId}">${tariffPlan.name}</option>
+                            </c:forEach>
                     </select>
                 </div>
             </div>

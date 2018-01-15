@@ -49,10 +49,10 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public Long create(Service service) throws DatabaseException, TimeOutException {
-        return commonRepository.create(service, this::createPreparedStatementForCreation);
+        return commonRepository.create(service, this::createPreparedStatementForInserting);
     }
 
-    private PreparedStatement createPreparedStatementForCreation(Connection connection, Service service) throws SQLException {
+    private PreparedStatement createPreparedStatementForInserting(Connection connection, Service service) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_SERVICE, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, service.getName());
         statement.setObject(2, service.getDescription(), Types.VARCHAR);

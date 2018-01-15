@@ -131,7 +131,7 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public boolean existsWithName(Long id) throws DatabaseException, TimeOutException {
+    public boolean existWithName(Long id) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 

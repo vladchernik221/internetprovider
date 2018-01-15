@@ -14,7 +14,7 @@ public class TariffPlan {
     private Integer downSpeed;
     private Integer upSpeed;
     private Integer includedTraffic;
-    private Integer priceOverTraffic;
+    private BigDecimal priceOverTraffic;
     private BigDecimal monthlyFee;
     private Boolean archived;
 }

@@ -14,7 +14,7 @@ public class ServiceMapper extends Mapper<Service> {
         Service service = new Service();
         service.setName(getMandatoryString(request.getParameter("name")));
         service.setDescription(getNotMandatoryString(request.getParameter("description")));
-        service.setPrice(getBigDecimal(request.getParameter("price")));
+        service.setPrice(getMandatoryBigDecimal(request.getParameter("price")));
         return service;
     }
 }

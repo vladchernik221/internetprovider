@@ -38,7 +38,7 @@
                 <h3>Акции</h3>
             </section><section class="box col-3" onclick="redirect('/contract')">
                 <div class="icon medium rounded orange fa-briefcase"></div>
-                <h3>Контракты</h3>
+                <h3>Договора</h3>
             </section><section class="box col-3">
                 <div class="icon medium rounded violet fa-users"></div>
                 <h3>Пользователи</h3>

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -13,6 +14,7 @@
 
     <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/contract.js"></script>
 </head>
 <body>
 <!-- Header -->
@@ -24,26 +26,41 @@
 <section class="wrapper document">
     <div class="container">
         <div class="row"><div class="align-left col-2">
-            <a href="/contract" class="button small">К списку контрактов</a>
+            <a href="/contract" class="button small">К списку договоров</a>
             <a href="/contract/${contract.contractId}/annex" class="button small">Приложения</a>
-        </div><div class="align-right actions col-2">
-            <a href="/contract/${contract.contractId}/annex/new" class="button small">Добавить приложение</a>
-            <button class="button small" <%--onclick="change_archived(${contract.contractId})"--%>>Расторгнуть</button>
-        </div></div>
-        <h2 class="uppercase">Договор № <span class="important">300500</span><br/>на оказание услуг связи</h2>
-        <p>«12» января 2018 г.</p>
+        </div><!--
+            --><c:if test="${!contract.dissolved}"><div class="align-right actions col-2">
+                <a href="/contract/${contract.contractId}/annex/new" class="button small">Добавить приложение</a>
+                <button class="button small" onclick="dissolve(${contract.contractId})">Расторгнуть</button>
+            </div></c:if><!--
+        --></div>
+        <c:if test="${contract.dissolved}">
+            <h2 class="warn">Расторгнут</h2>
+        </c:if>
+        <h2 class="uppercase">Договор № <span class="important">
+            <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contract.contractId}" /></span><br/>на оказание услуг связи</h2>
+        <p><fmt:formatDate type = "date" dateStyle = "long" value = "${contract.concludeDate}" /></p>
         <p>Закрытое акционерное общество «Internet Provider», именуемое в дальнейшем Оператор связи с одной стороны и
-            Абонент: Ф.И.О. <span class="important">Петров Пётр Петрович</span>, паспортные данные: личный
-            (идентификационный) номер <span class="important">5643GGT342G</span>, зарегистрирован(а) по адресу:
-            <span class="important">г. Минск ул. Лидская д.16 кв. 111</span>, с другой стороны, заключили настоящий
-            договор о нижеследующем:</p>
+            Абонент:
+            <c:choose>
+                <c:when test="${contract.clientType == 'INDIVIDUAL'}">
+                    Ф.И.О. <span class="important">${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</span>,
+                    паспортные данные: личный (идентификационный) номер <span class="important">${contract.individualClientInformation.passportUniqueIdentification}</span>,
+                    зарегистрирован(а) по адресу: <span class="important">${contract.individualClientInformation.address}</span>,
+                </c:when>
+                <c:otherwise>
+                    предприятие <span class="important">"${contract.legalEntityClientInformation.name}"</span>,
+                    зарегистрировано по адресу: <span class="important">${contract.legalEntityClientInformation.address}</span>,
+                </c:otherwise>
+            </c:choose>
+            с другой стороны, заключили настоящий договор о нижеследующем:</p>
 
         <ol>
             <li><h3 class="uppercase">Предмет договора</h3>
                 <ol>
                     <li>Оператор связи оказывает Абоненту телематические услуги связи (далее Услуги).</li>
                     <li>Наименование, параметры, тарифы, условия и сроки действия предоставляемых Услуг и иная
-                        информация указывается в Приложении к настоящему договору, которые являются неотъемлемыми
+                        информация указывается в Приложении №1 к настоящему договору, которые являются неотъемлемыми
                         частями настоящего договора.
                     </li>
                     <li>Описание Услуги приводится в Приложении №1 к настоящему договору.</li>
@@ -106,15 +123,9 @@
                         <ol>
                             <li>Пользоваться Услугами в соответствии с Правилами оказания услуг.</li>
                             <li>Заказывать (отменять) дополнительные Услуги, изменять тарифные планы, оформив
-                                соответствующие
-                                заявления
-                                и/или
-                                дополнительные соглашения, которые после их подписания Сторонами будут считаться
-                                неотъемлемыми
-                                частями
-                                настоящего договора, либо обратившись к Оператору через средства связи, назвав номер
-                                договора или
-                                ФИО.
+                                соответствующие заявления и/или дополнительные соглашения, которые после их подписания
+                                Сторонами будут считаться неотъемлемыми частями настоящего договора, либо обратившись к
+                                Оператору через средства связи, назвав номер договора или ФИО.
                             </li>
                         </ol>
                     </li>
@@ -233,23 +244,56 @@
                     </tr>
                     <tr>
                         <td>ЗАО «Internet Provider»</td>
-                        <td>Ф.И.О.: <span class="important">Петров Пётр Петрович</span></td>
+                        <c:choose>
+                            <c:when test="${contract.clientType == 'INDIVIDUAL'}">
+                                <td>Ф.И.О.: <span class="important">${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</span></td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>Наименование предпрития: <span class="important">${contract.legalEntityClientInformation.name}</span></td>
+                            </c:otherwise>
+                        </c:choose>
                     </tr>
                     <tr>
                         <td>Юридический адрес: 111111, г. Минск, ул. Серова, 1</td>
-                        <td>Адрес регистрации: <span class="important">г. Минск ул. Лидская д.16 кв. 111</span></td>
+                        <td>Адрес регистрации: <span class="important">
+                            <c:choose>
+                                <c:when test="${contract.clientType == 'INDIVIDUAL'}">
+                                    ${contract.individualClientInformation.address}
+                                </c:when>
+                                <c:otherwise>
+                                    ${contract.legalEntityClientInformation.address}
+                                </c:otherwise>
+                            </c:choose>
+                        </span></td>
                     </tr>
                     <tr>
                         <td>Фактический адрес: 111111, г. Минск, ул. Ленина,1/2, к. 111</td>
-                        <td>Контактный телефон: <span class="important">+375(44)629-64-23</span></td>
+                        <td>Контактный телефон: <span class="important">
+                            <c:choose>
+                                <c:when test="${contract.clientType == 'INDIVIDUAL'}">
+                                    ${contract.individualClientInformation.phoneNumber}
+                                </c:when>
+                                <c:otherwise>
+                                    ${contract.legalEntityClientInformation.phoneNumber}
+                                </c:otherwise>
+                            </c:choose>
+                        </span></td>
                     </tr>
                     <tr>
                         <td>Телефоны (111)111-11-11 Факс (111)111-11-11 доб.1111</td>
-                        <td></td>
+                        <td>
+                            <c:if test="${contract.clientType == 'LEGAL'}">
+                                УНП: <span class="important">${contract.legalEntityClientInformation.payerAccountNumber}</span>
+                            </c:if>
+                        </td>
                     </tr>
                     <tr>
                         <td>УНП: 1111111111</td>
-                        <td></td>
+                        <td>
+                            <c:if test="${contract.clientType == 'LEGAL'}">
+                                Расчетный счет: <span class="important">${contract.legalEntityClientInformation.checkingAccount}</span>
+                            </c:if>
+                        </td>
                     </tr>
                     <tr>
                         <td>Наименование банка: Беларусбанк, г.Минск</td>

@@ -25,7 +25,7 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2>Создание контракта</h2>
+            <h2>Создание договора</h2>
         </header>
         <form id="contract_form" onsubmit="send_form(event)" method="POST" action="/contract/new">
             <div class="row"><div class="col-2">
