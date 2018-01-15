@@ -6,7 +6,18 @@ function send_form(event) {
         url: form.attr("action"),
         data: form.serialize(),
         success: function (result) {
-            redirect(form.attr("action").slice(0, form.attr("action").lastIndexOf("/") + 1) + result);
+            redirect("/contract/annex/" + result);
+        },
+        error: error_handler
+    });
+}
+
+function cancel_annex(annex_id) {
+    $.ajax({
+        type: "POST",
+        url: "/contract/annex/" + annex_id + "/dissolve",
+        success: function () {
+            window.location.reload(true);
         },
         error: error_handler
     });

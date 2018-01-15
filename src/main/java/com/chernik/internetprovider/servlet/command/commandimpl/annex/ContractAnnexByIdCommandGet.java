@@ -1,7 +1,10 @@
 package com.chernik.internetprovider.servlet.command.commandimpl.annex;
 
+import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;
+import com.chernik.internetprovider.persistence.entity.ContractAnnex;
+import com.chernik.internetprovider.service.ContractAnnexService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
 
@@ -15,16 +18,15 @@ import java.io.IOException;
 public class ContractAnnexByIdCommandGet implements Command {
     private static final String ANNEX_PAGE = "/WEB-INF/jsp/annex/annex.jsp";
 
-//    @Autowired
-//    private ContractService contractService;
+    @Autowired
+    private ContractAnnexService contractAnnexService;
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
-        String pathParameter = request.getRequestURI().split("/")[2];
-        Long id = Long.valueOf(pathParameter);
-//        ContractAnnex contractAnnex = contractAnnexService.getById(id);
+        Long contractAnnexId = Long.valueOf(request.getRequestURI().split("/")[3]);
+        ContractAnnex contractAnnex = contractAnnexService.getById(contractAnnexId);
 
-//        request.setAttribute("annex", contractAnnex);
+        request.setAttribute("annex", contractAnnex);
         RequestDispatcher dispatcher = request.getRequestDispatcher(ANNEX_PAGE);
         dispatcher.forward(request, response);
     }

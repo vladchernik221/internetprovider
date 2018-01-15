@@ -19,4 +19,6 @@ public interface TariffPlanService {
     void archive(Long id) throws BaseException;
 
     List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException;
+
+    boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 }

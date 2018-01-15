@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -25,7 +26,7 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2>Создание приложения к контракту № 300500</h2>
+            <h2>Создание приложения к контракту № <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contractId}" /></h2>
         </header>
             <form id="annex_form" onsubmit="send_form(event)" method="POST" action="/contract/${contractId}/annex/new">
             <div class="row">

@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -24,14 +25,21 @@
 <section class="wrapper document">
     <div class="container">
         <div class="row"><div class="align-left col-2">
-            <a href="/contract/${contract.contractId}/annex" class="button small">К списку приложений</a>
+            <a href="/contract/${annex.contract.contractId}/annex" class="button small">К списку приложений</a>
             <a href="#" class="button small">Счёт</a>
-        </div><div class="align-right actions col-2">
-            <button class="button small" <%--onclick="change_archived(${contract.contractId})"--%>>Расторгнуть</button>
-        </div></div>
-        <h2 class="uppercase">Приложение № 1 к договору на оказание услуг передачи данных<br/>
-            номер договора: <span class="important">300500</span><br/>Услуга "Доступ в Интернет"</h2>
-        <p>"12" января 2018 г.</p>
+        </div><!--
+         --><c:if test="${!annex.canceled}"><div class="align-right actions col-2">
+                <button class="button small" onclick="cancel_annex(${annex.contractAnnexId})">Расторгнуть</button>
+            </div></c:if><!--
+     --></div>
+        <c:if test="${annex.canceled}">
+            <h2 class="warn">Расторгнуто</h2>
+        </c:if>
+        <h2 class="uppercase">Приложение № 1<br />к договору на оказание услуг передачи данных<br/>номер договора:
+            <span class="important">
+                <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${annex.contract.contractId}" />
+            </span><br/>Услуга "Доступ в Интернет"</h2>
+        <p><fmt:formatDate type = "date" dateStyle = "long" value = "${annex.concludeDate}" /></p>
 
         <ol>
             <li><h3 class="uppercase">Описание услуги</h3>
@@ -83,9 +91,8 @@
                 <ol>
                     <li>При подключении Абонент выбирает авансовые условия оплаты услуг.
                     </li>
-                    <li>При подключении Абонент выбирает тарифный план <span class="important">Комфорт 30</span></li>
-                    <li>Адрес установки оконечного оборудования: <span class="important">г. Минск ул. Лидская д.16 кв.
-                        111</span>
+                    <li>При подключении Абонент выбирает тарифный план <span class="important">${annex.tariffPlan.name}</span></li>
+                    <li>Адрес установки оконечного оборудования: <span class="important">${annex.address}</span>
                     </li>
                 </ol>
             </li>

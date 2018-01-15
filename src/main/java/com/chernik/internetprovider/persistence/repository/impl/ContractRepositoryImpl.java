@@ -26,9 +26,7 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private static final String EXISTS_CONTRACT_BY_ID = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `contract_id`=?)";
 
-    private static final String EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `dissolved`=0 AND (`individual_client_information_id` IS NULL OR `individual_client_information_id`=?) AND (`legal_entity_client_information_id` IS NULL OR `legal_entity_client_information_id`=?))";
-
-    private static final String EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION_TEST = "SELECT EXISTS(SELECT 1 FROM `contract` c RIGHT JOIN `individual_client_information` ici ON c.individual_client_information_id=ici.individual_client_information_id RIGHT JOIN `legal_entity_client_information` leci ON c.legal_entity_client_information_id = leci.legal_entity_client_information_id AND `dissolved`=0 AND (ici.passport_unique_identification=? OR  leci.payer_account_number=?))";
+    private static final String EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION = "SELECT EXISTS(SELECT 1 FROM `contract` c LEFT JOIN `individual_client_information` ici ON c.individual_client_information_id=ici.individual_client_information_id LEFT JOIN `legal_entity_client_information` leci ON c.legal_entity_client_information_id = leci.legal_entity_client_information_id WHERE `dissolved`=0 AND (ici.passport_unique_identification=? OR leci.payer_account_number=?))";
 
     @Autowired
     private CommonRepository commonRepository;

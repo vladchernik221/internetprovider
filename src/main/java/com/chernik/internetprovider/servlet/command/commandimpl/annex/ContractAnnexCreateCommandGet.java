@@ -34,6 +34,7 @@ public class ContractAnnexCreateCommandGet implements Command {
 
         List<TariffPlan> tariffPlans = tariffPlanService.getAllNotArchived();
         request.setAttribute("tariffPlans", tariffPlans);
+        request.setAttribute("contractId", request.getRequestURI().split("/")[2]);
 
         LOGGER.log(Level.TRACE, "Forward to page: {}", ANNEX_FORM_PAGE);
         dispatcher.forward(request, response);

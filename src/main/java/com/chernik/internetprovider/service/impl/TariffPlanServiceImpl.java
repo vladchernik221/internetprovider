@@ -10,6 +10,7 @@ import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.persistence.repository.TariffPlanRepository;
+import com.chernik.internetprovider.service.TariffPlanService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TariffPlanServiceImpl implements com.chernik.internetprovider.service.TariffPlanService {
+public class TariffPlanServiceImpl implements TariffPlanService {
     private static final Logger LOGGER = LogManager.getLogger(TariffPlanServiceImpl.class);
 
     @Autowired
@@ -65,5 +66,10 @@ public class TariffPlanServiceImpl implements com.chernik.internetprovider.servi
     @Override
     public List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException {
         return tariffPlanRepository.getAllNotArchived();
+    }
+
+    @Override
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        return tariffPlanRepository.existWithId(id);
     }
 }
