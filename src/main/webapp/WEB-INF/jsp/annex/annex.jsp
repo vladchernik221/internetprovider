@@ -14,6 +14,7 @@
 
     <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/annex.js"></script>
 </head>
 <body>
 <!-- Header -->

@@ -39,7 +39,7 @@
             </section><section class="box col-3" onclick="redirect('/contract')">
                 <div class="icon medium rounded orange fa-briefcase"></div>
                 <h3>Договора</h3>
-            </section><section class="box col-3">
+            </section><section class="box col-3" onclick="redirect('/user')">
                 <div class="icon medium rounded violet fa-users"></div>
                 <h3>Пользователи</h3>
             </section></div>

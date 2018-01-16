@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/password", method = RequestType.GET)
+@HttpRequestProcessor(uri = "/user/{\\d+}/password", method = RequestType.GET)
 public class ChangePasswordCommandGet implements Command {
     private static final Logger LOGGER = LogManager.getLogger(ChangePasswordCommandGet.class);
 
-    private static final String CHANGE_PASSWORD_PAGE = "/WEB-INF/jsp/changePassword.jsp";
+    private static final String CHANGE_PASSWORD_PAGE = "/WEB-INF/jsp/user/changePassword.jsp";
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

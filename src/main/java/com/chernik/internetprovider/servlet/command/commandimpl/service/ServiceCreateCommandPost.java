@@ -27,8 +27,6 @@ public class ServiceCreateCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException, IOException {
         Service service = serviceMapper.create(request);
-        service.setArchived(false);
-
         Long generatedId = serviceService.create(service);
         response.getWriter().write(generatedId.toString());
     }

@@ -25,8 +25,6 @@ public class TariffPlanCreateCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException, IOException {
         TariffPlan tariffPlan = tariffPlanMapper.create(request);
-        tariffPlan.setArchived(false);
-
         Long generatedId = tariffPlanService.create(tariffPlan);
         response.getWriter().write(generatedId.toString());
     }

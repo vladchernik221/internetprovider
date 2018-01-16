@@ -18,7 +18,7 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="template/header.jsp" />
+    <jsp:include page="../template/header.jsp" />
 </header>
 
 <!-- Main part -->
@@ -47,9 +47,9 @@
 </section>
 
 <!-- Modal window -->
-<jsp:include page="template/modal.jsp" />
+<jsp:include page="../template/modal.jsp" />
 
 <!-- Footer -->
-<jsp:include page="template/footer.jsp" />
+<jsp:include page="../template/footer.jsp" />
 </body>
 </html>

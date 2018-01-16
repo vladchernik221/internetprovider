@@ -17,7 +17,11 @@ public interface UserRepository {
 
     Page<User> getPage(Pageable pageable) throws DatabaseException, TimeOutException;
 
-    void ban(User user, boolean baned) throws DatabaseException, TimeOutException;
+    Page<User> getPageWithRole(Pageable pageable, String userRole) throws DatabaseException, TimeOutException;
 
-    boolean existWithName(Long id) throws DatabaseException, TimeOutException;
+    Optional<User> getById(Long id) throws DatabaseException, TimeOutException;
+
+    void block(User user) throws DatabaseException, TimeOutException;
+
+    boolean existWithLogin(String login) throws DatabaseException, TimeOutException;
 }

@@ -96,3 +96,16 @@ function get_param_value_from_url(param) {
         return result[2];
     }
 }
+
+function delete_param_from_url(param) {
+    var url_params = window.location.href.split("?");
+    var params = url_params[1];
+    var regex = new RegExp(param + "=[^&]*");
+    if (regex.test(params)) {
+        params = params.replace(regex, "");
+    }
+    if(params === "") {
+        return url_params[0];
+    }
+    return url_params[0] + "?" + params;
+}

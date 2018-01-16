@@ -15,7 +15,7 @@ function send_form(event) {
 function cancel_annex(annex_id) {
     $.ajax({
         type: "POST",
-        url: "/contract/annex/" + annex_id + "/dissolve",
+        url: "/contract/annex/" + annex_id + "/cancel",
         success: function () {
             window.location.reload(true);
         },
