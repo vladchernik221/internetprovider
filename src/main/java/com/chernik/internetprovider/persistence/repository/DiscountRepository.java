@@ -17,7 +17,9 @@ public interface DiscountRepository {
 
     Optional<Discount> getById(Long id) throws DatabaseException, TimeOutException;
 
-    void remove(Discount discount) throws DatabaseException, TimeOutException;
+    void remove(Long id) throws DatabaseException, TimeOutException;
 
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
+
+    boolean existWithName(String name) throws DatabaseException, TimeOutException;
 }

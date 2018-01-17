@@ -4,13 +4,17 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.exception.BadRequestException;
 import com.chernik.internetprovider.service.RegularExpressionService;
 
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 
 public abstract class Mapper<T> {
     private static final String INTEGER_FORMAT_REGULAR_EXPRESSION = "^\\d+$";
-    private static final String DOUBLE_FORMAT_REGULAR_EXPRESSION = "^\\d{1,15}(\\.\\d{1,2})*$";
-
+    private static final String DOUBLE_FORMAT_REGULAR_EXPRESSION = "^\\d{1,15}(\\.\\d{1,2})?$";
+    private static final String DATE_FORMAT_REGULAR_EXPRESSION = "^\\d{4}-\\d{2}-\\d{2}$";
+    private static final String BOOLEAN_FORMAT_REGULAR_EXPRESSION = "^(true|false)$";
 
     @Autowired
     private RegularExpressionService regularExpressionService;
@@ -87,6 +91,30 @@ public abstract class Mapper<T> {
             }
         } else {
             throw new BadRequestException("Mandatory field does not initialize");
+        }
+    }
+
+    Date getMandatoryDate(String data) throws BadRequestException {
+        if (data != null && !data.isEmpty()) {
+            if (regularExpressionService.checkTo(data, DATE_FORMAT_REGULAR_EXPRESSION)) {
+                return Date.valueOf(data);
+            } else {
+                throw new BadRequestException(String.format("Field: %s have wrong format", data));
+            }
+        } else {
+            throw new BadRequestException("Mandatory field does not initialize");
+        }
+    }
+
+    Boolean getNotMandatoryBoolean(String data) throws BadRequestException {
+        if (data != null && !data.isEmpty()) {
+            if (regularExpressionService.checkTo(data, BOOLEAN_FORMAT_REGULAR_EXPRESSION)) {
+                return Boolean.valueOf(data);
+            } else {
+                throw new BadRequestException(String.format("Field: %s have wrong format", data));
+            }
+        } else {
+            return null;
         }
     }
 }

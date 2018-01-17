@@ -21,19 +21,21 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     private static final Logger LOGGER = LogManager.getLogger(DiscountRepositoryImpl.class);
 
 
-    private static final String CREATE_DISCOUNT = "INSERT INTO `discount`(`description`, `amount`, `start_date`, `end_date`, `only_for_new_client`) VALUES (?,?,?,?,?)";
+    private static final String CREATE_DISCOUNT = "INSERT INTO `discount`(`name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client`) VALUES (?,?,?,?,?,?)";
 
-    private static final String UPDATE_DISCOUNT = "UPDATE `discount` SET `description`=?, `amount`=?, `end_date`=?, `only_for_new_client`=? WHERE `discount_id`=?";
+    private static final String UPDATE_DISCOUNT = "UPDATE `discount` SET `name`=?, `description`=?, `amount`=?, `end_date`=?, `only_for_new_client`=? WHERE `discount_id`=?";
 
     private static final String GET_DISCOUNT_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `discount`";
+                                                                                    //TODO it's not needed description for by page view
+    private static final String GET_DISCOUNT_PAGE = "SELECT `discount_id`, `name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` LIMIT ? OFFSET ?";
 
-    private static final String GET_DISCOUNT_PAGE = "SELECT `discount_id`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` LIMIT ? OFFSET ?";
-
-    private static final String GET_DISCOUNT_BY_ID = "SELECT `discount_id`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` WHERE `discount_id`=?";
+    private static final String GET_DISCOUNT_BY_ID = "SELECT `discount_id`, `name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` WHERE `discount_id`=?";
 
     private static final String REMOVE_DISCOUNT = "DELETE FROM `discount` WHERE `discount_id`=?";
 
     private static final String EXISTS_DISCOUNT_BY_ID = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `discount_id`=?)";
+
+    private static final String EXISTS_DISCOUNT_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `name`=?)";
 
 
     @Autowired
@@ -46,12 +48,13 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     }
 
     private PreparedStatement createStatementForInserting(Connection connection, Discount discount) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CREATE_DISCOUNT);
-        statement.setObject(1, discount.getDescription(), Types.VARCHAR);
-        statement.setInt(2, discount.getAmount());
-        statement.setDate(3, discount.getStartDate());
-        statement.setDate(4, discount.getEndDate());
-        statement.setBoolean(5, discount.getOnlyForNewClient());
+        PreparedStatement statement = connection.prepareStatement(CREATE_DISCOUNT, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, discount.getName());
+        statement.setObject(2, discount.getDescription(), Types.VARCHAR);
+        statement.setInt(3, discount.getAmount());
+        statement.setDate(4, discount.getStartDate());
+        statement.setDate(5, discount.getEndDate());
+        statement.setBoolean(6, discount.getOnlyForNewClient());
         return statement;
     }
 
@@ -63,11 +66,12 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     private PreparedStatement createPreparedStatementForUpdate(Connection connection, Discount discount) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(UPDATE_DISCOUNT);
-        statement.setObject(1, discount.getDescription(), Types.VARCHAR);
-        statement.setInt(2, discount.getAmount());
-        statement.setDate(3, discount.getEndDate());
-        statement.setBoolean(4, discount.getOnlyForNewClient());
-        statement.setLong(5, discount.getDiscountId());
+        statement.setString(1, discount.getName());
+        statement.setObject(2, discount.getDescription(), Types.VARCHAR);
+        statement.setInt(3, discount.getAmount());
+        statement.setDate(4, discount.getEndDate());
+        statement.setBoolean(5, discount.getOnlyForNewClient());
+        statement.setLong(6, discount.getDiscountId());
         return statement;
     }
 
@@ -104,13 +108,13 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
 
     @Override
-    public void remove(Discount discount) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(discount, this::getPreparedStatementForRemove);
+    public void remove(Long id) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(id, this::getPreparedStatementForRemove);
     }
 
-    private PreparedStatement getPreparedStatementForRemove(Connection connection, Discount discount) throws SQLException {
+    private PreparedStatement getPreparedStatementForRemove(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(REMOVE_DISCOUNT);
-        statement.setLong(1, discount.getDiscountId());
+        statement.setLong(1, id);
         return statement;
     }
 
@@ -125,9 +129,21 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         return statement;
     }
 
+    @Override
+    public boolean existWithName(String name) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(name, this::createStatementForExistByName);
+    }
+
+    private PreparedStatement createStatementForExistByName(Connection connection, String name) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_NAME);
+        statement.setString(1, name);
+        return statement;
+    }
+
     private Discount createDiscount(ResultSet resultSet) throws SQLException {
         Discount discount = new Discount();
         discount.setDiscountId(resultSet.getLong(DiscountField.DISCOUNT_ID.toString()));
+        discount.setName(resultSet.getString(DiscountField.NAME.toString()));
         discount.setDescription(resultSet.getString(DiscountField.DESCRIPTION.toString()));
         discount.setAmount(resultSet.getInt(DiscountField.AMOUNT.toString()));
         discount.setStartDate(resultSet.getDate(DiscountField.START_DATE.toString()));

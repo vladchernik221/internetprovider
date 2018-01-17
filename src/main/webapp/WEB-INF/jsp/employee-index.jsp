@@ -33,7 +33,7 @@
             </section><section class="box col-3" onclick="redirect('/service')">
                 <div class="icon medium rounded green fa-wrench"></div>
                 <h3>Услуги</h3>
-            </section><section class="box col-3">
+            </section><section class="box col-3" onclick="redirect('/discount')">
                 <div class="icon medium rounded red fa-fire"></div>
                 <h3>Акции</h3>
             </section><section class="box col-3" onclick="redirect('/contract')">

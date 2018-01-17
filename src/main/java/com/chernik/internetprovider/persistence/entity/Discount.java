@@ -9,6 +9,7 @@ import java.sql.Date;
 @NoArgsConstructor
 public class Discount {
     private Long discountId;
+    private String name;
     private String description;
     private Integer amount;
     private Date startDate;

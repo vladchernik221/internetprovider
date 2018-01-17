@@ -601,7 +601,7 @@ input[type="radio"] + label {
 input[type="text"] + label,
 input[type="password"] + label,
 input[type="email"] + label,
-input[type="number"] + label,
+input[type="date"] + label,
 textarea + label {
     display: inline-block;
     position: relative;
@@ -617,6 +617,7 @@ textarea:placeholder-shown + label {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="date"],
 select,
 textarea {
     -moz-appearance: none;
@@ -636,6 +637,7 @@ textarea {
 input[type="text"]:invalid,
 input[type="password"]:invalid,
 input[type="email"]:invalid,
+input[type="date"]:invalid,
 select:invalid,
 textarea:invalid {
     box-shadow: none;
@@ -645,6 +647,7 @@ textarea:invalid {
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="email"]:focus,
+input[type="date"]:focus,
 select:focus,
 textarea:focus {
     border-color: #383b43;
@@ -692,6 +695,7 @@ div.selected-item .icon {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="date"],
 select {
     height: 2.75em;
 }

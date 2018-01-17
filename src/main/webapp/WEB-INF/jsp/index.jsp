@@ -44,7 +44,7 @@
                 <h3>Услуги</h3>
                 <p>Здесь приведен список услуг по подключению, настройке и т.д., прдоставляемых компанией своим
                     клиентам.</p>
-            </section><section class="box col-3">
+            </section><section class="box col-3" onclick="redirect('/discount')">
                 <div class="icon big rounded red fa-fire"></div>
                 <h3>Акции</h3>
                 <p>Наша компания предоставляет скидки своим клиентам. В данном разделе Вы можете ознакомится с условиями
