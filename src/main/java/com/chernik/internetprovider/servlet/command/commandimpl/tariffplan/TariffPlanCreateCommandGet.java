@@ -1,8 +1,14 @@
 package com.chernik.internetprovider.servlet.command.commandimpl.tariffplan;
 
+import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
+import com.chernik.internetprovider.exception.BaseException;
+import com.chernik.internetprovider.persistence.entity.Discount;
+import com.chernik.internetprovider.persistence.entity.TariffPlan;
+import com.chernik.internetprovider.service.DiscountService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,9 +25,15 @@ public class TariffPlanCreateCommandGet implements Command{
 
     private static final String TARIFF_FORM_PAGE = "/WEB-INF/jsp/tariff/tariffForm.jsp";
 
+    @Autowired
+    private DiscountService discountService;
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException, BaseException {
+        List<Discount> discounts = discountService.getAll();
+        request.setAttribute("discounts", discounts);
+
         RequestDispatcher dispatcher = request.getRequestDispatcher(TARIFF_FORM_PAGE);
         LOGGER.log(Level.TRACE, "Forward to page: {}", TARIFF_FORM_PAGE);
         dispatcher.forward(request, response);

@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,4 +18,5 @@ public class TariffPlan {
     private BigDecimal priceOverTraffic;
     private BigDecimal monthlyFee;
     private Boolean archived;
+    private List<Discount> discounts;
 }

@@ -10,6 +10,7 @@ import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
 import com.chernik.internetprovider.service.DiscountService;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +40,11 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public Page<Discount> getPage(Pageable pageable) throws BaseException {
         return discountRepository.getPage(pageable);
+    }
+
+    @Override
+    public List<Discount> getAll() throws BaseException {
+        return discountRepository.getAll();
     }
 
     @Override

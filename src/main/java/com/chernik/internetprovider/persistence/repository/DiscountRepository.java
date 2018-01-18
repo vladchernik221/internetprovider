@@ -6,6 +6,7 @@ import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.Discount;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface DiscountRepository {
@@ -14,6 +15,8 @@ public interface DiscountRepository {
     void update(Discount discount) throws DatabaseException, TimeOutException;
 
     Page<Discount> getPage(Pageable pageable) throws DatabaseException, TimeOutException;
+
+    List<Discount> getAll() throws DatabaseException, TimeOutException;
 
     Optional<Discount> getById(Long id) throws DatabaseException, TimeOutException;
 

@@ -75,19 +75,14 @@
                 <input type="text" name="priceOverTraffic" placeholder="Цена за Мб после превышения трафика" pattern="^\d*(\.\d{0,2})?$" value="${tariffPlan.priceOverTraffic}" />
                 <label>Цена за Мб после превышения трафика</label>
             </div></div>
-            <div class="row">
-                <div class="selected-item">Акция 11<div class="icon small fa-remove"></div></div>
-                <div class="selected-item">Акция 12<div class="icon small fa-remove"></div></div>
-                <div class="selected-item">Акция 13<div class="icon small fa-remove"></div></div>
-            </div>
+            <div class="row selected-discounts"></div>
             <div class="row">
                 <div class="select-wrapper">
-                    <select name="category">
-                        <option value="">- Акции -</option>
-                        <option value="1">Акция 1</option>
-                        <option value="1">Акция 2</option>
-                        <option value="1">Акция 3</option>
-                        <option value="1">Акция 4</option>
+                    <select id="discount" onchange="select_discount(this)">
+                        <option value="">-- Акции --</option>
+                        <c:forEach items="${discounts}" var="discount">
+                            <option value="${discount.discountId}">${discount.name}</option>
+                        </c:forEach>
                     </select>
                 </div>
             </div>

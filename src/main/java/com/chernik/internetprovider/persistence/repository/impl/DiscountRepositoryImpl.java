@@ -10,6 +10,7 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.entityfield.DiscountField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +29,8 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     private static final String GET_DISCOUNT_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `discount`";
                                                                                     //TODO it's not needed description for by page view
     private static final String GET_DISCOUNT_PAGE = "SELECT `discount_id`, `name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` LIMIT ? OFFSET ?";
+
+    private static final String GET_DISCOUNTS = "SELECT `discount_id`, `name` FROM `discount`";
 
     private static final String GET_DISCOUNT_BY_ID = "SELECT `discount_id`, `name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` WHERE `discount_id`=?";
 
@@ -94,6 +97,15 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         return statement;
     }
 
+    @Override
+    public List<Discount> getAll() throws DatabaseException, TimeOutException {
+        return commonRepository.getAll(this::createPreparedStatementForGettingAll, this::createShortDiscount);
+    }
+
+    private PreparedStatement createPreparedStatementForGettingAll(Connection connection) throws SQLException {
+        return connection.prepareStatement(GET_DISCOUNTS);
+    }
+
 
     @Override
     public Optional<Discount> getById(Long id) throws DatabaseException, TimeOutException {
@@ -138,6 +150,13 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_NAME);
         statement.setString(1, name);
         return statement;
+    }
+
+    private Discount createShortDiscount(ResultSet resultSet) throws SQLException {
+        Discount discount = new Discount();
+        discount.setDiscountId(resultSet.getLong(DiscountField.DISCOUNT_ID.toString()));
+        discount.setName(resultSet.getString(DiscountField.NAME.toString()));
+        return discount;
     }
 
     private Discount createDiscount(ResultSet resultSet) throws SQLException {
