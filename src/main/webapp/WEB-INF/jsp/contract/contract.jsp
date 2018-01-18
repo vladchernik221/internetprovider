@@ -35,7 +35,7 @@
             </div></c:if><!--
         --></div>
         <c:if test="${contract.dissolved}">
-            <h2 class="warn">Расторгнут</h2>
+            <h2 class="warn">Расторгнут <fmt:formatDate type = "date" dateStyle = "long" value = "${contract.dissolveDate}" /></h2>
         </c:if>
         <h2 class="uppercase">Договор № <span class="important">
             <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contract.contractId}" /></span><br/>на оказание услуг связи</h2>

@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 
-//TODO dissolved date
 @Data
 @NoArgsConstructor
 public class Contract {
     private Long contractId;
     private Date concludeDate;
+    private Date dissolveDate;
     private Boolean dissolved;
     private ClientType clientType;
     private LegalEntityClientInformation legalEntityClientInformation;

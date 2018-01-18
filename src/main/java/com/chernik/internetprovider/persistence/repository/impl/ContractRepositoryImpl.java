@@ -20,9 +20,9 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private static final String CREATE_CONTRACT = "INSERT INTO `contract`(`client_type`, `individual_client_information_id`, `legal_entity_client_information_id`) VALUES (?,?,?)";
 
-    private static final String DISSOLVE_CONTRACT = "UPDATE `contract` SET `dissolved`=1 WHERE `contract_id`=?";
+    private static final String DISSOLVE_CONTRACT = "UPDATE `contract` SET `dissolved`=1, `dissolve_date`=CURRENT_TIMESTAMP WHERE `contract_id`=?";
 
-    private static final String GET_CONTRACT_BY_ID = "SELECT `contract_id`, `conclude_date`, `dissolved`, `client_type`, `legal_entity_client_information_id`, `individual_client_information_id` FROM `contract` WHERE `contract_id`=?";
+    private static final String GET_CONTRACT_BY_ID = "SELECT `contract_id`, `conclude_date`, `dissolve_date`, `dissolved`, `client_type`, `legal_entity_client_information_id`, `individual_client_information_id` FROM `contract` WHERE `contract_id`=?";
 
     private static final String EXISTS_CONTRACT_BY_ID = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `contract_id`=?)";
 
@@ -80,6 +80,7 @@ public class ContractRepositoryImpl implements ContractRepository {
         Contract contract = new Contract();
         contract.setContractId(resultSet.getLong(ContractField.CONTRACT_ID.toString()));
         contract.setConcludeDate(resultSet.getDate(ContractField.CONCLUDE_DATE.toString()));
+        contract.setDissolveDate(resultSet.getDate(ContractField.DISSOLVE_DATE.toString()));
         contract.setDissolved(resultSet.getBoolean(ContractField.DISSOLVED.toString()));
         contract.setClientType(ClientType.valueOf(resultSet.getString(ContractField.CLIENT_TYPE.toString())));
         Long individualClientInformationId = (Long) resultSet.getObject(ContractField.INDIVIDUAL_CLIENT_INFORMATION_ID.toString());

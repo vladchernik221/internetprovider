@@ -63,8 +63,8 @@
                 <label>Адрес</label>
             </div>
             <div class="row only-for-individual">
-                <input type="text" name="individual.phoneNumber" placeholder="Номер телефона" required />
-                <label>Номер телефона</label>
+                <input type="text" name="individual.phoneNumber" placeholder="Номер телефона: (00)000-00-00" pattern="^\(\d{2}\)\d{3}-\d{2}-\d{2}$" required />
+                <label>Номер телефона: (00)000-00-00</label>
             </div>
             <div class="row only-for-legal">
                 <input type="text" name="legal.name" placeholder="Название" required />
@@ -79,8 +79,8 @@
                 <label>Адрес</label>
             </div>
             <div class="row only-for-legal">
-                <input type="text" name="legal.phoneNumber" placeholder="Номер телефона" required />
-                <label>Номер телефона</label>
+                <input type="text" name="legal.phoneNumber" placeholder="Номер телефона: (00)000-00-00" pattern="^\(\d{2}\)\d{3}-\d{2}-\d{2}$" required />
+                <label>Номер телефона: (00)000-00-00</label>
             </div>
             <input class="big" type="submit" value="Сохранить" />
             <input class="big" type="reset" value="Очистить" />
