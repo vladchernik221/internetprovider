@@ -4,12 +4,13 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.exception.BadRequestException;
 import com.chernik.internetprovider.service.RegularExpressionService;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.sql.Date;
+import java.util.function.Function;
 
+//TODO parameters names to constants somewhere
+//TODO refactor to lambda
 public abstract class Mapper<T> {
     private static final String INTEGER_FORMAT_REGULAR_EXPRESSION = "^\\d+$";
     private static final String DOUBLE_FORMAT_REGULAR_EXPRESSION = "^\\d{1,15}(\\.\\d{1,2})?$";
@@ -94,16 +95,8 @@ public abstract class Mapper<T> {
         }
     }
 
-    Date getMandatoryDate(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, DATE_FORMAT_REGULAR_EXPRESSION)) {
-                return Date.valueOf(data);
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            throw new BadRequestException("Mandatory field does not initialize");
-        }
+    Date getMandatoryDate(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, DATE_FORMAT_REGULAR_EXPRESSION, true, Date::valueOf);
     }
 
     Boolean getNotMandatoryBoolean(String data) throws BadRequestException {
@@ -115,6 +108,23 @@ public abstract class Mapper<T> {
             }
         } else {
             return null;
+        }
+    }
+
+    private <P> P getParameter(HttpServletRequest request, String parameterName, String formatRegularExpression, boolean mandatory, Function<String, P> convertFunction) throws BadRequestException {
+        String data = request.getParameter(parameterName);
+        if (data != null) {
+            if (regularExpressionService.checkTo(data, formatRegularExpression)) {
+                return convertFunction.apply(data);
+            } else {
+                throw new BadRequestException(String.format("Parameter %s: %s have wrong format", parameterName, data));
+            }
+        } else {
+            if (!mandatory) {
+                return null;
+            } else {
+                throw new BadRequestException(String.format("Mandatory parameter %s does not initialize", parameterName));
+            }
         }
     }
 }

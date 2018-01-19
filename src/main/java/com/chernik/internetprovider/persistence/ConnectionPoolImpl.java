@@ -1,8 +1,5 @@
 package com.chernik.internetprovider.persistence;
 
-import com.chernik.internetprovider.context.AfterCreate;
-import com.chernik.internetprovider.context.BeforeDestroy;
-import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import org.apache.logging.log4j.Level;
@@ -19,7 +16,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-@Component
 public class ConnectionPoolImpl implements ConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger(ConnectionPoolImpl.class);
 
@@ -46,7 +42,6 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private Deque<Connection> busyConnections = new ArrayDeque<>();
     private AtomicInteger connectionCount = new AtomicInteger();
 
-    @AfterCreate
     public void initDatabaseProperty() {
         ResourceBundle bundle = ResourceBundle.getBundle(PROPERTY_FILE_NAME);
 
@@ -160,7 +155,6 @@ public class ConnectionPoolImpl implements ConnectionPool {
         LOGGER.log(Level.DEBUG, "Release connection. Available connections count: {}", availableConnections.size());
     }
 
-    @BeforeDestroy
     public void closeAllConnections() {
         try {
             locker.lock();

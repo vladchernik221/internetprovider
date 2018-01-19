@@ -1,5 +1,7 @@
 package com.chernik.internetprovider.context;
 
+import com.chernik.internetprovider.persistence.TransactionManager;
+import com.chernik.internetprovider.persistence.TransactionalConnectionPool;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -73,7 +75,7 @@ public class ContextInitializer {
      * @return instance of specified class.
      */
     public Object getComponent(Class<?> clazz) {
-        return components.get(getImplementation(clazz));
+        return getComponentOrImplementation(clazz);
     }
 
 
@@ -86,13 +88,31 @@ public class ContextInitializer {
         long startTime = System.currentTimeMillis();
         initComponents(Component.class);
         initComponents(Repository.class);
-        initComponents(Service.class);
+        initProxyServices(Service.class);
         initComponents(HttpRequestProcessor.class);
         autowireComponents();
         LOGGER.log(Level.DEBUG, "Start after createOrUpdate methods");
         invokeLifeCycleMethod(withAfterCreate);
         long stopTime = System.currentTimeMillis();
         LOGGER.log(Level.INFO, "Context was initialize in {} milliseconds", stopTime - startTime);
+    }
+
+    private void initProxyServices(Class<Service> annotation) {
+        LOGGER.log(Level.TRACE, "Search class with annotation {} for creating proxy", annotation);
+        ref.getTypesAnnotatedWith(annotation)
+                .forEach(clazz -> {
+                    Object component = createInstance(clazz);
+                    addAutowireField(clazz, component);
+                    addLifeCycleMethod(clazz, component);
+                    component = createProxyOfClass(clazz, component);
+                    components.put(clazz, component);
+                });
+    }
+
+    private Object createProxyOfClass(Class<?> clazz, Object component) {
+        Class<?> anInterface = clazz.getInterfaces()[0];
+        ServiceInvocationHandler serviceInvocationHandler = new ServiceInvocationHandler((TransactionalConnectionPool) getComponent(TransactionManager.class), component);
+        return Proxy.newProxyInstance(anInterface.getClassLoader(), new Class[]{anInterface}, serviceInvocationHandler);
     }
 
     /**
@@ -113,7 +133,7 @@ public class ContextInitializer {
      * @param annotation specify annotation, components with that should be initialized.
      */
     private void initComponents(Class<? extends Annotation> annotation) {
-        LOGGER.log(Level.TRACE, "Finding class with annotation {}", annotation);
+        LOGGER.log(Level.TRACE, "Search class with annotation {}", annotation);
         ref.getTypesAnnotatedWith(annotation)
                 .forEach(clazz -> {
                     Object component = createInstance(clazz);
@@ -288,7 +308,13 @@ public class ContextInitializer {
      * @return one class, that implements specified interface.
      */
     private Class<?> getImplementation(Class<?> interfaceClass) {
-        Set classSet = ref.getSubTypesOf(interfaceClass);
-        return (Class<?>) classSet.toArray()[0];
+        Set<? extends Class<?>> classSet = ref.getSubTypesOf(interfaceClass);
+        Optional<? extends Class<?>> implementation = classSet.stream().filter(clazz -> clazz.isAnnotationPresent(Component.class) || clazz.isAnnotationPresent(Service.class) || clazz.isAnnotationPresent(Repository.class) || clazz.isAnnotationPresent(HttpRequestProcessor.class)).findFirst();
+
+        if (implementation.isPresent()) {
+            return implementation.get();
+        } else {
+            throw new ConcurrentModificationException(String.format("Interface %s hasn't implementation", interfaceClass));
+        }
     }
 }
