@@ -213,6 +213,25 @@ public class CommonRepository {
         return entities;
     }
 
+    public <T, C> List<T> getAllByСondition(C condition, BiThrowableFunction<Connection, C, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting all");
+        Connection connection = connectionPool.getConnection();
+        List<T> entities = new ArrayList<>();
+        try (PreparedStatement statement = statementFunctional.apply(connection, condition);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                entities.add(createEntityFunction.apply(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Getting complete successful");
+        return entities;
+    }
+
     private Long getGeneratedId(PreparedStatement statement) throws DatabaseException {
         Long generatedId;
         try (ResultSet generatedKeys = statement.getGeneratedKeys()) {

@@ -10,11 +10,11 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.entityfield.DiscountField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
-import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,7 +27,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     private static final String UPDATE_DISCOUNT = "UPDATE `discount` SET `name`=?, `description`=?, `amount`=?, `end_date`=?, `only_for_new_client`=? WHERE `discount_id`=?";
 
     private static final String GET_DISCOUNT_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `discount`";
-                                                                                    //TODO it's not needed description for by page view
+    //TODO it's not needed description for by page view
     private static final String GET_DISCOUNT_PAGE = "SELECT `discount_id`, `name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` LIMIT ? OFFSET ?";
 
     private static final String GET_DISCOUNTS = "SELECT `discount_id`, `name` FROM `discount`";
@@ -39,6 +39,8 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     private static final String EXISTS_DISCOUNT_BY_ID = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `discount_id`=?)";
 
     private static final String EXISTS_DISCOUNT_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `name`=?)";
+
+    private static final String GET_ALL_BY_TARIFF_PLAN_ID = "SELECT d.discount_id, `name` FROM `discount` d JOIN `discount_has_tariff_plan` dhtp ON dhtp.tariff_plan_id = ?";
 
 
     @Autowired
@@ -169,5 +171,16 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         discount.setEndDate(resultSet.getDate(DiscountField.END_DATE.toString()));
         discount.setOnlyForNewClient(resultSet.getBoolean(DiscountField.ONLY_FOR_NEW_CLIENT.toString()));
         return discount;
+    }
+
+    @Override
+    public List<Discount> getByTariffPlanId(Long tariffPlanId) throws DatabaseException, TimeOutException {
+        return commonRepository.getAllByСondition(tariffPlanId, this::createPreparedStatementForGettingAllByTariffPlanId, this::createShortDiscount);
+    }
+
+    private PreparedStatement createPreparedStatementForGettingAllByTariffPlanId(Connection connection, Long tariffPlanId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_ALL_BY_TARIFF_PLAN_ID);
+        statement.setLong(1, tariffPlanId);
+        return statement;
     }
 }

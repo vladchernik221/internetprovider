@@ -2,12 +2,11 @@ package com.chernik.internetprovider.service.impl;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
-import com.chernik.internetprovider.exception.BaseException;
-import com.chernik.internetprovider.exception.EntityNotFoundException;
-import com.chernik.internetprovider.exception.UnableSaveEntityException;
+import com.chernik.internetprovider.exception.*;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.Discount;
+import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
 import com.chernik.internetprovider.service.DiscountService;
 import java.util.List;
@@ -63,5 +62,10 @@ public class DiscountServiceImpl implements DiscountService {
         } else {
             throw new EntityNotFoundException(String.format("Discount with id: %s does not exist", id));
         }
+    }
+
+    @Override
+    public List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
+        return discountRepository.getByTariffPlanId(tariffPlan.getTariffPlanId());
     }
 }

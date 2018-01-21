@@ -25,4 +25,6 @@ public interface DiscountRepository {
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 
     boolean existWithName(String name) throws DatabaseException, TimeOutException;
+
+    List<Discount> getByTariffPlanId(Long tariffPlanId) throws DatabaseException, TimeOutException;
 }

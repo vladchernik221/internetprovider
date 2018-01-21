@@ -18,15 +18,17 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="../template/header.jsp" />
+    <jsp:include page="../template/header.jsp"/>
 </header>
 
 <!-- Main part -->
 <section class="wrapper style2">
     <div class="container">
-        <div class="row"><div class="align-left col-2">
+        <div class="row">
+            <div class="align-left col-2">
                 <a href="/tariff-plan" class="button small">К списку</a>
-            </div><div class="align-right actions col-2">
+            </div>
+            <div class="align-right actions col-2">
                 <a href="/tariff-plan/${tariffPlan.tariffPlanId}/edit" class="button small">Редактировать</a>
                 <button class="button small" onclick="change_archived(${tariffPlan.tariffPlanId})">
                     <c:choose>
@@ -34,7 +36,8 @@
                         <c:otherwise>Извлечь из архива</c:otherwise>
                     </c:choose>
                 </button>
-            </div></div>
+            </div>
+        </div>
         <c:if test="${tariffPlan.archived}">
             <h2 class="warn">Находится в архиве</h2>
         </c:if>
@@ -64,32 +67,18 @@
         </table>
         <div class="discount slider">
             <ul>
-                <li>
-                    <h2>Название акции 1</h2>
-                    <p>Описание акции, описание</p>
-                </li>
-                <li>
-                    <h2>Название акции 2</h2>
-                    <p>Описание акции, описание</p>
-                </li>
-                <li>
-                    <h2>Название акции 3</h2>
-                    <p>Описание акции, описание</p>
-                </li>
-                <li>
-                    <h2>Название акции 4</h2>
-                    <p>Описание акции, описание</p>
-                </li>
-                <li>
-                    <h2>Название акции 5</h2>
-                    <p>Описание акции, описание</p>
-                </li>
+                <c:forEach items="${tariffPlan.discounts}" var="discount">
+                    <li>
+                        <h2>${discount.name}</h2>
+                        <p>${discount.description}</p>
+                    </li>
+                </c:forEach>
             </ul>
         </div>
     </div>
 </section>
 
 <!-- Footer -->
-<jsp:include page="../template/footer.jsp" />
+<jsp:include page="../template/footer.jsp"/>
 </body>
 </html>
