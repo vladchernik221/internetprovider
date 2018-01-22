@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/tariffList_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Тарифы</title>
+    <title><fmt:message key="tariffs" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -28,23 +31,23 @@
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2>Тарифные планы</h2>
-            <a href="/tariff-plan/new" class="button">Создать тарифный план</a>
+            <h2><fmt:message key="tariffs" /></h2>
+            <a href="/tariff-plan/new" class="button"><fmt:message key="tariff.create" /></a>
         </header>
         <c:choose>
             <c:when test="${tariffPlansPage.pagesCount == 0}">
-                <h2 class="warn">Не создано ни одного таифного плана</h2>
+                <h2 class="warn"><fmt:message key="tariff.notCreated" /></h2>
             </c:when>
             <c:otherwise>
                 <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
-                <label for="archived">Показывать архивные</label>
+                <label for="archived"><fmt:message key="tariff.showArchived" /></label>
                 <table class="list">
                     <tr>
-                        <th>Название</th>
-                        <th>Абонентская плата</th>
-                        <th>Скорость приема</th>
-                        <th>Скорость передачи</th>
-                        <th>Включенный трафик</th>
+                        <th><fmt:message key="tariff.name" /></th>
+                        <th><fmt:message key="tariff.monthlyFee" /></th>
+                        <th><fmt:message key="tariff.downSpeed" /></th>
+                        <th><fmt:message key="tariff.upSpeed" /></th>
+                        <th><fmt:message key="tariff.includedTraffic" /></th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -82,3 +85,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

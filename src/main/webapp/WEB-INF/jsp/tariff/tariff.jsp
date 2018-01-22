@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/tariff_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Описание тарифа</title>
+    <title><fmt:message key="tariff.description" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -18,50 +21,47 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="../template/header.jsp"/>
+    <jsp:include page="../template/header.jsp" />
 </header>
 
 <!-- Main part -->
 <section class="wrapper style2">
     <div class="container">
-        <div class="row">
-            <div class="align-left col-2">
-                <a href="/tariff-plan" class="button small">К списку</a>
-            </div>
-            <div class="align-right actions col-2">
-                <a href="/tariff-plan/${tariffPlan.tariffPlanId}/edit" class="button small">Редактировать</a>
+        <div class="row"><div class="align-left col-2">
+                <a href="/tariff-plan" class="button small"><fmt:message key="tariff.toList" /></a>
+            </div><div class="align-right actions col-2">
+                <a href="/tariff-plan/${tariffPlan.tariffPlanId}/edit" class="button small"><fmt:message key="edit" /></a>
                 <button class="button small" onclick="change_archived(${tariffPlan.tariffPlanId})">
                     <c:choose>
-                        <c:when test="${!tariffPlan.archived}">Поместить в архив</c:when>
-                        <c:otherwise>Извлечь из архива</c:otherwise>
+                        <c:when test="${!tariffPlan.archived}"><fmt:message key="tariff.toArchive" /></c:when>
+                        <c:otherwise><fmt:message key="tariff.fromArchive" /></c:otherwise>
                     </c:choose>
                 </button>
-            </div>
-        </div>
+            </div></div>
         <c:if test="${tariffPlan.archived}">
-            <h2 class="warn">Находится в архиве</h2>
+            <h2 class="warn"><fmt:message key="tariff.inArchive" /></h2>
         </c:if>
         <h1>${tariffPlan.name}</h1>
         <p>${tariffPlan.description}</p>
         <table class="description">
             <tr>
-                <th>Абонентская плата</th>
+                <th><fmt:message key="tariff.monthlyFee" /></th>
                 <td>${tariffPlan.monthlyFee}</td>
             </tr>
             <tr>
-                <th>Скорость передачи</th>
+                <th><fmt:message key="tariff.downSpeed" /></th>
                 <td>${tariffPlan.downSpeed}</td>
             </tr>
             <tr>
-                <th>Скорость отдачи</th>
+                <th><fmt:message key="tariff.upSpeed" /></th>
                 <td>${tariffPlan.upSpeed}</td>
             </tr>
             <tr>
-                <th>Включенный трафик, Мб</th>
+                <th><fmt:message key="tariff.includedTraffic" /></th>
                 <td>${tariffPlan.includedTraffic}</td>
             </tr>
             <tr>
-                <th>Цена за Мб после превышения трафика</th>
+                <th><fmt:message key="tariff.priceOverTraffic" /></th>
                 <td>${tariffPlan.priceOverTraffic}</td>
             </tr>
         </table>
@@ -79,6 +79,7 @@
 </section>
 
 <!-- Footer -->
-<jsp:include page="../template/footer.jsp"/>
+<jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

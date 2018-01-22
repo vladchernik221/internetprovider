@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/userList_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Пользователи</title>
+    <title><fmt:message key="users" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -28,32 +31,32 @@
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2>Учётные записи пользователей</h2>
-            <a href="/user/new" class="button">Создать учётную запись пользователя</a>
+            <h2><fmt:message key="user.accounts" /></h2>
+            <a href="/user/new" class="button"><fmt:message key="user.create" /></a>
         </header>
         <div class="row">
             <input type="radio" name="role" value="ALL" id="role-all" onchange="show_with_role(this)" <c:if test="${param.role == null}">checked</c:if> />
-            <label for="role-all">Все</label>
+            <label for="role-all"><fmt:message key="user.all" /></label>
         </div>
         <div class="row"><div class="col-3">
             <input type="radio" name="role" value="ADMIN" id="role-admin" onchange="show_with_role(this)" <c:if test="${param.role == 'ADMIN'}">checked</c:if> />
-            <label for="role-admin">Администраторы</label>
+            <label for="role-admin"><fmt:message key="user.admins" /></label>
         </div><div class="col-3">
             <input type="radio" name="role" value="SELLER" id="role-seller" onchange="show_with_role(this)" <c:if test="${param.role == 'SELLER'}">checked</c:if> />
-            <label for="role-seller">Менеджеры по продажам</label>
+            <label for="role-seller"><fmt:message key="user.sellers" /></label>
         </div><div class="col-3">
             <input type="radio" name="role" value="CUSTOMER" id="role-customer" onchange="show_with_role(this)" <c:if test="${param.role == 'CUSTOMER'}">checked</c:if> />
-            <label for="role-customer">Клиенты</label>
+            <label for="role-customer"><fmt:message key="user.customers" /></label>
         </div></div>
         <c:choose>
             <c:when test="${usersPage.pagesCount == 0}">
-                <h2 class="warn">Не создано ни одной учётной записи пользователя</h2>
+                <h2 class="warn"><fmt:message key="user.notCreated" /></h2>
             </c:when>
             <c:otherwise>
                 <table class="list">
                     <tr>
-                        <th>Логин</th>
-                        <th>Роль</th>
+                        <th><fmt:message key="user.login" /></th>
+                        <th><fmt:message key="user.role" /></th>
                         <th></th>
                     </tr>
                     <c:forEach items="${usersPage.data}" var="user">
@@ -84,3 +87,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

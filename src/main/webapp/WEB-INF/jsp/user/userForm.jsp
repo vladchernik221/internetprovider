@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/userForm_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Пользователь</title>
+    <title><fmt:message key="user" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -25,26 +28,26 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2>Создание учётной записи пользователя</h2>
+            <h2><fmt:message key="user.creation" /></h2>
         </header>
         <form id="user_form" onsubmit="send_form(event)" method="POST" action="/user/new">
             <div class="row">
-                <input type="text" name="login" placeholder="Логин" required />
-                <label>Логин</label>
+                <input type="text" name="login" placeholder="<fmt:message key="user.login" />" required />
+                <label><fmt:message key="user.login" /></label>
             </div>
             <div class="row">
-                <input type="password" name="password" placeholder="Пароль" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
-                <label>Пароль</label>
+                <input type="password" name="password" placeholder="<fmt:message key="user.password" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+                <label><fmt:message key="user.password" /></label>
             </div>
             <div class="row"><div class="col-2">
                 <input type="radio" name="userRole" value="ADMIN" id="userRole-admin" checked />
-                <label for="userRole-admin">Администратор</label>
+                <label for="userRole-admin"><fmt:message key="user.admin" /></label>
             </div><div class="col-2">
                 <input type="radio" name="userRole" value="SELLER" id="userRole-seller" />
-                <label for="userRole-seller">Менеджер по продажам</label>
+                <label for="userRole-seller"><fmt:message key="user.seller" /></label>
             </div></div>
-            <input class="big" type="submit" value="Сохранить" />
-            <input class="big" type="reset" value="Очистить" />
+            <input class="big" type="submit" value="<fmt:message key="submit" />" />
+            <input class="big" type="reset" value="<fmt:message key="reset" />" />
         </form>
     </div>
 </section>
@@ -56,3 +59,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/serviceForm_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Услуга</title>
+    <title><fmt:message key="service" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -27,10 +30,10 @@
         <header class="major">
         <c:choose>
             <c:when test="${service == null}">
-                <h2>Создание услуги</h2>
+                <h2><fmt:message key="service.creation" /></h2>
             </c:when>
             <c:otherwise>
-                <h2>Редактирование услуги</h2>
+                <h2><fmt:message key="service.edition" /></h2>
             </c:otherwise>
         </c:choose>
         </header>
@@ -43,19 +46,19 @@
             </c:otherwise>
         </c:choose>
             <div class="row">
-                <input type="text" name="name" placeholder="Название" value="${service.name}" required />
-                <label>Название</label>
+                <input type="text" name="name" placeholder="<fmt:message key="service.name" />" value="${service.name}" required />
+                <label><fmt:message key="service.name" /></label>
             </div>
             <div class="row">
-                <textarea name="description" placeholder="Описание" rows="6">${service.description}</textarea>
-                <label>Описание</label>
+                <textarea name="description" placeholder="<fmt:message key="service.description" />" rows="6">${service.description}</textarea>
+                <label><fmt:message key="service.description" /></label>
             </div>
             <div class="row">
-                <input type="text" name="price" placeholder="Стоимость" pattern="^\d*(\.\d{0,2})?$"  value="${service.price}" required />
-                <label>Стоимость</label>
+                <input type="text" name="price" placeholder="<fmt:message key="service.cost" />" pattern="^\d*(\.\d{0,2})?$"  value="${service.price}" required />
+                <label><fmt:message key="service.cost" /></label>
             </div>
-            <input class="big" type="submit" value="Сохранить" />
-            <input class="big" type="reset" value="Очистить" />
+            <input class="big" type="submit" value="<fmt:message key="submit" />" />
+            <input class="big" type="reset" value="<fmt:message key="reset" />" />
         </form>
     </div>
 </section>
@@ -67,3 +70,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

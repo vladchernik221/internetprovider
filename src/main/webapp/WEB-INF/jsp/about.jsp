@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/about_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>О компании</title>
+    <title><fmt:message key="about" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -24,18 +27,11 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2>О компании Internet Provider</h2>
+            <h2><fmt:message key="about" /> Internet Provider</h2>
         </header>
-        <p>Сегодня наша компания предоставляет широкий спектр услуг электросвязи на базе собственной опорной
-            волоконно-оптической сети</p>
-        <p>Компания Internet Provider осуществляет свою деятельность в г. Минске и Минском районе и является оператором
-            электросвязи полного цикла. Мы предлагаем своим клиентам эффективные решения в области связи и
-            телекоммуникаций, начиная от консультаций и проектирования, и заканчивая строительством локальных
-            вычислительных сетей. Абонентам предоставляется широкий выбор тарифных планов и технологий, различные
-            способы оплаты и пополнения своих лицевых счетов.</p>
-        <p>Мы стараемся быть ответственными перед своими клиентами и предлагать им только те решения, которые им
-            необходимы здесь и сейчас. Открытость и гибкость - вот наши основные принципы работы с клиентом. Поэтому,
-            обратившись к нам однажды, наши клиенты надолго сохраняют взаимовыгодные партнерские отношения.</p>
+        <p><fmt:message key="about.chapter1" /></p>
+        <p><fmt:message key="about.chapter2" /></p>
+        <p><fmt:message key="about.chapter3" /></p>
     </div>
 </section>
 
@@ -43,3 +39,4 @@
 <jsp:include page="template/footer.jsp"/>
 </body>
 </html>
+</fmt:bundle>

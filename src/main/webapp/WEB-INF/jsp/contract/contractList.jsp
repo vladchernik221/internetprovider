@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="en_US" scope="session"/>
+<fmt:bundle basename="pagecontent/contractList_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Договора</title>
+    <title><fmt:message key="contracts" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -25,22 +27,22 @@
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2>Договора</h2>
-            <a href="/contract/new" class="button">Создать договор</a>
+            <h2><fmt:message key="contracts" /></h2>
+            <a href="/contract/new" class="button"><fmt:message key="contract.create" /></a>
         </header>
         <form id="contract_search" method="GET" action="/contract">
             <div class="row">
-                <input type="text" name="number" placeholder="Номер договора" value="${param.number}" minlength="6" maxlength="6" required />
-                <label>Номер договора</label>
+                <input type="text" name="number" placeholder="<fmt:message key="contract.number" />" value="${param.number}" minlength="6" maxlength="6" required />
+                <label><fmt:message key="contract.number" /></label>
             </div>
-            <input class="small" type="submit" value="Найти" />
+            <input class="small" type="submit" value="<fmt:message key="search" />" />
         </form>
         <c:choose>
             <c:when test="${contract != null}">
                 <table class="list">
                     <tr>
-                        <th>Номер договора</th>
-                        <th>Абонент</th>
+                        <th><fmt:message key="contract.number" /></th>
+                        <th><fmt:message key="contract.client" /></th>
                     </tr>
                     <tr onclick="redirect('/contract/${contract.contractId}')">
                         <td><fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contract.contractId}" /></td>
@@ -56,7 +58,7 @@
                 </table>
             </c:when>
             <c:when test="${param.number != '' && param.number != null}">
-                <h2 class="warn">Договор с таким номером не найден</h2>
+                <h2 class="warn"><fmt:message key="contract.notFound" /></h2>
             </c:when>
         </c:choose>
     </div>
@@ -66,3 +68,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

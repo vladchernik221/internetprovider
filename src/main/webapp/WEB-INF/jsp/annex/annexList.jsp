@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/annexList_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Приложения к договору</title>
+    <title><fmt:message key="annex.list" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -28,19 +30,19 @@
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2>Приложения к договору <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contractId}" /></h2>
-            <a href="/contract/${contractId}/annex/new" class="button">Создать приложение к договору</a>
+            <h2><fmt:message key="annex.list" /> <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contractId}" /></h2>
+            <a href="/contract/${contractId}/annex/new" class="button"><fmt:message key="annex.create" /></a>
         </header>
         <c:choose>
             <c:when test="${contractAnnexesPage.pagesCount == 0}">
-                <h2 class="warn">Не создано ни одного приложения</h2>
+                <h2 class="warn"><fmt:message key="annex.notCreated" /></h2>
             </c:when>
             <c:otherwise>
                 <table class="list">
                     <tr>
-                        <th>Дата заключения</th>
-                        <th>Адрес</th>
-                        <th>Тарифный план</th>
+                        <th><fmt:message key="annex.date" /></th>
+                        <th><fmt:message key="annex.address" /></th>
+                        <th><fmt:message key="annex.tariffPlan" /></th>
                         <th></th>
                     </tr>
                     <c:forEach items="${contractAnnexesPage.data}" var="annex">
@@ -71,3 +73,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

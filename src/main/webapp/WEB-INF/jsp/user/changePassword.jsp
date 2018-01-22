@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/changePassword_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Изменение пароля</title>
+    <title><fmt:message key="password.change" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -25,23 +28,23 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2>Изменение пароля</h2>
+            <h2><fmt:message key="password.change" /></h2>
         </header>
         <form id="password_form" onsubmit="validate_form(event)" method="POST" action="/password">
         <div class="row">
-            <input type="text" name="oldPassword" placeholder="Старый пароль" required />
-            <label>Старый пароль</label>
+            <input type="text" name="oldPassword" placeholder="<fmt:message key="password.old" />" required />
+            <label><fmt:message key="password.old" /></label>
         </div>
         <div class="row">
-            <input type="text" name="newPassword" placeholder="Новый пароль" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
-            <label>Новый пароль</label>
+            <input type="text" name="newPassword" placeholder="<fmt:message key="password.new" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+            <label><fmt:message key="password.new" /></label>
         </div>
         <div class="row">
-            <input type="text" name="confirmNewPassword" placeholder="Подтверждение нового пароля" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
-            <label>Подтверждение нового пароля</label>
+            <input type="text" name="confirmNewPassword" placeholder="<fmt:message key="password.confirmNew" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+            <label><fmt:message key="password.confirmNew" /></label>
         </div>
-        <input class="big" type="submit" value="Сохранить" />
-        <input class="big" type="reset" value="Очистить" />
+        <input class="big" type="submit" value="<fmt:message key="submit" />" />
+        <input class="big" type="reset" value="<fmt:message key="reset" />" />
     </form>
     </div>
 </section>
@@ -53,3 +56,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

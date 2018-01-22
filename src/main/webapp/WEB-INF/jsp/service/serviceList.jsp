@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/serviceList_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Услуги</title>
+    <title><fmt:message key="services" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -28,20 +31,20 @@
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2>Услуги</h2>
-            <a href="/service/new" class="button">Создать услугу</a>
+            <h2><fmt:message key="services" /></h2>
+            <a href="/service/new" class="button"><fmt:message key="service.create" /></a>
         </header>
         <c:choose>
             <c:when test="${servicesPage.pagesCount == 0}">
-                <h2 class="warn">Не создано ни одной услуги</h2>
+                <h2 class="warn"><fmt:message key="service.notCreated" /></h2>
             </c:when>
             <c:otherwise>
                 <input type="checkbox" id="archived" onchange="show_archived(this)" <c:if test="${param.archived == true}">checked</c:if> />
-                <label for="archived">Показывать архивные</label>
+                <label for="archived"><fmt:message key="service.showArchived" /></label>
                 <table class="list">
                     <tr>
-                        <th>Название</th>
-                        <th>Стоимость</th>
+                        <th><fmt:message key="service.name" /></th>
+                        <th><fmt:message key="service.cost" /></th>
                         <th></th>
                         <th></th>
                     </tr>
@@ -76,3 +79,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="en_US" scope="session"/>
+<fmt:bundle basename="pagecontent/contract_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Описание контракта</title>
+    <title><fmt:message key="contract.view.title" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -19,243 +21,150 @@
 <body>
 <!-- Header -->
 <header id="header">
-    <jsp:include page="../template/header.jsp" />
+    <jsp:include page="../template/header.jsp"/>
 </header>
 
 <!-- Main part -->
 <section class="wrapper document">
     <div class="container">
-        <div class="row"><div class="align-left col-2">
-            <a href="/contract" class="button small">К списку договоров</a>
-            <a href="/contract/${contract.contractId}/annex" class="button small">Приложения</a>
-        </div><!--
-            --><c:if test="${!contract.dissolved}"><div class="align-right actions col-2">
-                <a href="/contract/${contract.contractId}/annex/new" class="button small">Добавить приложение</a>
-                <button class="button small" onclick="dissolve(${contract.contractId})">Расторгнуть</button>
-            </div></c:if><!--
-        --></div>
+        <div class="row">
+            <div class="align-left col-2">
+                <a href="/contract" class="button small"><fmt:message key="contract.view.tolist" /></a>
+                <a href="/contract/${contract.contractId}/annex" class="button small"><fmt:message key="annex.list" /></a>
+            </div><c:if test="${!contract.dissolved}"><!--
+            --><div class="align-right actions col-2">
+                <a href="/contract/${contract.contractId}/annex/new" class="button small"><fmt:message key="annex.add" /></a>
+                <button class="button small" onclick="dissolve(${contract.contractId})"><fmt:message key="contract.dissolve" /></button>
+            </div><!--
+        --></c:if></div>
         <c:if test="${contract.dissolved}">
-            <h2 class="warn">Расторгнут <fmt:formatDate type = "date" dateStyle = "long" value = "${contract.dissolveDate}" /></h2>
+            <h2 class="warn"><fmt:message key="contract.dissolved" /> <fmt:formatDate type="date" dateStyle="long" value="${contract.dissolveDate}"/></h2>
         </c:if>
-        <h2 class="uppercase">Договор № <span class="important">
-            <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contract.contractId}" /></span><br/>на оказание услуг связи</h2>
-        <p><fmt:formatDate type = "date" dateStyle = "long" value = "${contract.concludeDate}" /></p>
-        <p>Закрытое акционерное общество «Internet Provider», именуемое в дальнейшем Оператор связи с одной стороны и
-            Абонент:
+        <h2 class="uppercase"><fmt:message key="contract" /> № <span class="important">
+            <fmt:formatNumber type="number" minIntegerDigits="6" value="${contract.contractId}"/></span><br/><fmt:message key="contract.view.for" /></h2>
+        <p><fmt:formatDate type="date" dateStyle="long" value="${contract.concludeDate}"/></p>
+        <p><fmt:message key="contract.view.introduction.start" /> <fmt:message key="client" />:
             <c:choose>
                 <c:when test="${contract.clientType == 'INDIVIDUAL'}">
-                    Ф.И.О. <span class="important">${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</span>,
-                    паспортные данные: личный (идентификационный) номер <span class="important">${contract.individualClientInformation.passportUniqueIdentification}</span>,
-                    зарегистрирован(а) по адресу: <span class="important">${contract.individualClientInformation.address}</span>,
+                    <fmt:message key="client.name.abbr" /> <span class="important">${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</span>,
+                    <fmt:message key="client.passport" /> <span class="important">${contract.individualClientInformation.passportUniqueIdentification}</span>,
+                    <fmt:message key="client.register" />: <span class="important">${contract.individualClientInformation.address}</span>,
                 </c:when>
                 <c:otherwise>
-                    предприятие <span class="important">"${contract.legalEntityClientInformation.name}"</span>,
-                    зарегистрировано по адресу: <span class="important">${contract.legalEntityClientInformation.address}</span>,
+                    <fmt:message key="client.legal" /> <span class="important">"${contract.legalEntityClientInformation.name}"</span>,
+                    <fmt:message key="client.register" />: <span class="important">${contract.legalEntityClientInformation.address}</span>,
                 </c:otherwise>
             </c:choose>
-            с другой стороны, заключили настоящий договор о нижеследующем:</p>
+            <fmt:message key="contract.view.introduction.end" />:</p>
 
         <ol>
-            <li><h3 class="uppercase">Предмет договора</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter1.title" /></h3>
                 <ol>
-                    <li>Оператор связи оказывает Абоненту телематические услуги связи (далее Услуги).</li>
-                    <li>Наименование, параметры, тарифы, условия и сроки действия предоставляемых Услуг и иная
-                        информация указывается в Приложении №1 к настоящему договору, которые являются неотъемлемыми
-                        частями настоящего договора.
-                    </li>
-                    <li>Описание Услуги приводится в Приложении №1 к настоящему договору.</li>
+                    <li><fmt:message key="contract.view.chapter1.point1" /></li>
+                    <li><fmt:message key="contract.view.chapter1.point2" /></li>
+                    <li><fmt:message key="contract.view.chapter1.point3" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Права и обязанности сторон</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter2.title" /></h3>
                 <ol>
-                    <li><h4>Оператор связи обязан:</h4>
+                    <li><h4><fmt:message key="contract.view.chapter2.point1.title" /></h4>
                         <ol>
-                            <li>Предоставить Услуги по организации доступа (подключению) Абонента к Услуге связи в
-                                сроки, установленные в Правилах оказания услуг, прилагаемых к настоящему Договору, и
-                                оформить оказанные Абоненту Услуги по организации доступа (подключению) Актом
-                                сдачи-приемки. В случае необходимости Оператор по просьбе Абонента может оказать услугу
-                                по настройке оконечного оборудования Абонента по расценкам, указанным в тарифных планах
-                                Оператора. Факт оказания услуги подтверждается соответствующим Актом сдачи-приёмки.
-                            </li>
-                            <li>Предоставлять Услуги связи 24 часа в сутки, 7 дней в неделю, за исключением перерывов
-                                для проведения аварийных работ, а также необходимых ремонтных и профилактических работ.
-                            </li>
-                            <li>Консультировать Абонента по вопросам, связанным с пользованием Услугами.</li>
+                            <li><fmt:message key="contract.view.chapter2.point1.point1" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point1.point2" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point1.point3" /></li>
                         </ol>
                     </li>
-                    <li><h4>Оператор связи имеет право:</h4>
+                    <li><h4><fmt:message key="contract.view.chapter2.point2.title" /></h4>
                         <ol>
-                            <li>Для выполнения настоящего договора Оператор связи может использовать собственную сеть
-                                передачи данных, а также использовать связевые ресурсы третьих лиц, владеющих
-                                собственной или арендуемой сетью связи и имеющие необходимые лицензии на предоставление
-                                услуг связи на территории Республики Беларусь.
-                            </li>
-                            <li>Для выполнения настоящего договора, на время его действия, Оператор связи может передать
-                                в безвозмездное временное пользование Абоненту имущество (оборудование связи),
-                                подлежащее возврату в случае расторжения настоящего договора. Передача и возврат
-                                Оборудования производятся по Акту приемки-передачи Оборудования.
-                            </li>
-                            <li>Производить профилактические работы.</li>
-                            <li>Временно отключать Абонента без предварительного предупреждения в случаях,
-                                предусмотренных Правилами оказания услуг.
-                            </li>
+                            <li><fmt:message key="contract.view.chapter2.point2.point1" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point2.point2" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point2.point3" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point2.point4" /></li>
                         </ol>
                     </li>
-                    <li><h4>Абонент обязан:</h4>
+                    <li><h4><fmt:message key="contract.view.chapter2.point3.title" /></h4>
                         <ol>
-                            <li>Самостоятельно отслеживать состояние своего лицевого счета на сайте Оператора и
-                                своевременно производить платежи.
-                            </li>
-                            <li>Соблюдать Правила оказания услуг, нормы пользования сетью в течение срока действия
-                                настоящего договора.
-                            </li>
-                            <li>Абонент обязуется в случае прекращения действия договора вернуть имущество, полученное в
-                                безвозмездное пользование, в том состоянии, в каком он его получил, с учетом нормального
-                                износа.
-                            </li>
-                            <li>Абонент обязан поддерживать оборудование, полученное в безвозмездное пользование, в
-                                исправном состоянии, и нести все расходы на его содержание, а также риски утраты или
-                                случайного повреждения указанного оборудования.
-                            </li>
+                            <li><fmt:message key="contract.view.chapter2.point3.point1" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point3.point2" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point3.point3" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point3.point4" /></li>
                         </ol>
                     </li>
-                    <li><h4>Абонент имеет право:</h4>
+                    <li><h4><fmt:message key="contract.view.chapter2.point4.title" /></h4>
                         <ol>
-                            <li>Пользоваться Услугами в соответствии с Правилами оказания услуг.</li>
-                            <li>Заказывать (отменять) дополнительные Услуги, изменять тарифные планы, оформив
-                                соответствующие заявления и/или дополнительные соглашения, которые после их подписания
-                                Сторонами будут считаться неотъемлемыми частями настоящего договора, либо обратившись к
-                                Оператору через средства связи, назвав номер договора или ФИО.
-                            </li>
+                            <li><fmt:message key="contract.view.chapter2.point4.point1" /></li>
+                            <li><fmt:message key="contract.view.chapter2.point4.point2" /></li>
                         </ol>
                     </li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Стоимость услуг и порядок рассчётов</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter3.title" /></h3>
                 <ol>
-                    <li>Тарифы на Услуги, единица тарификации Услуг и порядок оплаты устанавливаются Оператором связи в
-                        тарифных планах.
-                    </li>
-                    <li>Оператор связи вправе в одностороннем порядке изменить тарифы на Услуги, уведомив Абонента не
-                        позднее, чем за 10 (десять) календарных дней до предполагаемой даты изменения тарифов.
-                    </li>
-                    <li>В случае несогласия с изменением тарифных планов (стоимости Услуг) Абонент имеет право
-                        отказаться от дальнейшего пользования Услугами и расторгнуть договор, письменно уведомив
-                        Оператора связи за 5 (пять) календарных дней до введения в действие изменений.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter3.point1" /></li>
+                    <li><fmt:message key="contract.view.chapter3.point2" /></li>
+                    <li><fmt:message key="contract.view.chapter3.point3" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Ответственность сторон</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter4.title" /></h3>
                 <ol>
-                    <li>За неисполнение либо ненадлежащее исполнение принятых обязательств, Стороны несут
-                        ответственность в соответствии с действующим законодательством Республики Беларусь и Правилами
-                        оказания Услуг. Упущенная выгода не подлежит возмещению ни одной из сторон, ни при каких
-                        обстоятельствах.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter4.point1" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Обстоятельства непреодолимой силы</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter5.title" /></h3>
                 <ol>
-                    <li>
-                        Обстоятельствами непреодолимой силы по настоящему Договору будут признаны: пожар, землетрясение,
-                        наводнение, стихийные бедствия, война, военные действия любого характера, законодательные и иные
-                        нормативные акты и решения, изданные в течение срока действия настоящего Договора, а также иные
-                        обстоятельства непреодолимой силы (в т.ч. незаконные действия третьих лиц), на возникновение и
-                        действие которых Стороны не могли повлиять разумными мерами в случае, если указанные
-                        обстоятельства прямо повлияли на возможность исполнения обязательства по настоящему Договору.
-                    </li>
-                    <li>Стороны освобождаются от ответственности за частичное или полное неисполнение обязательства по
-                        настоящему Договору, если оно явилось обстоятельством непреодолимой силы и подтверждено
-                        соответствующими документами компетентных органов. При этом срок исполнения обязательств по
-                        настоящему Договору отодвигается соразмерно времени, в течение которого будут действовать такие
-                        обстоятельства или их последствия. В этом случае ни одна из сторон не несет никаких обязательств
-                        по компенсации возможных потерь другой Стороны.
-                    </li>
-                    <li>Сторона, для которой создалась невозможность исполнения обязательств по настоящему Договору по
-                        причинам, указанным в п.5.1, должна оповестить другую Сторону в минимально возможный срок со
-                        времени начала действия обстоятельств непреодолимой силы. Действие обязательств такой Стороны
-                        будут соответственно приостановлены на время действия обстоятельств непреодолимой силы. Действие
-                        обстоятельств непреодолимой силы должно быть подтверждено соответствующим компетентным органом
-                        власти Республики Беларусь, являющимся регулятором в области телекоммуникаций.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter5.point1" /></li>
+                    <li><fmt:message key="contract.view.chapter5.point2" /></li>
+                    <li><fmt:message key="contract.view.chapter5.point3" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Срок действия договора и условия его расторжения</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter6.title" /></h3>
                 <ol>
-                    <li>Договор заключен сроком на один год, вступает в силу и становится обязательным с даты его
-                        подписания обеими Сторонами.
-                    </li>
-                    <li>Срок действия настоящего Договора продлевается на очередной календарный год без дополнительного
-                        соглашения Сторон, в том случае, если ни одна из Сторон не менее чем за 30 дней до окончания
-                        срока действия настоящего Договора, не заявит в письменной форме о намерении прекратить действие
-                        Договора.
-                    </li>
-                    <li>Расторжение договора не освобождает Стороны от погашения имеющейся задолженности.</li>
-                    <li>В случае нарушения Абонентом требований, установленных законами, действующими в РБ, правил
-                        оказания услуг связи или Договора, в том числе нарушения сроков оплаты оказанных ему услуг
-                        связи, определенных условиями Договора, оператор связи имеет право приостановить оказание услуг
-                        до устранения нарушения.
-                    </li>
-                    <li>В случае неустранения такого нарушения, в течение шести месяцев со дня получения Абонентом от
-                        Оператора связи уведомления в письменной форме о намерении приостановить оказание услуг связи,
-                        Оператор связи вправе в одностороннем порядке расторгнуть Договор.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter6.point1" /></li>
+                    <li><fmt:message key="contract.view.chapter6.point2" /></li>
+                    <li><fmt:message key="contract.view.chapter6.point3" /></li>
+                    <li><fmt:message key="contract.view.chapter6.point4" /></li>
+                    <li><fmt:message key="contract.view.chapter6.point5" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Конфиденциальность</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter7.title" /></h3>
                 <ol>
-                    <li>Условия настоящего договора, а также условия приложений (дополнений и т.п.) к нему представляют
-                        собой конфиденциальную информацию и не подлежат передаче третьим лицам, а также не могут быть
-                        сделаны достоянием гласности, как частично, так и полностью, без письменного согласия другой
-                        Стороны.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter7.point1" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Урегулирование споров</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter8.title" /></h3>
                 <ol>
-                    <li>Споры или разногласия, возникающие между Сторонами по настоящему договору или в связи с его
-                        исполнением, Стороны стремятся разрешить путем переговоров.
-                    </li>
-                    <li>В случае невозможности разрешения споров и разногласий, указанных в п. 8.1. настоящего договора,
-                        путем переговоров такие споры и разногласия решаются в суде согласно действующему
-                        законодательству РБ.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter8.point1" /></li>
+                    <li><fmt:message key="contract.view.chapter8.point2" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Заключительные положения</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter9.title" /></h3>
                 <ol>
-                    <li>Условия настоящего договора определяют соглашение между Сторонами и заменяют все достигнутые
-                        ранее устные и (или) письменные договоренности по предмету настоящего договора.
-                    </li>
-                    <li>Во всем остальном, что касается исполнения Сторонами настоящего договора и не предусмотрено в
-                        нем, Стороны руководствуются действующим законодательством РБ, регулирующим оказание услуг
-                        связи.
-                    </li>
-                    <li>Настоящий договор составлен в двух экземплярах, имеющих одинаковую юридическую силу, по одному
-                        экземпляру для каждой Стороны.
-                    </li>
+                    <li><fmt:message key="contract.view.chapter9.point1" /></li>
+                    <li><fmt:message key="contract.view.chapter9.point2" /></li>
+                    <li><fmt:message key="contract.view.chapter9.point3" /></li>
                 </ol>
             </li>
-            <li><h3 class="uppercase">Реквизиты сторон</h3>
+            <li><h3 class="uppercase"><fmt:message key="contract.view.chapter10.title" /></h3>
                 <table class="description">
                     <tr>
-                        <th>Оператор связи</th>
-                        <th>Абонент</th>
+                        <th><fmt:message key="operator" /></th>
+                        <th><fmt:message key="client" /></th>
                     </tr>
                     <tr>
-                        <td>ЗАО «Internet Provider»</td>
+                        <td><fmt:message key="operator.name" /></td>
                         <c:choose>
                             <c:when test="${contract.clientType == 'INDIVIDUAL'}">
-                                <td>Ф.И.О.: <span class="important">${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</span></td>
+                                <td><fmt:message key="client.name.abbr" />: <span class="important">${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</span>
+                                </td>
                             </c:when>
                             <c:otherwise>
-                                <td>Наименование предпрития: <span class="important">${contract.legalEntityClientInformation.name}</span></td>
+                                <td><fmt:message key="client.legal.name" />: <span class="important">${contract.legalEntityClientInformation.name}</span></td>
                             </c:otherwise>
                         </c:choose>
                     </tr>
                     <tr>
-                        <td>Юридический адрес: 111111, г. Минск, ул. Серова, 1</td>
-                        <td>Адрес регистрации: <span class="important">
+                        <td><fmt:message key="operator.address.legal" /></td>
+                        <td><fmt:message key="client.address" />: <span class="important">
                             <c:choose>
                                 <c:when test="${contract.clientType == 'INDIVIDUAL'}">
                                     ${contract.individualClientInformation.address}
@@ -267,8 +176,8 @@
                         </span></td>
                     </tr>
                     <tr>
-                        <td>Фактический адрес: 111111, г. Минск, ул. Ленина,1/2, к. 111</td>
-                        <td>Контактный телефон: <span class="important">
+                        <td><fmt:message key="operator.address.real" /></td>
+                        <td><fmt:message key="phone" />: <span class="important">
                             <c:choose>
                                 <c:when test="${contract.clientType == 'INDIVIDUAL'}">
                                     ${contract.individualClientInformation.phoneNumber}
@@ -280,42 +189,46 @@
                         </span></td>
                     </tr>
                     <tr>
-                        <td>Телефоны (111)111-11-11 Факс (111)111-11-11 доб.1111</td>
+                        <td><fmt:message key="phone" />: (111)111-11-11</td>
                         <td>
                             <c:if test="${contract.clientType == 'LEGAL'}">
-                                УНП: <span class="important">${contract.legalEntityClientInformation.payerAccountNumber}</span>
+                                <fmt:message key="payerAccountNumber" />: <span class="important">${contract.legalEntityClientInformation.payerAccountNumber}</span>
                             </c:if>
                         </td>
                     </tr>
                     <tr>
-                        <td>УНП: 1111111111</td>
+                        <td><fmt:message key="payerAccountNumber" />: 1111111111</td>
                         <td>
                             <c:if test="${contract.clientType == 'LEGAL'}">
-                                Расчетный счет: <span class="important">${contract.legalEntityClientInformation.checkingAccount}</span>
+                                <fmt:message key="checkingAccount" />: <span class="important">${contract.legalEntityClientInformation.checkingAccount}</span>
                             </c:if>
                         </td>
                     </tr>
                     <tr>
-                        <td>Наименование банка: Беларусбанк, г.Минск</td>
+                        <td><fmt:message key="operator.bank" /></td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td>Расчетный счет: 111111111111111111</td>
+                        <td><fmt:message key="checkingAccount" />: 111111111111111111</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td>Руководитель организации: Генеральный директор И.И. Иванов</td>
+                        <td><fmt:message key="operator.director" /></td>
                         <td></td>
                     </tr>
                 </table>
                 <table class="subscription">
                     <tr>
-                        <td>От Оператора связи:</td>
-                        <td>От Абонента:</td>
+                        <td><fmt:message key="subscription.operator" />:</td>
+                        <td><fmt:message key="subscription.client" />:</td>
                     </tr>
                     <tr>
-                        <td><div></div></td>
-                        <td><div></div></td>
+                        <td>
+                            <div></div>
+                        </td>
+                        <td>
+                            <div></div>
+                        </td>
                     </tr>
                 </table>
             </li>
@@ -324,6 +237,7 @@
 </section>
 
 <!-- Footer -->
-<jsp:include page="../template/footer.jsp" />
+<jsp:include page="../template/footer.jsp"/>
 </body>
 </html>
+</fmt:bundle>

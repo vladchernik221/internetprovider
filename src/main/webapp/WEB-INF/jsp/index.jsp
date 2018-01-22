@@ -1,5 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/index_content">
 <html>
 <head>
     <meta charset="UTF-8">
@@ -23,32 +26,29 @@
 <!-- Banner -->
 <section id="banner">
     <h2>Internet Provider</h2>
-    <p>Добро пожаловать в информационный центр компании "Internet Provider"</p>
-    <a href="/about" class="button big">Информация о компании</a>
+    <p><fmt:message key="index.greeting" /></p>
+    <a href="/about" class="button big"><fmt:message key="index.about" /></a>
 </section>
 
 <!-- Main part -->
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2>Информация для клиентов</h2>
-            <p>Полезные сведения о тарфиных планах, предоставляемых услугах и акционных предложениях.</p>
+            <h2><fmt:message key="index.title" /></h2>
+            <p><fmt:message key="index.description" /></p>
         </header>
         <div class="row"><section class="box col-3" onclick="redirect('/tariff-plan')">
                 <div class="icon big rounded blue fa-tasks"></div>
-                <h3>Тарифные планы</h3>
-                <p>В данном разделе Вы сможете найти список тарифных планов, предоставляемых нашей компанией, с
-                    подробным их описанием.</p>
+                <h3><fmt:message key="tariffs" /></h3>
+                <p><fmt:message key="tariffs.description" /></p>
             </section><section class="box col-3" onclick="redirect('/service')">
                 <div class="icon big rounded green fa-wrench"></div>
-                <h3>Услуги</h3>
-                <p>Здесь приведен список услуг по подключению, настройке и т.д., прдоставляемых компанией своим
-                    клиентам.</p>
+                <h3><fmt:message key="services" /></h3>
+                <p><fmt:message key="services.description" /></p>
             </section><section class="box col-3" onclick="redirect('/discount')">
                 <div class="icon big rounded red fa-fire"></div>
-                <h3>Акции</h3>
-                <p>Наша компания предоставляет скидки своим клиентам. В данном разделе Вы можете ознакомится с условиями
-                    предоставляемых скидок.</p>
+                <h3><fmt:message key="discounts" /></h3>
+                <p><fmt:message key="discounts.description" /></p>
             </section></div>
     </div>
 </section>
@@ -57,3 +57,4 @@
 <jsp:include page="template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>
