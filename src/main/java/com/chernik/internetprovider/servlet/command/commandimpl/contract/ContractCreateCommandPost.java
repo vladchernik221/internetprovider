@@ -26,7 +26,7 @@ public class ContractCreateCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Contract contract = contractMapper.create(request);
-        Long generatedId = contractService.create(contract);
+        Long generatedId = contractService.create(contract, "123");//TODO user password from request
         response.getWriter().write(generatedId.toString());
     }
 }

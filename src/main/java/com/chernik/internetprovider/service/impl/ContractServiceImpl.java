@@ -2,18 +2,17 @@ package com.chernik.internetprovider.service.impl;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
+import com.chernik.internetprovider.context.Transactional;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.EntityNotFoundException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.exception.UnableSaveEntityException;
-import com.chernik.internetprovider.persistence.entity.Contract;
-import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
-import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformation;
+import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.persistence.repository.ContractRepository;
 import com.chernik.internetprovider.service.ContractService;
-
 import com.chernik.internetprovider.service.IndividualClientInformationService;
 import com.chernik.internetprovider.service.LegalEntityClientInformationService;
+import com.chernik.internetprovider.service.UserService;
 
 @Service
 public class ContractServiceImpl implements ContractService {
@@ -27,8 +26,12 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private LegalEntityClientInformationService legalEntityClientInformationService;
 
+    @Autowired
+    private UserService userService;
+
     @Override
-    public Long create(Contract contract) throws DatabaseException, TimeOutException, UnableSaveEntityException {
+    @Transactional
+    public Long create(Contract contract, String userPassword) throws DatabaseException, TimeOutException, UnableSaveEntityException {
         if (contractRepository.existNotDissolvedByClientInformation(contract)) {
             throw new UnableSaveEntityException("Current client already has not dissolved contract");
         }
@@ -46,7 +49,18 @@ public class ContractServiceImpl implements ContractService {
                 legalEntityClientInformation.setLegalEntityClientInformationId(clientInformationId);
                 break;
         }
-        return contractRepository.create(contract);
+
+        Long generatedId = contractRepository.create(contract);
+        contract.setContractId(generatedId);
+
+        User user = new User();
+        user.setLogin(String.format("%06d", generatedId));
+        user.setPassword(userPassword);
+        user.setUserRole(UserRole.CUSTOMER);
+        user.setContract(contract);
+        userService.create(user);
+
+        return generatedId;
     }
 
     @Override

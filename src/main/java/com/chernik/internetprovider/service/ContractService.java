@@ -6,10 +6,8 @@ import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.entity.Contract;
 
-import java.util.Optional;
-
 public interface ContractService {
-    Long create(Contract contract) throws DatabaseException, TimeOutException, UnableSaveEntityException;
+    Long create(Contract contract, String userPassword) throws DatabaseException, TimeOutException, UnableSaveEntityException;
 
     Contract getById(Long id) throws DatabaseException, TimeOutException;
 
