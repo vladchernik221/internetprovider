@@ -4,12 +4,14 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Repository;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
+import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.TariffPlanDiscountRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class TariffPlanDiscountRepositoryImpl implements TariffPlanDiscountRepository {
@@ -24,14 +26,17 @@ public class TariffPlanDiscountRepositoryImpl implements TariffPlanDiscountRepos
     private CommonRepository commonRepository;
 
     @Override
-    public void create(Long tariffPlanId, Long discountId) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(tariffPlanId, discountId, this::createPreparedStatementForInserting);
+    public void create(Long tariffPlanId, List<Discount> discounts) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(tariffPlanId, discounts, this::createPreparedStatementForInserting);
     }
 
-    private PreparedStatement createPreparedStatementForInserting(Connection connection, Long tariffPlanId, Long discountId) throws SQLException {
+    private PreparedStatement createPreparedStatementForInserting(Connection connection, Long tariffPlanId, List<Discount> discounts) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE);
-        statement.setLong(1, tariffPlanId);
-        statement.setLong(2, discountId);
+        for (Discount discount : discounts) {
+            statement.setLong(1, tariffPlanId);
+            statement.setLong(2, discount.getDiscountId());
+            statement.addBatch();
+        }
         return statement;
     }
 

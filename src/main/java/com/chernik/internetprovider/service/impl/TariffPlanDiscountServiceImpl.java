@@ -22,9 +22,7 @@ public class TariffPlanDiscountServiceImpl implements TariffPlanDiscountService 
         List<Discount> discounts = tariffPlan.getDiscounts();
         Long tariffPlanId = tariffPlan.getTariffPlanId();
 
-        for (Discount discount : discounts) {
-            tariffPlanDiscountRepository.create(tariffPlanId, discount.getDiscountId());
-        }
+        tariffPlanDiscountRepository.create(tariffPlanId, discounts);
     }
 
     @Override
