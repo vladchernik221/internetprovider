@@ -8,13 +8,13 @@ import com.chernik.internetprovider.exception.TimeOutException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class TransactionalConnectionPool implements ConnectionPool, TransactionManager {
     private ConnectionPoolImpl connectionPool;
-    private Map<Thread, Connection> connectionCache = new HashMap<>();
+    private Map<Thread, Connection> connectionCache = new ConcurrentHashMap<>();
 
     public TransactionalConnectionPool() {
         connectionPool = new ConnectionPoolImpl();
