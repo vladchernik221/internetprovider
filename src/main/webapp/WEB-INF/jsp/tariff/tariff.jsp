@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>\
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <fmt:setLocale value="ru_RU" scope="session"/>
 <fmt:bundle basename="pagecontent/tariff_content">
@@ -65,16 +66,18 @@
                 <td>${tariffPlan.priceOverTraffic}</td>
             </tr>
         </table>
-        <div class="discount slider">
-            <ul>
-                <c:forEach items="${tariffPlan.discounts}" var="discount">
-                    <li>
-                        <h2>${discount.name}</h2>
-                        <p>${discount.description}</p>
-                    </li>
-                </c:forEach>
-            </ul>
-        </div>
+        <c:if test="${fn:length(tariffPlan.discounts) != 0}">
+            <div class="discount slider">
+                <ul>
+                    <c:forEach items="${tariffPlan.discounts}" var="discount">
+                        <li>
+                            <h2>${discount.name}</h2>
+                            <p>${discount.description}</p>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </c:if>
     </div>
 </section>
 

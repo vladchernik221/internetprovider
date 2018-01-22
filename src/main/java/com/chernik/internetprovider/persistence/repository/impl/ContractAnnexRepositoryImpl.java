@@ -95,13 +95,11 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
         contractAnnex.setConcludeDate(resultSet.getDate(ContractAnnexField.CONCLUDE_DATE.toString()));
         contractAnnex.setCanceled(resultSet.getBoolean(ContractAnnexField.CANCELED.toString()));
 
-        TariffPlan tariffPlan = new TariffPlan();
-        tariffPlan.setTariffPlanId(resultSet.getLong(ContractAnnexField.TARIFF_PLAN_ID.toString()));
-        contractAnnex.setTariffPlan(tariffPlan);
+        Long tariffPlanId = resultSet.getLong(ContractAnnexField.TARIFF_PLAN_ID.toString());
+        contractAnnex.setTariffPlan(new TariffPlan(tariffPlanId));
 
-        Contract contract = new Contract();
-        contract.setContractId(resultSet.getLong(ContractAnnexField.CONTRACT_ID.toString()));
-        contractAnnex.setContract(contract);
+        Long contractId = resultSet.getLong(ContractAnnexField.CONTRACT_ID.toString());
+        contractAnnex.setContract(new Contract(contractId));
         return contractAnnex;
     }
 

@@ -70,7 +70,6 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     private PreparedStatement createPreparedStatementForUpdating(Connection connection, Service service) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(UPDATE_SERVICE);
         statement.setString(1, service.getName());
-        String description = service.getDescription();
         statement.setObject(2, service.getDescription(), Types.VARCHAR);
         statement.setBigDecimal(3, service.getPrice());
         statement.setLong(4, service.getServiceId());

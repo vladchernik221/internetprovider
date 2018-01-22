@@ -13,4 +13,8 @@ public class IndividualClientInformation {
     private String passportUniqueIdentification;
     private String address;
     private String phoneNumber;
+
+    public IndividualClientInformation(Long individualClientInformationId) {
+        this.individualClientInformationId = individualClientInformationId;
+    }
 }

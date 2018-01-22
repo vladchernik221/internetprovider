@@ -14,4 +14,8 @@ public class ContractAnnex {
     private Boolean canceled;
     private TariffPlan tariffPlan;
     private Contract contract;
+
+    public ContractAnnex(Long contractAnnexId) {
+        this.contractAnnexId = contractAnnexId;
+    }
 }

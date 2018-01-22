@@ -14,4 +14,8 @@ public class Account {
     private Integer traffickedTraffic;
     private ContractAnnex contractAnnex;
     private List<Transaction> transactions;
+
+    public Account(Long accountId) {
+        this.accountId = accountId;
+    }
 }

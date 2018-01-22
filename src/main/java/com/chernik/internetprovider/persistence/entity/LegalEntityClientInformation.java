@@ -12,4 +12,8 @@ public class LegalEntityClientInformation {
     private String name;
     private String address;
     private String phoneNumber;
+
+    public LegalEntityClientInformation(Long legalEntityClientInformationId) {
+        this.legalEntityClientInformationId = legalEntityClientInformationId;
+    }
 }

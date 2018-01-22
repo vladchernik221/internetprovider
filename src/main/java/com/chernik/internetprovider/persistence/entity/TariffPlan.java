@@ -19,4 +19,8 @@ public class TariffPlan {
     private BigDecimal monthlyFee;
     private Boolean archived;
     private List<Discount> discounts;
+
+    public TariffPlan(Long tariffPlanId) {
+        this.tariffPlanId = tariffPlanId;
+    }
 }

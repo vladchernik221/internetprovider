@@ -152,7 +152,7 @@ public class ContextInitializer {
      *                          class is abstract or not public.
      */
     private Object createInstance(Class<?> clazz) {
-        LOGGER.log(Level.TRACE, "Creating instance of class {}", clazz);
+        LOGGER.log(Level.TRACE, "Creating instance of {}", clazz);
         Object component;
         try {
             Constructor constructor = clazz.getConstructor();

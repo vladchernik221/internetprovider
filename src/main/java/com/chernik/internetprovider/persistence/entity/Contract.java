@@ -17,4 +17,8 @@ public class Contract {
     private LegalEntityClientInformation legalEntityClientInformation;
     private IndividualClientInformation individualClientInformation;
     private List<ContractAnnex> contractAnnexes;
+
+    public Contract(Long contractId) {
+        this.contractId = contractId;
+    }
 }

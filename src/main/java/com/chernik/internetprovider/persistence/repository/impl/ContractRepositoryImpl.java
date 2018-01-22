@@ -85,15 +85,11 @@ public class ContractRepositoryImpl implements ContractRepository {
         contract.setClientType(ClientType.valueOf(resultSet.getString(ContractField.CLIENT_TYPE.toString())));
         Long individualClientInformationId = (Long) resultSet.getObject(ContractField.INDIVIDUAL_CLIENT_INFORMATION_ID.toString());
         if (individualClientInformationId != null) {
-            IndividualClientInformation individualClientInformation = new IndividualClientInformation();
-            individualClientInformation.setIndividualClientInformationId(individualClientInformationId);
-            contract.setIndividualClientInformation(individualClientInformation);
+            contract.setIndividualClientInformation(new IndividualClientInformation(individualClientInformationId));
         }
         Long legalEntityClientInformationId = (Long) resultSet.getObject(ContractField.LEGAL_ENTITY_CLIENT_INFORMATION_ID.toString());
         if (legalEntityClientInformationId != null) {
-            LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
-            legalEntityClientInformation.setLegalEntityClientInformationId(legalEntityClientInformationId);
-            contract.setLegalEntityClientInformation(legalEntityClientInformation);
+            contract.setLegalEntityClientInformation(new LegalEntityClientInformation(legalEntityClientInformationId));
         }
         return contract;
     }

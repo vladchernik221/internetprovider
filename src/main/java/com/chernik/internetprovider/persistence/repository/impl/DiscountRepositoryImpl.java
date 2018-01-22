@@ -40,7 +40,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     private static final String EXISTS_DISCOUNT_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `name`=?)";
 
-    private static final String GET_ALL_BY_TARIFF_PLAN_ID = "SELECT d.discount_id, `name` FROM `discount` d JOIN `discount_has_tariff_plan` dhtp ON dhtp.tariff_plan_id = ?";
+    private static final String GET_ALL_BY_TARIFF_PLAN_ID = "SELECT d.discount_id, d.name FROM `discount` d JOIN `tariff_plan_has_discount` tphd ON d.discount_id = tphd.discount_id WHERE tphd.tariff_plan_id = ?";
 
 
     @Autowired

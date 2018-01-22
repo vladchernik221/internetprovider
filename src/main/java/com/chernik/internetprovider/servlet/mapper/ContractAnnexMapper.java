@@ -15,13 +15,11 @@ public class ContractAnnexMapper extends Mapper<ContractAnnex> {
         ContractAnnex contractAnnex = new ContractAnnex();
         contractAnnex.setAddress(getMandatoryString(request.getParameter("address")));
 
-        TariffPlan tariffPlan = new TariffPlan();
-        tariffPlan.setTariffPlanId(getMandatoryLong(request.getParameter("tariffPlanId")));
-        contractAnnex.setTariffPlan(tariffPlan);
+        Long tariffPlanId = getMandatoryLong(request.getParameter("tariffPlanId"));
+        contractAnnex.setTariffPlan(new TariffPlan(tariffPlanId));
 
-        Contract contract = new Contract();
-        contract.setContractId(Long.valueOf(request.getRequestURI().split("/")[2]));
-        contractAnnex.setContract(contract);
+        Long contractId = Long.valueOf(request.getRequestURI().split("/")[2]);
+        contractAnnex.setContract(new Contract(contractId));
         return contractAnnex;
     }
 }

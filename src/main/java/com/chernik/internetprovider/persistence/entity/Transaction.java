@@ -14,4 +14,8 @@ public class Transaction {
     private BigDecimal amount;
     private Date date;
     private Account account;
+
+    public Transaction(Long transactionId) {
+        this.transactionId = transactionId;
+    }
 }

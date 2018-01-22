@@ -4,6 +4,11 @@ $(document).ready(function() {
     if($("input[name=isLimit]:checked").val() === "false") {
         $(".only-for-limit").css({ display: "none" });
     }
+
+    $(".selected-discounts .selected-item").each(function() {
+        var value = $("#discount").find("option:contains(" + $(this).text() + ")").val();
+        selected_discount_ids.push(value);
+    });
 });
 
 function change_is_limit(set_limit) {

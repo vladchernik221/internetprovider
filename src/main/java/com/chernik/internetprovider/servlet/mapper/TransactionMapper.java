@@ -17,9 +17,9 @@ public class TransactionMapper extends Mapper<Transaction> {
         Transaction transaction = new Transaction();
         transaction.setType(TransactionType.valueOf(getMandatoryString("type")));
         transaction.setAmount(getMandatoryBigDecimal("amount"));
-        Account account = new Account();
-        account.setAccountId(getMandatoryLong("accountId"));
-        transaction.setAccount(account);
+
+        Long accountId = getMandatoryLong("accountId");
+        transaction.setAccount(new Account(accountId));
         return transaction;
     }
 }

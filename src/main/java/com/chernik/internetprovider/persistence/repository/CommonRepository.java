@@ -78,6 +78,19 @@ public class CommonRepository {
         LOGGER.log(Level.TRACE, "Updating complete successful");
     }
 
+    public <T, E> void executeBatch(T first, E second, TriThrowableFunction<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Inserting {}, {}", first, second);
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement statement = statementFunctional.apply(connection, first, second)) {
+            statement.executeBatch();
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Updating complete successful");
+    }
+
     public <T> boolean exist(T parameter, BiThrowableFunction<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Check existing by {}", parameter);
         boolean isExist;

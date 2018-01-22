@@ -12,4 +12,8 @@ public class User {
     private UserRole userRole;
     private Boolean blocked;
     private Contract contract;
+
+    public User(Long userId) {
+        this.userId = userId;
+    }
 }

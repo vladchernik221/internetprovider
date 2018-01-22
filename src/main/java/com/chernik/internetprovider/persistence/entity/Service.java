@@ -13,4 +13,8 @@ public class Service {
     private String description;
     private Boolean archived;
     private BigDecimal price;
+
+    public Service(Long serviceId) {
+        this.serviceId = serviceId;
+    }
 }

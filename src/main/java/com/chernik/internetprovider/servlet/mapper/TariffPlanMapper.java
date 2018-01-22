@@ -27,15 +27,8 @@ public class TariffPlanMapper extends Mapper<TariffPlan> {
         tariffPlan.setMonthlyFee(getMandatoryBigDecimal(request.getParameter("monthlyFee")));
 
         List<Discount> discounts = Arrays.stream(request.getParameter("discounts").split(DISCOUNT_ID_DELIMITER))
-                .map(id -> {
-                    if (!id.isEmpty()) {
-                        Discount discount = new Discount();
-                        discount.setDiscountId(Long.valueOf(id));
-                        return discount;
-                    } else {
-                        return null;
-                    }
-                })
+                .filter(id -> !id.isEmpty())
+                .map(id -> new Discount(Long.valueOf(id)))
                 .collect(Collectors.toList());
         tariffPlan.setDiscounts(discounts);
         return tariffPlan;

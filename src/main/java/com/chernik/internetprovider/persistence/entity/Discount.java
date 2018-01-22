@@ -15,4 +15,8 @@ public class Discount {
     private Date startDate;
     private Date endDate;
     private Boolean onlyForNewClient;
+
+    public Discount(Long discountId) {
+        this.discountId = discountId;
+    }
 }

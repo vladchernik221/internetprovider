@@ -20,14 +20,15 @@ public class TariffPlanDiscountServiceImpl implements TariffPlanDiscountService 
     @Override
     public void create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
         List<Discount> discounts = tariffPlan.getDiscounts();
-        Long tariffPlanId = tariffPlan.getTariffPlanId();
 
-        tariffPlanDiscountRepository.create(tariffPlanId, discounts);
+        if(!discounts.isEmpty()) {
+            tariffPlanDiscountRepository.create(tariffPlan.getTariffPlanId(), discounts);
+        }
     }
 
     @Override
     public void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
-        if (!tariffPlanDiscountRepository.existByTariffPlanId(tariffPlan.getTariffPlanId())) {
+        if (tariffPlanDiscountRepository.existByTariffPlanId(tariffPlan.getTariffPlanId())) {
             tariffPlanDiscountRepository.remove(tariffPlan.getTariffPlanId());
         }
         create(tariffPlan);

@@ -20,14 +20,14 @@ public class TariffPlanDiscountRepositoryImpl implements TariffPlanDiscountRepos
 
     private static final String REMOVE = "DELETE FROM `tariff_plan_has_discount` WHERE `tariff_plan_id`=?";
 
-    private static final String EXIST_BY_TARIFF_PLAN_ID = "SELECT EXISTS(SELECT COUNT(*) FROM `tariff_plan_has_discount` WHERE `tariff_plan_id`=?)";
+    private static final String EXIST_BY_TARIFF_PLAN_ID = "SELECT EXISTS(SELECT 1 FROM `tariff_plan_has_discount` WHERE `tariff_plan_id`=?)";
 
     @Autowired
     private CommonRepository commonRepository;
 
     @Override
     public void create(Long tariffPlanId, List<Discount> discounts) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(tariffPlanId, discounts, this::createPreparedStatementForInserting);
+        commonRepository.executeBatch(tariffPlanId, discounts, this::createPreparedStatementForInserting);
     }
 
     private PreparedStatement createPreparedStatementForInserting(Connection connection, Long tariffPlanId, List<Discount> discounts) throws SQLException {

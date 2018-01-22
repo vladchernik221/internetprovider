@@ -78,7 +78,11 @@
                 <input type="text" name="priceOverTraffic" placeholder="<fmt:message key="tariff.priceOverTraffic" />" pattern="^\d*(\.\d{0,2})?$" value="${tariffPlan.priceOverTraffic}" />
                 <label><fmt:message key="tariff.priceOverTraffic" /></label>
             </div></div>
-            <div class="row selected-discounts"></div>
+            <div class="row selected-discounts">
+                <c:forEach items="${tariffPlan.discounts}" var="discount">
+                    <div class='selected-item'>${discount.name}<div class='icon small fa-remove' onclick='delete_selected_discount(this)'></div></div>
+                </c:forEach>
+            </div>
             <div class="row">
                 <div class="select-wrapper">
                     <select id="discount" onchange="select_discount(this)">
