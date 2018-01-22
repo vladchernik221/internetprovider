@@ -23,7 +23,7 @@ import java.sql.SQLException;
 public class TransactionRepositoryImpl implements TransactionRepository {
     private static final Logger LOGGER = LogManager.getLogger(TransactionRepositoryImpl.class);
 
-    private static final String CREATE_TRANSACTION = "INSERT INTO `transaction`(`type`, `amount`, `date`, `account_id`) VALUES (?,?,?,?)";
+    private static final String CREATE_TRANSACTION = "INSERT INTO `transaction`(`type`, `amount`, `account_id`) VALUES (?,?,?)";
 
     private static final String GET_TRANSACTION_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `transaction`";
 
@@ -43,8 +43,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         PreparedStatement statement = connection.prepareStatement(CREATE_TRANSACTION);
         statement.setString(1, transaction.getType().toString());
         statement.setBigDecimal(2, transaction.getAmount());
-        statement.setDate(3, transaction.getDate());
-        statement.setLong(4, transaction.getAccount().getAccountId());
+        statement.setLong(3, transaction.getAccount().getAccountId());
         return statement;
     }
 

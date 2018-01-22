@@ -16,11 +16,11 @@ import java.util.List;
 @Repository
 public class TariffPlanDiscountRepositoryImpl implements TariffPlanDiscountRepository {
 
-    private static final String CREATE = "INSERT INTO `discount_has_tariff_plan`(`tariff_plan_id`, `discount_id`) VALUES (?,?)";
+    private static final String CREATE = "INSERT INTO `tariff_plan_has_discount`(`tariff_plan_id`, `discount_id`) VALUES (?,?)";
 
-    private static final String REMOVE = "DELETE FROM `discount_has_tariff_plan` WHERE `tariff_plan_id`=?";
+    private static final String REMOVE = "DELETE FROM `tariff_plan_has_discount` WHERE `tariff_plan_id`=?";
 
-    private static final String EXIST_BY_TARIFF_PLAN_ID = "SELECT EXISTS(SELECT COUNT(*) FROM `discount_has_tariff_plan` WHERE `tariff_plan_id`=?)";
+    private static final String EXIST_BY_TARIFF_PLAN_ID = "SELECT EXISTS(SELECT COUNT(*) FROM `tariff_plan_has_discount` WHERE `tariff_plan_id`=?)";
 
     @Autowired
     private CommonRepository commonRepository;
