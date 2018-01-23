@@ -30,22 +30,18 @@
         <header class="major">
             <h2><fmt:message key="password.change" /></h2>
         </header>
-        <form id="password_form" onsubmit="validate_form(event)" method="POST" action="/password">
-        <div class="row">
-            <input type="text" name="oldPassword" placeholder="<fmt:message key="password.old" />" required />
-            <label><fmt:message key="password.old" /></label>
-        </div>
-        <div class="row">
-            <input type="text" name="newPassword" placeholder="<fmt:message key="password.new" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
-            <label><fmt:message key="password.new" /></label>
-        </div>
-        <div class="row">
-            <input type="text" name="confirmNewPassword" placeholder="<fmt:message key="password.confirmNew" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
-            <label><fmt:message key="password.confirmNew" /></label>
-        </div>
-        <input class="big" type="submit" value="<fmt:message key="submit" />" />
-        <input class="big" type="reset" value="<fmt:message key="reset" />" />
-    </form>
+        <form id="password_form" onsubmit="validate_form(event)" method="POST" action="/user/${userId}/password">
+            <div class="row">
+                <input type="password" name="newPassword" placeholder="<fmt:message key="password.new" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+                <label><fmt:message key="password.new" /></label>
+            </div>
+            <div class="row">
+                <input type="password" name="confirmNewPassword" placeholder="<fmt:message key="password.confirmNew" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+                <label><fmt:message key="password.confirmNew" /></label>
+            </div>
+            <input class="big" type="submit" value="<fmt:message key="submit" />" />
+            <input class="big" type="reset" value="<fmt:message key="reset" />" />
+        </form>
     </div>
 </section>
 

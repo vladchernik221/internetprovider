@@ -12,9 +12,9 @@ public class ServiceMapper extends Mapper<Service> {
     @Override
     public Service create(HttpServletRequest request) throws BadRequestException {
         Service service = new Service();
-        service.setName(getMandatoryString(request.getParameter("name")));
-        service.setDescription(getNotMandatoryString(request.getParameter("description")));
-        service.setPrice(getMandatoryBigDecimal(request.getParameter("price")));
+        service.setName(getMandatoryString(request, "name"));
+        service.setDescription(getNotMandatoryString(request, "description"));
+        service.setPrice(getMandatoryBigDecimal(request, "price"));
         return service;
     }
 }

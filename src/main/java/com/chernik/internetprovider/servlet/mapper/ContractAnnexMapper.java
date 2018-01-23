@@ -13,9 +13,9 @@ public class ContractAnnexMapper extends Mapper<ContractAnnex> {
     @Override
     public ContractAnnex create(HttpServletRequest request) throws BadRequestException {
         ContractAnnex contractAnnex = new ContractAnnex();
-        contractAnnex.setAddress(getMandatoryString(request.getParameter("address")));
+        contractAnnex.setAddress(getMandatoryString(request, "address"));
 
-        Long tariffPlanId = getMandatoryLong(request.getParameter("tariffPlanId"));
+        Long tariffPlanId = getMandatoryLong(request, "tariffPlanId");
         contractAnnex.setTariffPlan(new TariffPlan(tariffPlanId));
 
         Long contractId = Long.valueOf(request.getRequestURI().split("/")[2]);

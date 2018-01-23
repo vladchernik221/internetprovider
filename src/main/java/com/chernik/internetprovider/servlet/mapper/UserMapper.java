@@ -12,9 +12,9 @@ public class UserMapper extends Mapper<User> {
     @Override
     public User create(HttpServletRequest request) throws BadRequestException {
         User user = new User();
-        user.setLogin(getMandatoryString(request.getParameter("login")));
-        user.setPassword(getMandatoryString(request.getParameter("password")));
-        user.setUserRole(UserRole.valueOf(getMandatoryString(request.getParameter("userRole"))));
+        user.setLogin(getMandatoryString(request, "login"));
+        user.setPassword(getMandatoryString(request, "password"));
+        user.setUserRole(UserRole.valueOf(getMandatoryString(request, "userRole")));
         return user;
     }
 }

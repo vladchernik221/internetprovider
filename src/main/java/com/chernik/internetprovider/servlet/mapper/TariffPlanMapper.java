@@ -18,13 +18,13 @@ public class TariffPlanMapper extends Mapper<TariffPlan> {
     @Override
     public TariffPlan create(HttpServletRequest request) throws BadRequestException {
         TariffPlan tariffPlan = new TariffPlan();
-        tariffPlan.setName(getMandatoryString(request.getParameter("name")));
-        tariffPlan.setDescription(getNotMandatoryString(request.getParameter("description")));
-        tariffPlan.setDownSpeed(getMandatoryInt(request.getParameter("downSpeed")));
-        tariffPlan.setUpSpeed(getMandatoryInt(request.getParameter("upSpeed")));
-        tariffPlan.setIncludedTraffic(getNotMandatoryInt(request.getParameter("includedTraffic")));
-        tariffPlan.setPriceOverTraffic(getNotMandatoryBigDecimal(request.getParameter("priceOverTraffic")));
-        tariffPlan.setMonthlyFee(getMandatoryBigDecimal(request.getParameter("monthlyFee")));
+        tariffPlan.setName(getMandatoryString(request, "name"));
+        tariffPlan.setDescription(getNotMandatoryString(request, "description"));
+        tariffPlan.setDownSpeed(getMandatoryInt(request, "downSpeed"));
+        tariffPlan.setUpSpeed(getMandatoryInt(request, "upSpeed"));
+        tariffPlan.setIncludedTraffic(getNotMandatoryInt(request, "includedTraffic"));
+        tariffPlan.setPriceOverTraffic(getNotMandatoryBigDecimal(request, "priceOverTraffic"));
+        tariffPlan.setMonthlyFee(getMandatoryBigDecimal(request, "monthlyFee"));
 
         List<Discount> discounts = Arrays.stream(request.getParameter("discounts").split(DISCOUNT_ID_DELIMITER))
                 .filter(id -> !id.isEmpty())

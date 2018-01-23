@@ -39,6 +39,10 @@
                 <input type="password" name="password" placeholder="<fmt:message key="user.password" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
                 <label><fmt:message key="user.password" /></label>
             </div>
+            <div class="row">
+                <input type="password" name="confirmPassword" placeholder="<fmt:message key="user.confirmPassword" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+                <label><fmt:message key="user.password" /></label>
+            </div>
             <div class="row"><div class="col-2">
                 <input type="radio" name="userRole" value="ADMIN" id="userRole-admin" checked />
                 <label for="userRole-admin"><fmt:message key="user.admin" /></label>

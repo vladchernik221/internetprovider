@@ -23,17 +23,29 @@ function show_with_role(radio) {
 function send_form(event) {
     event.preventDefault();
     var form = $("#user_form");
-    $.ajax({
-        type: form.attr("method"),
-        url: form.attr("action"),
-        data: form.serialize(),
-        success: function (result) {
-            if(result === "") {
-                window.location.reload(true);
-            } else {
-                redirect("/user");
-            }
-        },
-        error: error_handler
-    });
+    if(validate_form(form)) {
+        $.ajax({
+            type: form.attr("method"),
+            url: form.attr("action"),
+            data: form.serialize(),
+            success: function (result) {
+                if (result === "") {
+                    window.location.reload(true);
+                } else {
+                    redirect("/user");
+                }
+            },
+            error: error_handler
+        });
+    }
+}
+
+function validate_form(form) {
+    if(form.elements.password.value !== form.elements.confirmPassword.value) {
+        $("#modal_message").html("Пароли не совпадают");
+        show_modal();
+        form.elements.password.value = form.elements.confirmPassword.value = "";
+        return false;
+    }
+    return true;
 }

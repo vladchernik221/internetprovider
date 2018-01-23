@@ -15,10 +15,10 @@ public class TransactionMapper extends Mapper<Transaction> {
     @Override
     public Transaction create(HttpServletRequest request) throws BadRequestException {
         Transaction transaction = new Transaction();
-        transaction.setType(TransactionType.valueOf(getMandatoryString("type")));
-        transaction.setAmount(getMandatoryBigDecimal("amount"));
+        transaction.setType(TransactionType.valueOf(getMandatoryString(request, "type")));
+        transaction.setAmount(getMandatoryBigDecimal(request, "amount"));
 
-        Long accountId = getMandatoryLong("accountId");
+        Long accountId = getMandatoryLong(request, "accountId");
         transaction.setAccount(new Account(accountId));
         return transaction;
     }

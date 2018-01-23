@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.function.Function;
 
-//TODO parameters names to constants somewhere
-//TODO refactor to lambda
 public abstract class Mapper<T> {
     private static final String INTEGER_FORMAT_REGULAR_EXPRESSION = "^\\d+$";
     private static final String DOUBLE_FORMAT_REGULAR_EXPRESSION = "^\\d{1,15}(\\.\\d{1,2})?$";
@@ -23,92 +21,46 @@ public abstract class Mapper<T> {
 
     public abstract T create(HttpServletRequest request) throws BadRequestException;
 
-    String getMandatoryString(String data) throws BadRequestException {
+    String getMandatoryString(HttpServletRequest request, String parameterName) throws BadRequestException {
+        String data = request.getParameter(parameterName);
         if (data != null && !data.isEmpty()) {
             return data;
         } else {
-            throw new BadRequestException("Mandatory field does not initialize");
+            throw new BadRequestException(String.format("Mandatory parameter %s does not initialize", parameterName));
         }
     }
 
-    String getNotMandatoryString(String data) {
+    String getNotMandatoryString(HttpServletRequest request, String parameterName) {
+        String data = request.getParameter(parameterName);
         return data != null && !data.isEmpty() ? data : null;
     }
 
-    Integer getMandatoryInt(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
-                return Integer.valueOf(data);
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            throw new BadRequestException("Mandatory field does not initialize");
-        }
+    Integer getMandatoryInt(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, INTEGER_FORMAT_REGULAR_EXPRESSION, true, Integer::valueOf);
     }
 
-    Integer getNotMandatoryInt(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
-                return Integer.valueOf(data);
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            return null;
-        }
+    Integer getNotMandatoryInt(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, INTEGER_FORMAT_REGULAR_EXPRESSION, false, Integer::valueOf);
     }
 
-    BigDecimal getMandatoryBigDecimal(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
-                return BigDecimal.valueOf(Double.valueOf(data));
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            throw new BadRequestException("Mandatory field does not initialize");
-        }
+    BigDecimal getMandatoryBigDecimal(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, DOUBLE_FORMAT_REGULAR_EXPRESSION, true, x -> BigDecimal.valueOf(Double.valueOf(x)));
     }
 
-    BigDecimal getNotMandatoryBigDecimal(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, DOUBLE_FORMAT_REGULAR_EXPRESSION)) {
-                return BigDecimal.valueOf(Double.valueOf(data));
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            return null;
-        }
+    BigDecimal getNotMandatoryBigDecimal(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, DOUBLE_FORMAT_REGULAR_EXPRESSION, false, x -> BigDecimal.valueOf(Double.valueOf(x)));
     }
 
-    Long getMandatoryLong(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, INTEGER_FORMAT_REGULAR_EXPRESSION)) {
-                return Long.valueOf(data);
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            throw new BadRequestException("Mandatory field does not initialize");
-        }
+    Long getMandatoryLong(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, INTEGER_FORMAT_REGULAR_EXPRESSION, false, Long::valueOf);
     }
 
     Date getMandatoryDate(HttpServletRequest request, String parameterName) throws BadRequestException {
         return getParameter(request, parameterName, DATE_FORMAT_REGULAR_EXPRESSION, true, Date::valueOf);
     }
 
-    Boolean getNotMandatoryBoolean(String data) throws BadRequestException {
-        if (data != null && !data.isEmpty()) {
-            if (regularExpressionService.checkTo(data, BOOLEAN_FORMAT_REGULAR_EXPRESSION)) {
-                return Boolean.valueOf(data);
-            } else {
-                throw new BadRequestException(String.format("Field: %s have wrong format", data));
-            }
-        } else {
-            return null;
-        }
+    Boolean getNotMandatoryBoolean(HttpServletRequest request, String parameterName) throws BadRequestException {
+        return getParameter(request, parameterName, BOOLEAN_FORMAT_REGULAR_EXPRESSION, false, Boolean::valueOf);
     }
 
     private <P> P getParameter(HttpServletRequest request, String parameterName, String formatRegularExpression, boolean mandatory, Function<String, P> convertFunction) throws BadRequestException {

@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>\
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <fmt:setLocale value="ru_RU" scope="session"/>
@@ -70,9 +70,11 @@
             <div class="discount slider">
                 <ul>
                     <c:forEach items="${tariffPlan.discounts}" var="discount">
-                        <li>
+                        <li onclick="redirect('/discount/${discount.discountId}')">
                             <h2>${discount.name}</h2>
                             <p>${discount.description}</p>
+                            <p class="important uppercase"><fmt:message key="discount" /> ${discount.amount}%</p>
+                            <p><fmt:message key="discount.from" /> <fmt:formatDate type="date" dateStyle="short" value="${discount.startDate}"/> <fmt:message key="discount.to" /> <fmt:formatDate type="date" dateStyle="short" value="${discount.endDate}"/></p>
                         </li>
                     </c:forEach>
                 </ul>

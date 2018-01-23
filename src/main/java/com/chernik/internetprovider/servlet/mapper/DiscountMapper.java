@@ -12,13 +12,13 @@ public class DiscountMapper extends Mapper<Discount> {
     @Override
     public Discount create(HttpServletRequest request) throws BadRequestException {
         Discount discount = new Discount();
-        discount.setName(getMandatoryString(request.getParameter("name")));
-        discount.setDescription(getNotMandatoryString(request.getParameter("description")));
-        discount.setAmount(getMandatoryInt(request.getParameter("amount")));
+        discount.setName(getMandatoryString(request, "name"));
+        discount.setDescription(getNotMandatoryString(request, "description"));
+        discount.setAmount(getMandatoryInt(request, "amount"));
         discount.setStartDate(getMandatoryDate(request, "startDate"));
         discount.setEndDate(getMandatoryDate(request, "endDate"));
 
-        Boolean onlyForNewClient = getNotMandatoryBoolean(request.getParameter("onlyForNewClient"));
+        Boolean onlyForNewClient = getNotMandatoryBoolean(request, "onlyForNewClient");
         if (onlyForNewClient == null) {
             onlyForNewClient = false;
         }

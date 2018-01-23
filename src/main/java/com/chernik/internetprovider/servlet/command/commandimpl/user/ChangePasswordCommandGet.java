@@ -22,6 +22,9 @@ public class ChangePasswordCommandGet implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String pathParameter = request.getRequestURI().split("/")[2];
+        request.setAttribute("userId", Long.valueOf(pathParameter));
+
         RequestDispatcher dispatcher = request.getRequestDispatcher(CHANGE_PASSWORD_PAGE);
         LOGGER.log(Level.TRACE, "Forward to page: {}", CHANGE_PASSWORD_PAGE);
         dispatcher.forward(request, response);

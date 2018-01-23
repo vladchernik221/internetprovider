@@ -22,7 +22,7 @@ public class ContractMapper extends Mapper<Contract> {
     @Override
     public Contract create(HttpServletRequest request) throws BadRequestException {
         Contract contract = new Contract();
-        ClientType clientType = ClientType.valueOf(getMandatoryString(request.getParameter("clientType")).toUpperCase());
+        ClientType clientType = ClientType.valueOf(getMandatoryString(request, "clientType").toUpperCase());
         contract.setClientType(clientType);
         switch (clientType) {
             case INDIVIDUAL:

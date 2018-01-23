@@ -529,6 +529,7 @@ table.description td {
 .discount.slider li {
     background-image: url("../images/dark_tint.png"), url("../images/discount.jpg");
     float: left;
+    cursor: default;
 }
 
 .slider, .slider li {
