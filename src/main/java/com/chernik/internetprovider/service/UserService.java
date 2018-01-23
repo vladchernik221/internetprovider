@@ -19,4 +19,6 @@ public interface UserService {
     Page<User> getPage(Pageable pageable, String userRole) throws DatabaseException, TimeOutException;
 
     void block(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException;
+
+    void changePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException, EntityNotFoundException;
 }

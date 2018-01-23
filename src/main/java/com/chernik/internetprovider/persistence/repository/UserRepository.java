@@ -13,7 +13,7 @@ public interface UserRepository {
 
     Long create(User user) throws DatabaseException, TimeOutException;
 
-    void updatePassword(User user, String newPassword) throws DatabaseException, TimeOutException;
+    void updatePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException;
 
     Page<User> getPage(Pageable pageable) throws DatabaseException, TimeOutException;
 

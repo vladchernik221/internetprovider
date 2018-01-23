@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long create(User user) throws DatabaseException, TimeOutException, UnableSaveEntityException {
-        if(userRepository.existWithLogin(user.getLogin())) {
+        if (userRepository.existWithLogin(user.getLogin())) {
             throw new UnableSaveEntityException(String.format("User with login %s already", user.getLogin()));
         }
         return userRepository.create(user);
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<User> getPage(Pageable pageable, String userRole) throws DatabaseException, TimeOutException {
-        if(userRole.isEmpty()) {
+        if (userRole.isEmpty()) {
             return userRepository.getPage(pageable);
         } else {
             return userRepository.getPageWithRole(pageable, userRole);
@@ -51,10 +51,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public void block(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Optional<User> user = userRepository.getById(id);
-        if(!user.isPresent()) {
+        if (!user.isPresent()) {
             throw new EntityNotFoundException(String.format("User with id %d was not found", id));
         }
         user.get().setBlocked(!user.get().getBlocked());
         userRepository.block(user.get());
+    }
+
+    @Override
+    public void changePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException, EntityNotFoundException {
+        Optional<User> userOptional = userRepository.getById(userId);
+
+        if (!userOptional.isPresent()) {
+            throw new EntityNotFoundException(String.format("User with id: %d not found", userId));
+        }
+
+        userRepository.updatePassword(userId, newPassword);
     }
 }

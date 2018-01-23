@@ -87,14 +87,14 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public void updatePassword(User user, String newPassword) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(user, newPassword, this::createStatementForUpdatingPassword);
+    public void updatePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(userId, newPassword, this::createStatementForUpdatingPassword);
     }
 
-    private PreparedStatement createStatementForUpdatingPassword(Connection connection, User user, String newPassword) throws SQLException {
+    private PreparedStatement createStatementForUpdatingPassword(Connection connection, Long userId, String newPassword) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(UPDATE_PASSWORD);
         statement.setString(1, newPassword);
-        statement.setLong(2, user.getUserId());
+        statement.setLong(2, userId);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
