@@ -92,7 +92,7 @@ function add_param_to_url(param_array) {
 function get_param_value_from_url(param) {
     var regex = new RegExp("(" + param + ")=([^&]*)");
     var result = window.location.href.match(regex);
-    if(result != null) {
+    if(result !== null) {
         return result[2];
     }
 }
@@ -108,4 +108,15 @@ function delete_param_from_url(param) {
         return url_params[0];
     }
     return url_params[0] + "?" + params;
+}
+
+function logout() {
+    $.ajax({
+        type: "POST",
+        url: "/logout",
+        success: function () {
+            redirect("/");
+        },
+        error: error_handler
+    });
 }

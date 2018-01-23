@@ -6,8 +6,10 @@ import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
+import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.entity.UserRole;
+import com.chernik.internetprovider.persistence.entityfield.ContractField;
 import com.chernik.internetprovider.persistence.entityfield.UserField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.UserRepository;
@@ -23,9 +25,9 @@ public class UserRepositoryImpl implements UserRepository {
     private static final Logger LOGGER = LogManager.getLogger(UserRepositoryImpl.class);
 
 
-    private static final String SELECT_USER_BY_LOGIN_AND_PASSWORD = "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `login`=? AND `password`=MD5(?)";
+    private static final String GET_USER_BY_LOGIN_AND_PASSWORD = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` WHERE `login`=? AND `password`=MD5(?)";
 
-    private static final String SELECT_USER_BY_ID = "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `user_id`=?";
+    private static final String GET_USER_BY_ID = "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `user_id`=?";
 
     private static final String CREATE_USER = "INSERT INTO `user`(`login`, `password`, `role`, `contract_id`) VALUES(?,MD5(?),?,?)";
 
@@ -35,9 +37,9 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String GET_USERS_PAGE = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` LIMIT ? OFFSET ?";
 
-    private static final String GET_USER_WITH_ROLE_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `user` where `role`=?";
+    private static final String GET_USER_WITH_ROLE_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `user` WHERE `role`=?";
 
-    private static final String GET_USERS_WITH_ROLE_PAGE = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` where `role`=? LIMIT ? OFFSET ?";
+    private static final String GET_USERS_WITH_ROLE_PAGE = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` WHERE `role`=? LIMIT ? OFFSET ?";
 
     private static final String BLOCK_USER = "UPDATE `user` SET `blocked`=? WHERE `user_id`=?";
 
@@ -54,7 +56,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private PreparedStatement createStatementForGettingByLoginAndPassword(Connection connection, String login, String password) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_LOGIN_AND_PASSWORD);
+        PreparedStatement statement = connection.prepareStatement(GET_USER_BY_LOGIN_AND_PASSWORD);
         statement.setString(1, login);
         statement.setString(2, password);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
@@ -148,7 +150,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private PreparedStatement createStatementForGettingById(Connection connection, Long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(SELECT_USER_BY_ID);
+        PreparedStatement statement = connection.prepareStatement(GET_USER_BY_ID);
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
@@ -188,6 +190,13 @@ public class UserRepositoryImpl implements UserRepository {
         user.setLogin(resultSet.getString(UserField.LOGIN.toString()));
         user.setUserRole(UserRole.valueOf(resultSet.getString(UserField.ROLE.toString())));
         user.setBlocked(resultSet.getBoolean(UserField.BLOCKED.toString()));
+        Long contractId = (Long) resultSet.getObject(ContractField.CONTRACT_ID.toString());
+
+        if (contractId != null) {
+            Contract contract = new Contract();
+            contract.setContractId(contractId);
+            user.setContract(contract);
+        }
         return user;
     }
 }

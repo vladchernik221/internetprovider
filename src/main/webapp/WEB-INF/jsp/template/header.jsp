@@ -1,24 +1,28 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<fmt:setLocale value="en_US" scope="session"/>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <fmt:bundle basename="pagecontent/template_content">
 <div class="home"><a href="/"><fmt:message key="header.home" /></a></div>
 <div class="nav">
     <ul>
         <c:choose>
             <c:when test="${sessionScope.user != null}">
+                <c:if test="${sessionScope.user.userRole == 'CUSTOMER'}">
+                    <li>
+                        <a href="/client"><fmt:message key="header.client" /></a>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.user.userRole == 'ADMIN' || sessionScope.user.userRole == 'SELLER'}">
+                    <li>
+                        <a href="/employee"><fmt:message key="header.employee" /></a>
+                    </li>
+                </c:if>
                 <li>
-                    <a href="/client"><fmt:message key="header.client" /></a>
+                    <a href="/user/${sessionScope.user.userId}/password"><fmt:message key="header.changePassword" /></a>
                 </li>
                 <li>
-                    <a href="/employee"><fmt:message key="header.employee" /></a>
-                </li>
-                <li>
-                    <a href="/password"><fmt:message key="header.changePassword" /></a>
-                </li>
-                <li>
-                    <a href="/logout" class="button"><fmt:message key="header.logout" /></a>
+                    <a onclick="logout()" class="button"><fmt:message key="header.logout" /></a>
                 </li>
             </c:when>
             <c:otherwise>

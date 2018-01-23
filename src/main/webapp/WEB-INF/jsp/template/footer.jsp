@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<fmt:setLocale value="en_US" scope="session"/>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
 <fmt:bundle basename="pagecontent/template_content">
 <footer id="footer">
     <div class="container">
