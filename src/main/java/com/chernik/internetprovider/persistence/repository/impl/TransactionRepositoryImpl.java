@@ -14,10 +14,7 @@ import com.chernik.internetprovider.persistence.repository.TransactionRepository
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 @Repository
@@ -41,7 +38,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     private PreparedStatement createPreparedStatementForInserting(Connection connection, Transaction transaction) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CREATE_TRANSACTION);
+        PreparedStatement statement = connection.prepareStatement(CREATE_TRANSACTION, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, transaction.getType().toString());
         statement.setBigDecimal(2, transaction.getAmount());
         statement.setLong(3, transaction.getAccount().getContractAnnex().getContractAnnexId());
@@ -56,8 +53,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     private PreparedStatement createPreparedStatementForGettingPageCount(Connection connection, Long contractAnnexId, Pageable pageable) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_TRANSACTION_PAGE_COUNT);
-        statement.setLong(1, contractAnnexId);
-        statement.setInt(2, pageable.getPageSize());
+        statement.setInt(1, pageable.getPageSize());
+        statement.setLong(2, contractAnnexId);
         return statement;
     }
 

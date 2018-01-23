@@ -65,7 +65,7 @@ public abstract class Mapper<T> {
 
     private <P> P getParameter(HttpServletRequest request, String parameterName, String formatRegularExpression, boolean mandatory, Function<String, P> convertFunction) throws BadRequestException {
         String data = request.getParameter(parameterName);
-        if (data != null) {
+        if (data != null && !data.isEmpty()) {
             if (regularExpressionService.checkTo(data, formatRegularExpression)) {
                 return convertFunction.apply(data);
             } else {

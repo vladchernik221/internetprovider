@@ -17,7 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionRepository transactionRepository;
 
     @Override
-    public Long create(Transaction transaction) throws DatabaseException, TimeOutException {
+    public Long create(Transaction transaction) throws DatabaseException, TimeOutException { //TODO return value isn't used
         return transactionRepository.create(transaction);//TODO check contract annex id to exists
     }
 

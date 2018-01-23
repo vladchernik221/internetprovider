@@ -25,12 +25,9 @@ public class AccountByIdCommandGet implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {//TODO check exists
         Long contractAnnexId = Long.valueOf(request.getRequestURI().split("/")[3]);
-        String page = request.getParameter("page");
-        Integer pageNumber;
-        if (page != null) {
-            pageNumber = Integer.parseInt(page);
-        } else {
-            pageNumber = 1;
+        int pageNumber = 0;
+        if (request.getParameter("page") != null) {
+            pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
         }
 
         Account account = accountService.getById(contractAnnexId, pageNumber);

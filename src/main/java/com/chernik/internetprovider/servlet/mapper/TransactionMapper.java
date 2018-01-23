@@ -11,19 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class TransactionMapper extends Mapper<Transaction> {
-
-
     @Override
     public Transaction create(HttpServletRequest request) throws BadRequestException {
         Transaction transaction = new Transaction();
-        transaction.setType(TransactionType.valueOf(getMandatoryString(request, "type")));
+        transaction.setType(TransactionType.REFILL);
         transaction.setAmount(getMandatoryBigDecimal(request, "amount"));
 
-        Long contractAnnexId = getMandatoryLong(request, "contractAnnexId");
-        ContractAnnex contractAnnex = new ContractAnnex();
-        contractAnnex.setContractAnnexId(contractAnnexId);
         Account account = new Account();
-        account.setContractAnnex(contractAnnex);
+        Long contractAnnexId = getMandatoryLong(request, "contractAnnexId");
+        account.setContractAnnex(new ContractAnnex(contractAnnexId));
         transaction.setAccount(account);
         return transaction;
     }

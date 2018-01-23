@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
             Page<Transaction> transactionPage = transactionService.getPage(contractAnnexId, new Pageable(pageNumber, 10));
             Account account = accountOptional.get();
             account.setTransactions(transactionPage);
-            return accountOptional.get();
+            return account;
         } else {
             throw new EntityNotFoundException(String.format("Account with id: %d not found", contractAnnexId));
         }
