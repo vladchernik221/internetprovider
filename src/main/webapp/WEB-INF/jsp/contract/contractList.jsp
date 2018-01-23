@@ -45,7 +45,7 @@
                         <th><fmt:message key="contract.client" /></th>
                     </tr>
                     <tr onclick="redirect('/contract/${contract.contractId}')">
-                        <td><fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contract.contractId}" /></td>
+                        <td><fmt:formatNumber type = "number" groupingUsed="false" minIntegerDigits = "6" value = "${contract.contractId}" /></td>
                         <c:choose>
                             <c:when test="${contract.clientType == 'INDIVIDUAL'}">
                                 <td>${contract.individualClientInformation.secondName} ${contract.individualClientInformation.firstName} ${contract.individualClientInformation.lastName}</td>

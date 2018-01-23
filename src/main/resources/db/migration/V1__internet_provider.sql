@@ -71,11 +71,10 @@ CREATE TABLE `contract_annex` (
 );
 
 CREATE TABLE `account` (
-  `account_id`        INT UNSIGNED   NOT NULL AUTO_INCREMENT,
   `balance`           DECIMAL(15, 2) NOT NULL DEFAULT 0,
   `trafficked_trafic` INT            NULL,
   `contract_annex_id` INT UNSIGNED   NOT NULL,
-  PRIMARY KEY (`account_id`),
+  PRIMARY KEY (`contract_annex_id`),
   INDEX `fk_account_contract_annex_idx` (`contract_annex_id` ASC),
   CONSTRAINT `fk_account_contract_annex`
   FOREIGN KEY (`contract_annex_id`)
@@ -87,12 +86,12 @@ CREATE TABLE `transaction` (
   `type`           SET ('WRITE_OFF', 'REFILL') NOT NULL,
   `amount`         DECIMAL(15, 2)              NOT NULL,
   `date`           DATETIME                    NOT NULL,
-  `account_id`     INT UNSIGNED                NOT NULL,
+  `contract_annex_id`     INT UNSIGNED                NOT NULL,
   PRIMARY KEY (`transaction_id`),
-  INDEX `fk_transaction_account_idx` (`account_id` ASC),
+  INDEX `fk_transaction_account_idx` (`contract_annex_id` ASC),
   CONSTRAINT `fk_transaction_account`
-  FOREIGN KEY (`account_id`)
-  REFERENCES `account` (`account_id`)
+  FOREIGN KEY (`contract_annex_id`)
+  REFERENCES `account` (`contract_annex_id`)
 );
 
 CREATE TABLE `discount` (

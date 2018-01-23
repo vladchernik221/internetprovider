@@ -9,5 +9,5 @@ import com.chernik.internetprovider.persistence.entity.Transaction;
 public interface TransactionRepository {
     Long create(Transaction transaction) throws DatabaseException, TimeOutException;
 
-    Page<Transaction> getPage(Pageable pageable) throws DatabaseException, TimeOutException;
+    Page<Transaction> getPage(Long contractAnnexId, Pageable pageable) throws DatabaseException, TimeOutException;
 }

@@ -28,8 +28,8 @@ public @interface HttpRequestProcessor {
     /**
      * For specifying request type, that should be processed by this request processor.
      *
-     * @return request type, default value is <code>RequestType.ERROR</code>.
+     * @return request type.
      * @see RequestType
      */
-    RequestType method() default RequestType.ERROR;
+    RequestType method();
 }

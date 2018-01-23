@@ -1,5 +1,5 @@
 ALTER TABLE `account`
-  CHANGE COLUMN `trafficked_trafic` `used_trafic` INT NULL DEFAULT 0;
+  CHANGE COLUMN `trafficked_trafic` `used_traffic` INT NULL DEFAULT 0;
 
 DELIMITER //
 
@@ -20,7 +20,7 @@ CREATE TRIGGER `insert_transaction`
     THEN
       UPDATE `account` a
       SET a.balance = a.balance - NEW.amount
-      WHERE a.account_id = NEW.account_id;
+      WHERE a.contract_annex_id = NEW.contract_annex_id;
     END IF;
   END //
 
@@ -45,9 +45,9 @@ DO
     DECLARE `traffic_difference` INT;
     DECLARE `discount_sum` INT;
     DECLARE `contract_annex_cursor` CURSOR FOR SELECT
-                                                 a.account_id,
+                                                 a.contract_annex_id,
                                                  tp.monthly_fee,
-                                                 a.used_trafic,
+                                                 a.used_traffic,
                                                  tp.included_traffic,
                                                  tp.price_over_traffic,
                                                  (SELECT SUM(d.amount)

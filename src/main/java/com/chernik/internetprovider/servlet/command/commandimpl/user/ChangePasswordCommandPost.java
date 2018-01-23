@@ -21,7 +21,7 @@ public class ChangePasswordCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Long userId = Long.valueOf(request.getRequestURI().split("/")[2]);
-        String newPassword = (String) request.getAttribute("newPassword");
+        String newPassword = request.getParameter("newPassword");
 
         userService.changePassword(userId, newPassword);
     }

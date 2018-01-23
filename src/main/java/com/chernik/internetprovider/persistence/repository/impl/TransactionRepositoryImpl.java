@@ -18,16 +18,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
     private static final Logger LOGGER = LogManager.getLogger(TransactionRepositoryImpl.class);
 
-    private static final String CREATE_TRANSACTION = "INSERT INTO `transaction`(`type`, `amount`, `account_id`) VALUES (?,?,?)";
+    private static final String CREATE_TRANSACTION = "INSERT INTO `transaction`(`type`, `amount`, `contract_annex_id`) VALUES (?,?,?)";
 
-    private static final String GET_TRANSACTION_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `transaction`";
+    private static final String GET_TRANSACTION_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `transaction` WHERE `contract_annex_id` = ?";
 
-    private static final String GET_TRANSACTION_PAGE = "SELECT `transaction_id`, `type`, `amount`, `date` FROM `transaction` LIMIT ? OFFSET ?";
+    private static final String GET_TRANSACTION_PAGE = "SELECT `transaction_id`, `type`, `amount`, `date` FROM `transaction` WHERE `contract_annex_id` = ? LIMIT ? OFFSET ?";
 
 
     @Autowired
@@ -43,26 +44,28 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         PreparedStatement statement = connection.prepareStatement(CREATE_TRANSACTION);
         statement.setString(1, transaction.getType().toString());
         statement.setBigDecimal(2, transaction.getAmount());
-        statement.setLong(3, transaction.getAccount().getAccountId());
+        statement.setLong(3, transaction.getAccount().getContractAnnex().getContractAnnexId());
         return statement;
     }
 
 
     @Override
-    public Page<Transaction> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
-        return commonRepository.getPage(pageable, this::createPreparedStatementForGettingPageCount, this::createPreparedStatementForGettingPage, this::createTransaction);
+    public Page<Transaction> getPage(Long contractAnnexId, Pageable pageable) throws DatabaseException, TimeOutException {
+        return commonRepository.getPage(contractAnnexId, pageable, this::createPreparedStatementForGettingPageCount, this::createPreparedStatementForGettingPage, this::createTransaction);
     }
 
-    private PreparedStatement createPreparedStatementForGettingPageCount(Connection connection, Pageable pageable) throws SQLException {
+    private PreparedStatement createPreparedStatementForGettingPageCount(Connection connection, Long contractAnnexId, Pageable pageable) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_TRANSACTION_PAGE_COUNT);
-        statement.setInt(1, pageable.getPageSize());
+        statement.setLong(1, contractAnnexId);
+        statement.setInt(2, pageable.getPageSize());
         return statement;
     }
 
-    private PreparedStatement createPreparedStatementForGettingPage(Connection connection, Pageable pageable) throws SQLException {
+    private PreparedStatement createPreparedStatementForGettingPage(Connection connection, Long contractAnnexId, Pageable pageable) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_TRANSACTION_PAGE);
-        statement.setInt(1, pageable.getPageSize());
-        statement.setInt(2, pageable.getPageSize() * pageable.getPageNumber());
+        statement.setLong(1, contractAnnexId);
+        statement.setInt(2, pageable.getPageSize());
+        statement.setInt(3, pageable.getPageSize() * pageable.getPageNumber());
         return statement;
     }
 

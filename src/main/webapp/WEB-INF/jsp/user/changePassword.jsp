@@ -30,7 +30,7 @@
         <header class="major">
             <h2><fmt:message key="password.change" /></h2>
         </header>
-        <form id="password_form" onsubmit="validate_form(event)" method="POST" action="/user/${userId}/password">
+        <form id="password_form" onsubmit="send_form(event)" method="POST" action="/user/${userId}/password">
             <div class="row">
                 <input type="password" name="newPassword" placeholder="<fmt:message key="password.new" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
                 <label><fmt:message key="password.new" /></label>

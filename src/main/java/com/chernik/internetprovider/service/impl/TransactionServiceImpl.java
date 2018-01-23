@@ -18,11 +18,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Long create(Transaction transaction) throws DatabaseException, TimeOutException {
-        return transactionRepository.create(transaction);
+        return transactionRepository.create(transaction);//TODO check contract annex id to exists
     }
 
     @Override
-    public Page<Transaction> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
-        return transactionRepository.getPage(pageable);
+    public Page<Transaction> getPage(Long contractAnnexId, Pageable pageable) throws DatabaseException, TimeOutException {
+        return transactionRepository.getPage(contractAnnexId, pageable);
     }
 }

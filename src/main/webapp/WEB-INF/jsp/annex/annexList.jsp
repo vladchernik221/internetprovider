@@ -30,7 +30,7 @@
 <section class="wrapper style1 align-center">
     <div class="container">
         <header class="major">
-            <h2><fmt:message key="annex.list" /> <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contractId}" /></h2>
+            <h2><fmt:message key="annex.list" /> <fmt:formatNumber type = "number" groupingUsed="false" minIntegerDigits = "6" value = "${contractId}" /></h2>
             <a href="/contract/${contractId}/annex/new" class="button"><fmt:message key="annex.create" /></a>
         </header>
         <c:choose>

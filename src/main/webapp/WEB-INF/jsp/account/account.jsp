@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<fmt:setLocale value="ru_RU" scope="session"/>
+<fmt:bundle basename="pagecontent/account_content">
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Счёт</title>
+    <title><fmt:message key="account" /></title>
 
     <link type="image/x-icon" rel="shortcut icon" href="/static/images/meow.ico"/>
 
@@ -27,30 +30,41 @@
 <section class="wrapper style2">
     <div class="container">
         <div class="row">
-            <a href="/contract/123/annex/123" class="button small">К приложению</a>
+            <a href="/contract/annex/${account.contractAnnex.contractAnnexId}" class="button small">К приложению</a>
         </div>
-        <h1>Счёт номер 123</h1>
+        <h1><fmt:message key="account.number" /> <fmt:formatNumber type = "number" groupingUsed="false" minIntegerDigits = "6" value = "${account.contractAnnex.contractAnnexId}" /></h1>
         <table class="description">
             <tr>
-                <th>Баланс</th>
+                <th><fmt:message key="account.balance" /></th>
                 <td>${account.balance}</td>
             </tr>
             <tr>
-                <th>Остаток включённого трафика</th>
-                <td>${account.traffickedTraffic}</td>
+                <th><fmt:message key="account.usedTraffic" /></th>
+                <td>${account.usedTraffic}</td>
             </tr>
-            <h2>Транзакции</h2>
+        </table>
+        <c:choose>
+        <c:when test="${account.transactions.pagesCount == 0}">
+            <h2 class="warn"><fmt:message key="transaction.notCreated" /></h2>
+        </c:when>
+        <c:otherwise>
+            <h2><fmt:message key="transactions" /></h2>
             <table class="list">
                 <tr>
-                    <th>Дата</th>
-                    <th>Количество</th>
-                    <th>Тип</th>
+                    <th><fmt:message key="transaction.date" /></th>
+                    <th><fmt:message key="transaction.amount" /></th>
+                    <th><fmt:message key="transaction.type" /></th>
                 </tr>
                 <c:forEach items="${account.transactions.data}" var="transaction">
                     <tr>
-                        <td>${transaction.data}</td>
+                        <td>${transaction.date}</td>
                         <td>${transaction.amount}</td>
-                        <td>${transaction.type}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${transaction.type} == 'WRITE_OFF'"><fmt:message key="transaction.writeOff" /></c:when>
+                                <c:otherwise><fmt:message key="transaction.refill" /></c:otherwise>
+                            </c:choose>
+                        </td>
                     </tr>
                 </c:forEach>
             </table>
@@ -58,7 +72,8 @@
                 <div class="hidden" id="pagesCount">${account.transactions.pagesCount}</div>
                 <div id="pagination-holder"></div>
             </c:if>
-        </table>
+        </c:otherwise>
+        </c:choose>
     </div>
 </section>
 
@@ -66,3 +81,4 @@
 <jsp:include page="../template/footer.jsp" />
 </body>
 </html>
+</fmt:bundle>

@@ -3,6 +3,7 @@ package com.chernik.internetprovider.servlet.mapper;
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.exception.BadRequestException;
 import com.chernik.internetprovider.persistence.entity.Account;
+import com.chernik.internetprovider.persistence.entity.ContractAnnex;
 import com.chernik.internetprovider.persistence.entity.Transaction;
 import com.chernik.internetprovider.persistence.entity.TransactionType;
 
@@ -18,8 +19,12 @@ public class TransactionMapper extends Mapper<Transaction> {
         transaction.setType(TransactionType.valueOf(getMandatoryString(request, "type")));
         transaction.setAmount(getMandatoryBigDecimal(request, "amount"));
 
-        Long accountId = getMandatoryLong(request, "accountId");
-        transaction.setAccount(new Account(accountId));
+        Long contractAnnexId = getMandatoryLong(request, "contractAnnexId");
+        ContractAnnex contractAnnex = new ContractAnnex();
+        contractAnnex.setContractAnnexId(contractAnnexId);
+        Account account = new Account();
+        account.setContractAnnex(contractAnnex);
+        transaction.setAccount(account);
         return transaction;
     }
 }

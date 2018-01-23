@@ -29,7 +29,7 @@
     <div class="container">
         <div class="row"><div class="align-left col-2">
             <a href="/contract/${annex.contract.contractId}/annex" class="button small"><fmt:message key="annex.view.toList" /></a>
-            <a href="#" class="button small"><fmt:message key="account" /></a>
+            <a href="/contract/annex/${annex.contractAnnexId}/account" class="button small"><fmt:message key="account" /></a>
         </div><!--
          --><c:if test="${!annex.canceled}"><div class="align-right actions col-2">
                 <button class="button small" onclick="cancel_annex(${annex.contractAnnexId})"><fmt:message key="annex.dissolve" /></button>
@@ -40,7 +40,7 @@
         </c:if>
         <h2 class="uppercase"><fmt:message key="annex" /> № 1<br /><fmt:message key="annex.description" /><br/><fmt:message key="contract.number" />:
             <span class="important">
-                <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${annex.contract.contractId}" />
+                <fmt:formatNumber type = "number" groupingUsed="false" minIntegerDigits = "6" value = "${annex.contract.contractId}" />
             </span><br/><fmt:message key="annex.service" /></h2>
         <p><fmt:formatDate type = "date" dateStyle = "long" value = "${annex.concludeDate}" /></p>
 

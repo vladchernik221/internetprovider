@@ -7,9 +7,17 @@
                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
                              http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
     <filter>
+        <filter-name>LocalisationFilter</filter-name>
+        <filter-class>com.chernik.internetprovider.servlet.filter.LocalizationFilter</filter-class>
+    </filter>
+    <filter>
         <filter-name>LoggingFilter</filter-name>
         <filter-class>com.chernik.internetprovider.servlet.filter.LoginFilter</filter-class>
     </filter>
+    <filter-mapping>
+        <filter-name>LocalisationFilter</filter-name>
+        <servlet-name>front-controller</servlet-name>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>LoggingFilter</filter-name>
         <servlet-name>front-controller</servlet-name>

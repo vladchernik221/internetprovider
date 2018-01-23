@@ -41,7 +41,7 @@
             <h2 class="warn"><fmt:message key="contract.dissolved" /> <fmt:formatDate type="date" dateStyle="long" value="${contract.dissolveDate}"/></h2>
         </c:if>
         <h2 class="uppercase"><fmt:message key="contract" /> № <span class="important">
-            <fmt:formatNumber type="number" minIntegerDigits="6" value="${contract.contractId}"/></span><br/><fmt:message key="contract.view.for" /></h2>
+            <fmt:formatNumber type="number" groupingUsed="false" minIntegerDigits="6" value="${contract.contractId}"/></span><br/><fmt:message key="contract.view.for" /></h2>
         <p><fmt:formatDate type="date" dateStyle="long" value="${contract.concludeDate}"/></p>
         <p><fmt:message key="contract.view.introduction.start" /> <fmt:message key="client" />:
             <c:choose>

@@ -1,21 +1,16 @@
 package com.chernik.internetprovider.persistence.entity;
 
+import com.chernik.internetprovider.persistence.Page;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class Account {
-    private Long accountId;
     private BigDecimal balance;
-    private Integer traffickedTraffic;
+    private Integer usedTraffic;
     private ContractAnnex contractAnnex;
-    private List<Transaction> transactions;
-
-    public Account(Long accountId) {
-        this.accountId = accountId;
-    }
+    private Page<Transaction> transactions;
 }

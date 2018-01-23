@@ -28,7 +28,7 @@
 <section class="wrapper style2">
     <div class="container">
         <header class="major">
-            <h2><fmt:message key="annex.creation" /> № <fmt:formatNumber type = "number" minIntegerDigits = "6" value = "${contractId}" /></h2>
+            <h2><fmt:message key="annex.creation" /> № <fmt:formatNumber type = "number" groupingUsed="false" minIntegerDigits = "6" value = "${contractId}" /></h2>
         </header>
             <form id="annex_form" onsubmit="send_form(event)" method="POST" action="/contract/${contractId}/annex/new">
             <div class="row">

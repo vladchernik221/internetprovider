@@ -19,12 +19,12 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
     private static final Logger LOGGER = LogManager.getLogger(LoginFilter.class);
     private SecurityConfigHandler securityConfigHandler;
-    private CommandHandler errorHandler;
+    private CommandHandler commandHandler;
 
     @Override
     public void init(FilterConfig filterConfig) {
         securityConfigHandler = (SecurityConfigHandler) filterConfig.getServletContext().getAttribute("securityHandler");
-        errorHandler = (CommandHandler) filterConfig.getServletContext().getAttribute("commandHandler");
+        commandHandler = (CommandHandler) filterConfig.getServletContext().getAttribute("commandHandler");
     }
 
     @Override
@@ -42,7 +42,7 @@ public class LoginFilter implements Filter {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             try {
-                errorHandler.getCommand(new RequestParameter("403")).execute(request, response);
+                commandHandler.getCommand(new RequestParameter("403")).execute(request, response);
             } catch (BaseException e) {
                 LOGGER.log(Level.ERROR, "Error {} does not support", e.getStatusCode());
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error {} does not support");

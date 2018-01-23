@@ -32,7 +32,7 @@ function send_form(event) {
                 if (result === "") {
                     window.location.reload(true);
                 } else {
-                    redirect("/user");
+                    redirect("/user/" + result + "/edit");
                 }
             },
             error: error_handler
