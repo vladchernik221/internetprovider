@@ -120,3 +120,14 @@ function logout() {
         error: error_handler
     });
 }
+
+function change_lang(localeLanguage, localeRegion) {
+    $.ajax({
+        type: "POST",
+        url: "/locale?localeLanguage=" + localeLanguage + "&localeRegion=" + localeRegion,
+        success: function () {
+            window.location.reload(true);
+        },
+        error: error_handler
+    });
+}
