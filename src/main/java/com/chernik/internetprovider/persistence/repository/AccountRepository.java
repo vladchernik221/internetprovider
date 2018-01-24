@@ -8,4 +8,8 @@ import java.util.Optional;
 
 public interface AccountRepository {
     Optional<Account> getById(Long contractAnnexId) throws DatabaseException, TimeOutException;
+
+    void addUsedTraffic(Long contractAnnexId, Integer usedTraffic) throws DatabaseException, TimeOutException;
+
+    boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 }

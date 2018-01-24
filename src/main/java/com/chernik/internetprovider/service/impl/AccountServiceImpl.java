@@ -38,4 +38,13 @@ public class AccountServiceImpl implements AccountService {
         account.setTransactions(transactionPage);
         return account;
     }
+
+    @Override
+    public void addUsedTraffic(Long contractAnnexId, Integer usedTraffic) throws DatabaseException, TimeOutException, EntityNotFoundException {
+        if (!accountRepository.existWithId(contractAnnexId)) {
+            throw new EntityNotFoundException(String.format("Account with id=%d noes not exist", contractAnnexId));
+        }
+
+        accountRepository.addUsedTraffic(contractAnnexId, usedTraffic);
+    }
 }

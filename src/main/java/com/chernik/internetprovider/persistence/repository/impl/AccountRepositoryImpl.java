@@ -21,6 +21,11 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     private static final String GET_BY_ID = "SELECT `balance`, `used_traffic`, `contract_annex_id` FROM `account` WHERE `contract_annex_id`=?";
 
+    private static final String ADD_USED_TRAFFIC = "UPDATE `account` a SET a.used_traffic=a.used_traffic+? WHERE a.contract_annex_id=?";
+
+    private static final  String EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `account` WHERE `contract_annex_id`=?)";
+
+
     @Autowired
     private CommonRepository commonRepository;
 
@@ -44,5 +49,30 @@ public class AccountRepositoryImpl implements AccountRepository {
         contractAnnex.setContractAnnexId(resultSet.getLong(AccountField.CONTRACT_ANNEX_ID.toString()));
         account.setContractAnnex(contractAnnex);
         return account;
+    }
+
+
+    @Override
+    public void addUsedTraffic(Long accountId, Integer usedTraffic) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(accountId, usedTraffic, this::createStatementForAddUsedTraffic);
+    }
+
+    private PreparedStatement createStatementForAddUsedTraffic(Connection connection, Long contractAnnexId, Integer usedTraffic) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(ADD_USED_TRAFFIC);
+        statement.setInt(1, usedTraffic);
+        statement.setLong(2, contractAnnexId);
+        return statement;
+    }
+
+
+    @Override
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, this::createStatementForExistsById);
+    }
+
+    private PreparedStatement createStatementForExistsById(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXISTS_BY_ID);
+        statement.setLong(1, id);
+        return statement;
     }
 }

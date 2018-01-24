@@ -7,4 +7,6 @@ import com.chernik.internetprovider.persistence.entity.Account;
 
 public interface AccountService {
     Account getById(Long contractAnnexId, Integer pageNumber) throws DatabaseException, TimeOutException, EntityNotFoundException;
+
+    void addUsedTraffic(Long accountId, Integer usedTraffic) throws DatabaseException, TimeOutException, EntityNotFoundException;
 }
