@@ -46,6 +46,21 @@ public class CommonRepository {
         return generatedId;
     }
 
+    public <T, E> Long create(T firstParameter, E secondParameter, TriThrowableFunction<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+        Connection connection = connectionPool.getConnection();
+        Long generatedId;
+        try (PreparedStatement statement = statementFunctional.apply(connection, firstParameter, secondParameter)) {
+            statement.executeUpdate();
+            generatedId = getGeneratedId(statement);
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Inserting complete successful");
+        return generatedId;
+    }
+
     public <T> void executeUpdate(T entity, BiThrowableFunction<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Updating {}", entity);
         Connection connection = connectionPool.getConnection();

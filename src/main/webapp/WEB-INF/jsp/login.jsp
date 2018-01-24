@@ -16,6 +16,7 @@
 
     <script src="/static/js/lib/jquery-3.2.1.min.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/login.js"></script>
 </head>
 <body>
 <!-- Header -->
@@ -25,7 +26,7 @@
 
 <!-- Main part -->
 <section class="login">
-    <form action="/signin" method="post">
+    <form id="login_form" action="/signin" method="POST" onsubmit="send(event)">
         <div class="row">
             <input type="text" name="login" placeholder="<fmt:message key="login.login" />"/>
         </div>
@@ -36,6 +37,10 @@
         <input type="reset" value="<fmt:message key="reset" />"/>
     </form>
 </section>
+
+<!-- Modal window -->
+<jsp:include page="template/modal.jsp" />
+
 </body>
 </html>
 </fmt:bundle>

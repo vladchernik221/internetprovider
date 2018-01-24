@@ -82,11 +82,11 @@ CREATE TABLE `account` (
 );
 
 CREATE TABLE `transaction` (
-  `transaction_id` INT UNSIGNED                NOT NULL AUTO_INCREMENT,
-  `type`           SET ('WRITE_OFF', 'REFILL') NOT NULL,
-  `amount`         DECIMAL(15, 2)              NOT NULL,
-  `date`           DATETIME                    NOT NULL,
-  `contract_annex_id`     INT UNSIGNED                NOT NULL,
+  `transaction_id`    INT UNSIGNED                NOT NULL AUTO_INCREMENT,
+  `type`              SET ('WRITE_OFF', 'REFILL') NOT NULL,
+  `amount`            DECIMAL(15, 2)              NOT NULL,
+  `date`              DATETIME                    NOT NULL,
+  `contract_annex_id` INT UNSIGNED                NOT NULL,
   PRIMARY KEY (`transaction_id`),
   INDEX `fk_transaction_account_idx` (`contract_annex_id` ASC),
   CONSTRAINT `fk_transaction_account`
@@ -143,16 +143,16 @@ CREATE TABLE `service` (
   UNIQUE INDEX `name_UNIQUE` (`name` ASC)
 );
 
-CREATE TABLE `contract_has_service` (
-  `contract_id`  INT UNSIGNED NOT NULL,
-  `service_id`   INT UNSIGNED NOT NULL,
-  `service_date` DATETIME     NOT NULL,
-  PRIMARY KEY (`contract_id`, `service_id`, `service_date`),
-  INDEX `fk_contract_has_service_service_idx` (`service_id` ASC),
-  INDEX `fk_contract_has_service_contract_idx` (`contract_id` ASC),
-  CONSTRAINT `fk_contract_has_service_contract`
-  FOREIGN KEY (`contract_id`)
-  REFERENCES `contract_annex` (`contract_id`),
+CREATE TABLE `contract_annex_has_service` (
+  `contract_annex_id` INT UNSIGNED NOT NULL,
+  `service_id`        INT UNSIGNED NOT NULL,
+  `service_date`      DATETIME     NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (`contract_annex_id`, `service_id`, `service_date`),
+  INDEX `fk_contract_annex_has_service_service_idx` (`service_id` ASC),
+  INDEX `fk_contract_annex_has_service_contract_idx` (`contract_annex_id` ASC),
+  CONSTRAINT `fk_contract_annex_has_service_contract`
+  FOREIGN KEY (`contract_annex_id`)
+  REFERENCES `contract_annex` (`contract_annex_id`),
   CONSTRAINT `fk_contract_has_service_service`
   FOREIGN KEY (`service_id`)
   REFERENCES `service` (`service_id`)

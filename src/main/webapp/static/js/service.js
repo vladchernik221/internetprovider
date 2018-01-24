@@ -34,3 +34,18 @@ function send_form(event) {
         error: error_handler
     });
 }
+
+function order_service(annex_id, service_id, event) {
+    event.stopPropagation();
+    $.ajax({
+        type: "POST",
+        url: "/contract/annex/" + annex_id + "/service",
+        data: {
+            serviceId: service_id
+        },
+        success: function () {
+            redirect("/contract/annex/" + annex_id + "/service");
+        },
+        error: error_handler
+    });
+}

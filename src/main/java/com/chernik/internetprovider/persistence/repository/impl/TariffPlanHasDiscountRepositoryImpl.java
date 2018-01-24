@@ -6,7 +6,7 @@ import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
-import com.chernik.internetprovider.persistence.repository.TariffPlanDiscountRepository;
+import com.chernik.internetprovider.persistence.repository.TariffPlanHasDiscountRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-public class TariffPlanDiscountRepositoryImpl implements TariffPlanDiscountRepository {
+public class TariffPlanHasDiscountRepositoryImpl implements TariffPlanHasDiscountRepository {
 
     private static final String CREATE = "INSERT INTO `tariff_plan_has_discount`(`tariff_plan_id`, `discount_id`) VALUES (?,?)";
 

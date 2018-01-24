@@ -44,6 +44,10 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     private static final String EXIST_BY_ID_AND_NAME = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`=? AND `name`=?)";
 
+    private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.contract_annex_id=?";
+
+    private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE = "SELECT s.service_id, s.name, s.price, s.archived FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.contract_annex_id=? LIMIT ? OFFSET ?";
+
 
     @Autowired
     private CommonRepository commonRepository;
@@ -178,6 +182,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         return statement;
     }
 
+
     @Override
     public boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
@@ -187,6 +192,27 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         PreparedStatement statement = connection.prepareStatement(EXIST_BY_ID_AND_NAME);
         statement.setLong(1, id);
         statement.setString(2, name);
+        return statement;
+    }
+
+
+    @Override
+    public Page<Service> getPageByContractAnnexId(Long id, Pageable pageable) throws DatabaseException, TimeOutException {
+        return commonRepository.getPage(id, pageable, this::createStatementForGetPageCountByContractAnnexId, this::createStatementForGetPageByContractAnnexId, this::createShortService);
+    }
+
+    private PreparedStatement createStatementForGetPageCountByContractAnnexId(Connection connection, Long id, Pageable pageable) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_CONTRACT_ANNEX_ID_PAGE_COUNT);
+        statement.setInt(1, pageable.getPageSize());
+        statement.setLong(2, id);
+        return statement;
+    }
+
+    private PreparedStatement createStatementForGetPageByContractAnnexId(Connection connection, Long id, Pageable pageable) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_CONTRACT_ANNEX_ID_PAGE);
+        statement.setLong(1, id);
+        statement.setInt(2, pageable.getPageSize());
+        statement.setInt(3, pageable.getPageNumber() * pageable.getPageSize());
         return statement;
     }
 }

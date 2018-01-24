@@ -60,11 +60,11 @@ public class LoginCommandPost implements Command {
         } else if (user.isPresent()) {
             LOGGER.log(Level.TRACE, "Not successful authentication user: {} is blocked", user.get().getLogin());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("User is blocked.");//TODO Is it really need?
+            response.getWriter().write("User is blocked.");
         } else {
             LOGGER.log(Level.TRACE, "Not successful authentication user: {} not found", login);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("User name or password is wrong.");//TODO Is it really need?
+            response.getWriter().write("User name or password is wrong.");
         }
     }
 }

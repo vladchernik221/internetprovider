@@ -19,9 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/service", method = RequestType.GET)
-public class ServiceListCommandGet implements Command {
-    private static final Logger LOGGER = LogManager.getLogger(ServiceListCommandGet.class);
+@HttpRequestProcessor(uri = "/contract/annex/{\\d+}/service", method = RequestType.GET)
+public class ServiceOrderedListCommandGet implements Command {
+    private static final Logger LOGGER = LogManager.getLogger(ServiceOrderedListCommandGet.class);
 
     private static final String SERVICE_LIST_PAGE = "/WEB-INF/jsp/service/serviceList.jsp";
 
@@ -35,14 +35,14 @@ public class ServiceListCommandGet implements Command {
         if (request.getParameter("page") != null) {
             pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
         }
-        boolean archived = false;
-        if (request.getParameter("archived") != null) {
-            archived = Boolean.parseBoolean(request.getParameter("archived"));
-        }
         RequestDispatcher dispatcher = request.getRequestDispatcher(SERVICE_LIST_PAGE);
-        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), archived);//TODO to property or constant or somewhere
+
+        Long contractAnnexId = Long.valueOf(request.getRequestURI().split("/")[3]);
+        Page<Service> servicesPage = serviceService.getPageByContractAnnexId(contractAnnexId, new Pageable(pageNumber, 10));//TODO to property or constant or somewhere
+
         request.setAttribute("servicesPage", servicesPage);
-        request.setAttribute("supportArchived", true);
+        request.setAttribute("supportArchived", false);
+
         LOGGER.log(Level.TRACE, "Forward to page: {}", SERVICE_LIST_PAGE);
         dispatcher.forward(request, response);
     }

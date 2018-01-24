@@ -6,7 +6,7 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 
 import java.util.List;
 
-public interface TariffPlanDiscountRepository {
+public interface TariffPlanHasDiscountRepository {
     void create(Long tariffPlanId, List<Discount> discounts) throws DatabaseException, TimeOutException;
 
     void remove(Long tariffPlanId) throws DatabaseException, TimeOutException;

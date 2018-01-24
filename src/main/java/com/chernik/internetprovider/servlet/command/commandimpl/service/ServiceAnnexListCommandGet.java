@@ -19,11 +19,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@HttpRequestProcessor(uri = "/service", method = RequestType.GET)
-public class ServiceListCommandGet implements Command {
-    private static final Logger LOGGER = LogManager.getLogger(ServiceListCommandGet.class);
+@HttpRequestProcessor(uri = "/contract/annex/{\\d+}/service/order", method = RequestType.GET)
+public class ServiceAnnexListCommandGet implements Command {
+    private static final Logger LOGGER = LogManager.getLogger(ServiceAnnexListCommandGet.class);
 
-    private static final String SERVICE_LIST_PAGE = "/WEB-INF/jsp/service/serviceList.jsp";
+    private static final String SERVICE_ANNEX_LIST_PAGE = "/WEB-INF/jsp/service/serviceAnnexList.jsp";
 
     @Autowired
     private ServiceService serviceService;
@@ -35,15 +35,10 @@ public class ServiceListCommandGet implements Command {
         if (request.getParameter("page") != null) {
             pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
         }
-        boolean archived = false;
-        if (request.getParameter("archived") != null) {
-            archived = Boolean.parseBoolean(request.getParameter("archived"));
-        }
-        RequestDispatcher dispatcher = request.getRequestDispatcher(SERVICE_LIST_PAGE);
-        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), archived);//TODO to property or constant or somewhere
+        RequestDispatcher dispatcher = request.getRequestDispatcher(SERVICE_ANNEX_LIST_PAGE);
+        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), false);//TODO to property or constant or somewhere
         request.setAttribute("servicesPage", servicesPage);
-        request.setAttribute("supportArchived", true);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", SERVICE_LIST_PAGE);
+        LOGGER.log(Level.TRACE, "Forward to page: {}", SERVICE_ANNEX_LIST_PAGE);
         dispatcher.forward(request, response);
     }
 }
