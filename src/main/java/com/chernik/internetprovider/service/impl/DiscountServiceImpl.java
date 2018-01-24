@@ -8,7 +8,9 @@ import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
+import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.service.DiscountService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,9 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Autowired
     private DiscountRepository discountRepository;
+
+    @Autowired
+    private ContractService contractService;
 
     @Override
     public Long create(Discount discount) throws BaseException {
@@ -57,15 +62,21 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public void remove(Long id) throws BaseException {
-        if (discountRepository.existWithId(id)) {
-            discountRepository.remove(id);
-        } else {
+        if (!discountRepository.existWithId(id)) {
             throw new EntityNotFoundException(String.format("Discount with id: %s does not exist", id));
         }
+
+        discountRepository.remove(id);
     }
 
     @Override
-    public List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
-        return discountRepository.getByTariffPlanId(tariffPlan.getTariffPlanId());
+    public List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException {
+        Long tariffPlanId = tariffPlan.getTariffPlanId();
+
+        if (contractService.notExistById(tariffPlanId)) {
+            throw new EntityNotFoundException(String.format("Tariff plan with id=%d not found", tariffPlanId));
+        }
+
+        return discountRepository.getByTariffPlanId(tariffPlanId);
     }
 }

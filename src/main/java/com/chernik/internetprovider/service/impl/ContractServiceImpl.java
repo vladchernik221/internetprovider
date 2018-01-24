@@ -14,6 +14,8 @@ import com.chernik.internetprovider.service.IndividualClientInformationService;
 import com.chernik.internetprovider.service.LegalEntityClientInformationService;
 import com.chernik.internetprovider.service.UserService;
 
+import java.util.Optional;
+
 @Service
 public class ContractServiceImpl implements ContractService {
 
@@ -65,8 +67,12 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public Contract getById(Long id) throws DatabaseException, TimeOutException {
-        Contract contract = contractRepository.getById(id).orElse(null);
-        if (contract != null) {
+        Optional<Contract> contractOptional = contractRepository.getById(id);
+        Contract contract = null;
+
+        if (contractOptional.isPresent()) {
+            contract = contractOptional.get();
+
             switch (contract.getClientType()) {
                 case INDIVIDUAL:
                     IndividualClientInformation individualClientInformation = individualClientInformationService.getById(contract.getIndividualClientInformation().getIndividualClientInformationId());
@@ -78,6 +84,7 @@ public class ContractServiceImpl implements ContractService {
                     break;
             }
         }
+
         return contract;
     }
 
@@ -91,10 +98,22 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void dissolve(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
-        if (!contractRepository.existWithId(id)) {
+    public void dissolve(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException, UnableSaveEntityException {
+        if (notExistById(id)) {
             throw new EntityNotFoundException(String.format("Contract with ID %d was not found", id));
         }
+        if (contractRepository.isDissolved(id)) {
+            throw new UnableSaveEntityException(String.format("Contract with id=%d already dissolved", id));
+        }
+        if (contractRepository.hasNotCanceledContractAnnex(id)) {
+            throw new UnableSaveEntityException(String.format("Contract with id=%d has not canceled contract annex", id));
+        }
+
         contractRepository.dissolve(id);
+    }
+
+    @Override
+    public boolean notExistById(Long id) throws DatabaseException, TimeOutException {
+        return !contractRepository.existWithId(id);
     }
 }

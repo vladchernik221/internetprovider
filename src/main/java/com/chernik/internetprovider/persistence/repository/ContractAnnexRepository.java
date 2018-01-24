@@ -18,4 +18,6 @@ public interface ContractAnnexRepository {
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 
     void cancel(Long id) throws DatabaseException, TimeOutException;
+
+    boolean isCanceled(Long id) throws DatabaseException, TimeOutException;
 }

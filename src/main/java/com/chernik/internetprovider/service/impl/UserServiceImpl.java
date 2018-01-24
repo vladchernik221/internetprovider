@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existWithLogin(user.getLogin())) {
             throw new UnableSaveEntityException(String.format("User with login %s already", user.getLogin()));
         }
+
         return userRepository.create(user);
     }
 
@@ -50,20 +51,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void block(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
-        Optional<User> user = userRepository.getById(id);
-        if (!user.isPresent()) {
+        if (!userRepository.existWithId(id)) {
             throw new EntityNotFoundException(String.format("User with id %d was not found", id));
         }
-        user.get().setBlocked(!user.get().getBlocked());
-        userRepository.block(user.get());
+
+        userRepository.block(id);
     }
 
     @Override
     public void changePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException, EntityNotFoundException {
-        Optional<User> userOptional = userRepository.getById(userId);
-
-        if (!userOptional.isPresent()) {
-            throw new EntityNotFoundException(String.format("User with id: %d not found", userId));
+        if (!userRepository.existWithId(userId)) {
+            throw new EntityNotFoundException(String.format("User with id %d was not found", userId));
         }
 
         userRepository.updatePassword(userId, newPassword);

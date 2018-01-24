@@ -30,7 +30,8 @@
     <div class="container">
         <div class="row"><div class="align-left col-2">
                 <a href="/tariff-plan" class="button small"><fmt:message key="tariff.toList" /></a>
-            </div><div class="align-right actions col-2">
+            </div><!--
+            --><c:if test="${sessionScope.user.userRole == 'ADMIN'}"><div class="align-right actions col-2">
                 <a href="/tariff-plan/${tariffPlan.tariffPlanId}/edit" class="button small"><fmt:message key="edit" /></a>
                 <button class="button small" onclick="change_archived(${tariffPlan.tariffPlanId})">
                     <c:choose>
@@ -38,7 +39,8 @@
                         <c:otherwise><fmt:message key="tariff.fromArchive" /></c:otherwise>
                     </c:choose>
                 </button>
-            </div></div>
+            </div></c:if><!--
+        --></div>
         <c:if test="${tariffPlan.archived}">
             <h2 class="warn"><fmt:message key="tariff.inArchive" /></h2>
         </c:if>

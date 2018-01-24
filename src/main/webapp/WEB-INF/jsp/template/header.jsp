@@ -10,7 +10,7 @@
             <c:when test="${sessionScope.user != null}">
                 <c:if test="${sessionScope.user.userRole == 'CUSTOMER'}">
                     <li>
-                        <a href="/client"><fmt:message key="header.client" /></a>
+                        <a href="/contract/${user.contract.contractId}"><fmt:message key="header.contract" /></a>
                     </li>
                 </c:if>
                 <c:if test="${sessionScope.user.userRole == 'ADMIN' || sessionScope.user.userRole == 'SELLER'}">

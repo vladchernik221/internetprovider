@@ -16,4 +16,8 @@ public interface ContractRepository {
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 
     boolean existNotDissolvedByClientInformation(Contract contract) throws DatabaseException, TimeOutException;
+
+    boolean isDissolved(Long contractId) throws DatabaseException, TimeOutException;
+
+    boolean hasNotCanceledContractAnnex(Long contractId) throws DatabaseException, TimeOutException;
 }

@@ -14,7 +14,7 @@ public interface TariffPlanRepository {
 
     void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
 
-    void archive(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
+    void archive(Long id) throws DatabaseException, TimeOutException;
 
     Page<TariffPlan> getPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
 
@@ -25,4 +25,6 @@ public interface TariffPlanRepository {
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 
     List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException;
+
+    boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException;
 }

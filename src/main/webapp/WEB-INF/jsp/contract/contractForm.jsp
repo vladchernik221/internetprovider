@@ -39,8 +39,8 @@
                 <label for="clientType-legal"><fmt:message key="contract.legal" /></label>
             </div></div>
             <div class="row only-for-individual">
-                <input type="text" name="individual.passportUniqueIdentification" placeholder="<fmt:message key="contract.password" />" required />
-                <label><fmt:message key="contract.password" /></label>
+                <input type="text" name="individual.passportUniqueIdentification" placeholder="<fmt:message key="contract.passport" />" required />
+                <label><fmt:message key="contract.passport" /></label>
             </div>
             <div class="row only-for-legal">
                 <input type="text" name="legal.payerAccountNumber" placeholder="<fmt:message key="contract.payerAccountNumber" />" required />
@@ -84,6 +84,10 @@
             <div class="row only-for-legal">
                 <input type="text" name="legal.phoneNumber" placeholder="<fmt:message key="contract.phoneNumber" />: (00)000-00-00" pattern="^\(\d{2}\)\d{3}-\d{2}-\d{2}$" required />
                 <label><fmt:message key="contract.phoneNumber" />: (00)000-00-00</label>
+            </div>
+            <div class="row">
+                <input type="password" name="password" placeholder="<fmt:message key="contract.password" />" pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)\w{6,}$" required />
+                <label><fmt:message key="contract.password" /></label>
             </div>
             <input class="big" type="submit" value="<fmt:message key="submit" />" />
             <input class="big" type="reset" value="<fmt:message key="reset" />" />

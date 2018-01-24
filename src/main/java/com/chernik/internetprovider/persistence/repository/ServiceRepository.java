@@ -13,7 +13,7 @@ public interface ServiceRepository {
 
     void update(Service service) throws DatabaseException, TimeOutException;
 
-    void archive(Service service) throws DatabaseException, TimeOutException;
+    void archive(Long service) throws DatabaseException, TimeOutException;
 
     Page<Service> getPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException;
 
@@ -22,4 +22,6 @@ public interface ServiceRepository {
     boolean existWithName(String name) throws DatabaseException, TimeOutException;
 
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
+
+    boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException;
 }

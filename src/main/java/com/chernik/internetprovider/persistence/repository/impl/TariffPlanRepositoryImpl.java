@@ -32,7 +32,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private static final String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=? WHERE `tariff_plan_id`=?";
 
-    private static final String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `archived`=? WHERE `tariff_plan_id`=?";
+    private static final String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` tp SET tp.archived=NOT tp.archived WHERE tp.tariff_plan_id=?";
 
     private static final String GET_TARIFF_PLANS_PAGE = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `archived`=0 LIMIT ? OFFSET ?";
 
@@ -45,6 +45,8 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private static final String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `tariff_plan_id`=?";
 
     private static final String GET_ALL_NOT_ARCHIVED = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `archived`=0";
+
+    private static final String EXIST_BY_ID_AND_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`=? AND `name`=?)";
 
 
     @Autowired
@@ -90,14 +92,13 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
 
     @Override
-    public void archive(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(tariffPlan, this::createPreparedStatementForArchived);
+    public void archive(Long id) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(id, this::createPreparedStatementForArchived);
     }
 
-    private PreparedStatement createPreparedStatementForArchived(Connection connection, TariffPlan tariffPlan) throws SQLException {
+    private PreparedStatement createPreparedStatementForArchived(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(ARCHIVE_TARIFF_PLAN);
-        statement.setBoolean(1, tariffPlan.getArchived());
-        statement.setLong(2, tariffPlan.getTariffPlanId());
+        statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
@@ -209,5 +210,18 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private PreparedStatement createStatementForGetAll(Connection connection) throws SQLException {
         return connection.prepareStatement(GET_ALL_NOT_ARCHIVED);
+    }
+
+
+    @Override
+    public boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
+    }
+
+    private PreparedStatement createStatementForExistByIdAndName(Connection connection, Long id, String name) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXIST_BY_ID_AND_NAME);
+        statement.setLong(1, id);
+        statement.setString(2, name);
+        return statement;
     }
 }

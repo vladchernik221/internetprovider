@@ -32,7 +32,9 @@
     <div class="container">
         <header class="major">
             <h2><fmt:message key="discounts" /></h2>
-            <a href="/discount/new" class="button"><fmt:message key="discount.create" /></a>
+            <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                <a href="/discount/new" class="button"><fmt:message key="discount.create" /></a>
+            </c:if>
         </header>
         <c:choose>
             <c:when test="${discountsPage.pagesCount == 0}">
@@ -46,8 +48,10 @@
                         <th><fmt:message key="discount.startDate" /></th>
                         <th><fmt:message key="discount.endDate" /></th>
                         <th><fmt:message key="discount.onlyForNew" /></th>
-                        <th></th>
-                        <th></th>
+                        <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                            <th></th>
+                            <th></th>
+                        </c:if>
                     </tr>
                     <c:forEach items="${discountsPage.data}" var="discount">
                         <tr onclick="redirect('/discount/${discount.discountId}')">
@@ -59,12 +63,14 @@
                                 <c:when test="${discount.onlyForNewClient}"><fmt:message key="yes" /></c:when>
                                 <c:otherwise><fmt:message key="no" /></c:otherwise>
                             </c:choose></td>
-                            <td>
-                                <div class="icon small fa-edit" onclick="redirect('/discount/${discount.discountId}/edit', event)"></div>
-                            </td>
-                            <td>
-                                <div class="icon small fa-remove" onclick="remove(${discount.discountId}, event)"></div>
-                            </td>
+                            <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                                <td>
+                                    <div class="icon small fa-edit" onclick="redirect('/discount/${discount.discountId}/edit', event)"></div>
+                                </td>
+                                <td>
+                                    <div class="icon small fa-remove" onclick="remove(${discount.discountId}, event)"></div>
+                                </td>
+                            </c:if>
                         </tr>
                     </c:forEach>
                 </table>

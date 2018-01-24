@@ -2,6 +2,7 @@ package com.chernik.internetprovider.service;
 
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.exception.DatabaseException;
+import com.chernik.internetprovider.exception.EntityNotFoundException;
 import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
@@ -23,5 +24,5 @@ public interface DiscountService {
 
     Discount getById(Long id) throws BaseException;
 
-    List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException;
+    List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException;
 }

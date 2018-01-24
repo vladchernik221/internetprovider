@@ -2,6 +2,7 @@ package com.chernik.internetprovider.servlet.command.commandimpl.contract;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
+import com.chernik.internetprovider.exception.BadRequestException;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.service.ContractService;
@@ -26,7 +27,12 @@ public class ContractCreateCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Contract contract = contractMapper.create(request);
-        Long generatedId = contractService.create(contract, "123");//TODO user password from request
+        String userPassword = request.getParameter("password");
+        if (userPassword == null || userPassword.isEmpty()) {
+            throw new BadRequestException("Mandatory parameter password does not initialize");
+        }
+
+        Long generatedId = contractService.create(contract, userPassword);
         response.getWriter().write(generatedId.toString());
     }
 }

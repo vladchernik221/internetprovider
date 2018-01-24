@@ -32,7 +32,9 @@
     <div class="container">
         <header class="major">
             <h2><fmt:message key="services" /></h2>
+            <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
             <a href="/service/new" class="button"><fmt:message key="service.create" /></a>
+            </c:if>
         </header>
         <c:choose>
             <c:when test="${servicesPage.pagesCount == 0}">
@@ -45,24 +47,28 @@
                     <tr>
                         <th><fmt:message key="service.name" /></th>
                         <th><fmt:message key="service.cost" /></th>
-                        <th></th>
-                        <th></th>
+                        <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                            <th></th>
+                            <th></th>
+                        </c:if>
                     </tr>
                     <c:forEach items="${servicesPage.data}" var="service">
                         <tr onclick="redirect('/service/${service.serviceId}')">
                             <td>${service.name}</td>
                             <td>${service.price}</td>
-                            <td>
-                                <div class="icon small fa-edit" onclick="redirect('/service/${service.serviceId}/edit', event)"></div>
-                            </td>
-                            <td>
-                                <div class="icon small
-                                    <c:choose>
-                                        <c:when test="${!service.archived}">fa-archive</c:when>
-                                        <c:otherwise>fa-share</c:otherwise>
-                                    </c:choose>
-                                " onclick="change_archived(${service.serviceId}, event)"></div>
-                            </td>
+                            <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                                <td>
+                                    <div class="icon small fa-edit" onclick="redirect('/service/${service.serviceId}/edit', event)"></div>
+                                </td>
+                                <td>
+                                    <div class="icon small
+                                        <c:choose>
+                                            <c:when test="${!service.archived}">fa-archive</c:when>
+                                            <c:otherwise>fa-share</c:otherwise>
+                                        </c:choose>
+                                    " onclick="change_archived(${service.serviceId}, event)"></div>
+                                </td>
+                            </c:if>
                         </tr>
                     </c:forEach>
                 </table>

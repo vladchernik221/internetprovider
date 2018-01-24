@@ -29,13 +29,15 @@
     <div class="container">
         <div class="row">
             <div class="align-left col-2">
-                <a href="/contract" class="button small"><fmt:message key="contract.view.tolist" /></a>
+                <c:if test="${sessionScope.user.userRole == 'SELLER'}">
+                    <a href="/contract" class="button small"><fmt:message key="contract.view.tolist" /></a>
+                </c:if>
                 <a href="/contract/${contract.contractId}/annex" class="button small"><fmt:message key="annex.list" /></a>
             </div><c:if test="${!contract.dissolved}"><!--
-            --><div class="align-right actions col-2">
+            --><c:if test="${sessionScope.user.userRole == 'SELLER'}"><div class="align-right actions col-2">
                 <a href="/contract/${contract.contractId}/annex/new" class="button small"><fmt:message key="annex.add" /></a>
                 <button class="button small" onclick="dissolve(${contract.contractId})"><fmt:message key="contract.dissolve" /></button>
-            </div><!--
+            </div></c:if><!--
         --></c:if></div>
         <c:if test="${contract.dissolved}">
             <h2 class="warn"><fmt:message key="contract.dissolved" /> <fmt:formatDate type="date" dateStyle="long" value="${contract.dissolveDate}"/></h2>

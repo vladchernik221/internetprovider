@@ -27,12 +27,14 @@
 <!-- Main part -->
 <section class="wrapper style2">
     <div class="container">
-        <div class="row"><div class="align-left col-2">
-                <a href="/service" class="button small"><fmt:message key="discount.toList" /></a>
-            </div><div class="align-right actions col-2">
-                <a href="/service/${discount.discountId}/edit" class="button small"><fmt:message key="edit" /></a>
-                <button class="button small" onclick="remove(${discount.discountId})"><fmt:message key="remove" /></button>
-            </div></div>
+        <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+            <div class="row"><div class="align-left col-2">
+                    <a href="/service" class="button small"><fmt:message key="discount.toList" /></a>
+                </div><div class="align-right actions col-2">
+                    <a href="/service/${discount.discountId}/edit" class="button small"><fmt:message key="edit" /></a>
+                    <button class="button small" onclick="remove(${discount.discountId})"><fmt:message key="remove" /></button>
+                </div></div>
+        </c:if>
         <h1>${discount.name}</h1>
         <p>${discount.description}</p>
         <table class="description">

@@ -111,6 +111,26 @@ public class CommonRepository {
         return isExist;
     }
 
+    public <T, E> boolean exist(T firstParameter, E secondParameter, TriThrowableFunction<Connection, T, E, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing by {} and {}", firstParameter, secondParameter);
+        boolean isExist;
+        Connection connection = connectionPool.getConnection();
+        try (PreparedStatement statement = statementFunctional.apply(connection, firstParameter, secondParameter);
+             ResultSet resultSet = statement.executeQuery()) {
+            if (resultSet.next()) {
+                isExist = resultSet.getBoolean(1);
+            } else {
+                throw new DatabaseException("Error while execute database query");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error while execute database query", e);
+        } finally {
+            connectionPool.releaseConnection(connection);
+        }
+        LOGGER.log(Level.TRACE, "Existing is {}", isExist);
+        return isExist;
+    }
+
     public <T, E> Optional<T> getByParameters(E parameter, BiThrowableFunction<Connection, E, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> entityCreateFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting by {}", parameter);
         Connection connection = connectionPool.getConnection();

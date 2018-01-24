@@ -28,13 +28,14 @@ public class AccountServiceImpl implements AccountService {
     public Account getById(Long contractAnnexId, Integer pageNumber) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Optional<Account> accountOptional = accountRepository.getById(contractAnnexId);
 
-        if (accountOptional.isPresent()) {
-            Page<Transaction> transactionPage = transactionService.getPage(contractAnnexId, new Pageable(pageNumber, 10));
-            Account account = accountOptional.get();
-            account.setTransactions(transactionPage);
-            return account;
-        } else {
+        if (!accountOptional.isPresent()) {
             throw new EntityNotFoundException(String.format("Account with id: %d not found", contractAnnexId));
         }
+
+
+        Page<Transaction> transactionPage = transactionService.getPage(contractAnnexId, new Pageable(pageNumber, 10));
+        Account account = accountOptional.get();
+        account.setTransactions(transactionPage);
+        return account;
     }
 }

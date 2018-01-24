@@ -41,9 +41,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String GET_USERS_WITH_ROLE_PAGE = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` WHERE `role`=? LIMIT ? OFFSET ?";
 
-    private static final String BLOCK_USER = "UPDATE `user` SET `blocked`=? WHERE `user_id`=?";
+    private static final String BLOCK_USER = "UPDATE `user` u SET u.blocked=NOT u.blocked WHERE u.user_id=?";
 
     private static final String IS_EXIST_USER_WITH_LOGIN = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `login`=?)";
+
+    private static final String EXIST_BY_ID = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `user_id`=?)";
 
 
     @Autowired
@@ -158,14 +160,13 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public void block(User user) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(user, this::createStatementForBlock);
+    public void block(Long id) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(id, this::createStatementForBlock);
     }
 
-    private PreparedStatement createStatementForBlock(Connection connection, User user) throws SQLException {
+    private PreparedStatement createStatementForBlock(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(BLOCK_USER);
-        statement.setBoolean(1, user.getBlocked());
-        statement.setLong(2, user.getUserId());
+        statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
@@ -198,5 +199,17 @@ public class UserRepositoryImpl implements UserRepository {
             user.setContract(contract);
         }
         return user;
+    }
+
+
+    @Override
+    public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, this::createStatementForExistById);
+    }
+
+    private PreparedStatement createStatementForExistById(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXIST_BY_ID);
+        statement.setLong(1, id);
+        return statement;
     }
 }

@@ -20,20 +20,23 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public Long create(Service service) throws BaseException {
-        if (!serviceRepository.existWithName(service.getName())) {
-            return serviceRepository.create(service);
-        } else {
+        if (serviceRepository.existWithName(service.getName())) {
             throw new UnableSaveEntityException(String.format("Service with name: %s already exist", service.getName()));
         }
+
+        return serviceRepository.create(service);
     }
 
     @Override
     public void update(Service service) throws BaseException {
-        if (serviceRepository.existWithId(service.getServiceId())) {
-            serviceRepository.update(service);
-        } else {
+        if (!serviceRepository.existWithId(service.getServiceId())) {
             throw new EntityNotFoundException(String.format("Service with id: %s does not exist", service.getServiceId()));
         }
+        if (!serviceRepository.existWithIdAndName(service.getServiceId(), service.getName()) && serviceRepository.existWithName(service.getName())) {
+            throw new UnableSaveEntityException(String.format("Service with name=%s already exists", service.getName()));
+        }
+
+        serviceRepository.update(service);
     }
 
     @Override
@@ -47,13 +50,16 @@ public class ServiceServiceImpl implements ServiceService {
         if (!service.isPresent()) {
             throw new EntityNotFoundException(String.format("Service with id=%d does not exist", id));
         }
+
         return service.get();
     }
 
     @Override
     public void archive(Long id) throws BaseException {
-        Service service = getById(id);
-        service.setArchived(!service.getArchived());
-        serviceRepository.archive(service);
+        if (!serviceRepository.existWithId(id)) {
+            throw new EntityNotFoundException(String.format("Service with id: %s does not exist", id));
+        }
+
+        serviceRepository.archive(id);
     }
 }

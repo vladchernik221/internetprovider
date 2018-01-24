@@ -32,7 +32,9 @@
     <div class="container">
         <header class="major">
             <h2><fmt:message key="tariffs" /></h2>
-            <a href="/tariff-plan/new" class="button"><fmt:message key="tariff.create" /></a>
+            <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                <a href="/tariff-plan/new" class="button"><fmt:message key="tariff.create" /></a>
+            </c:if>
         </header>
         <c:choose>
             <c:when test="${tariffPlansPage.pagesCount == 0}">
@@ -48,8 +50,10 @@
                         <th><fmt:message key="tariff.downSpeed" /></th>
                         <th><fmt:message key="tariff.upSpeed" /></th>
                         <th><fmt:message key="tariff.includedTraffic" /></th>
-                        <th></th>
-                        <th></th>
+                        <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                            <th></th>
+                            <th></th>
+                        </c:if>
                     </tr>
                     <c:forEach items="${tariffPlansPage.data}" var="tariffPlan">
                         <tr onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}')">
@@ -58,17 +62,19 @@
                             <td>${tariffPlan.downSpeed}</td>
                             <td>${tariffPlan.upSpeed}</td>
                             <td>${tariffPlan.includedTraffic}</td>
-                            <td>
-                                <div class="icon small fa-edit" onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}/edit', event)"></div>
-                            </td>
-                            <td>
-                                <div class="icon small
-                                    <c:choose>
-                                        <c:when test="${!tariffPlan.archived}">fa-archive</c:when>
-                                        <c:otherwise>fa-share</c:otherwise>
-                                    </c:choose>
-                                " onclick="change_archived(${tariffPlan.tariffPlanId}, event)"></div>
-                            </td>
+                            <c:if test="${sessionScope.user.userRole == 'ADMIN'}">
+                                <td>
+                                    <div class="icon small fa-edit" onclick="redirect('/tariff-plan/${tariffPlan.tariffPlanId}/edit', event)"></div>
+                                </td>
+                                <td>
+                                    <div class="icon small
+                                        <c:choose>
+                                            <c:when test="${!tariffPlan.archived}">fa-archive</c:when>
+                                            <c:otherwise>fa-share</c:otherwise>
+                                        </c:choose>
+                                    " onclick="change_archived(${tariffPlan.tariffPlanId}, event)"></div>
+                                </td>
+                            </c:if>
                         </tr>
                     </c:forEach>
                 </table>

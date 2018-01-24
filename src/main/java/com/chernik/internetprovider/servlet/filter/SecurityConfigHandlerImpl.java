@@ -21,7 +21,7 @@ public class SecurityConfigHandlerImpl implements SecurityConfigHandler {
     }
 
 
-    public SecurityConfigHandlerImpl antMatcher(RequestType method, String... patterns) {
+    public SecurityConfigHandlerImpl matcher(RequestType method, String... patterns) {
         if (bufferPatterns == null) {
             bufferPatterns = new LinkedList<>();
         }

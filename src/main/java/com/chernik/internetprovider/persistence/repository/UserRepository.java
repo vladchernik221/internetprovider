@@ -21,7 +21,9 @@ public interface UserRepository {
 
     Optional<User> getById(Long id) throws DatabaseException, TimeOutException;
 
-    void block(User user) throws DatabaseException, TimeOutException;
+    void block(Long id) throws DatabaseException, TimeOutException;
 
     boolean existWithLogin(String login) throws DatabaseException, TimeOutException;
+
+    boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 }

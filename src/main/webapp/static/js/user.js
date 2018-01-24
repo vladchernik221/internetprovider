@@ -32,7 +32,7 @@ function send_form(event) {
                 if (result === "") {
                     window.location.reload(true);
                 } else {
-                    redirect("/user/" + result + "/edit");
+                    redirect("/user");
                 }
             },
             error: error_handler
@@ -41,10 +41,11 @@ function send_form(event) {
 }
 
 function validate_form(form) {
-    if(form.elements.password.value !== form.elements.confirmPassword.value) {
+    if(form.find("input[name=password]").val() !== form.find("input[name=confirmPassword]").val()) {
         $("#modal_message").html("Пароли не совпадают");
         show_modal();
-        form.elements.password.value = form.elements.confirmPassword.value = "";
+        form.find("input[name=password]").val("");
+        form.find("input[name=confirmPassword]").val("");
         return false;
     }
     return true;

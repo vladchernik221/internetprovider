@@ -15,7 +15,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
-import java.util.List;
 
 @Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
@@ -33,8 +32,8 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
 
     @Override
-    public Long create(Transaction transaction) throws DatabaseException, TimeOutException {
-        return commonRepository.create(transaction, this::createPreparedStatementForInserting);
+    public void create(Transaction transaction) throws DatabaseException, TimeOutException {
+        commonRepository.create(transaction, this::createPreparedStatementForInserting);
     }
 
     private PreparedStatement createPreparedStatementForInserting(Connection connection, Transaction transaction) throws SQLException {

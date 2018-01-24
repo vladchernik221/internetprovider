@@ -35,6 +35,9 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     private static final String CANCEL_CONTRACT_ANNEX = "UPDATE `contract_annex` SET `canceled`=1 WHERE `contract_annex_id`=?";
 
+    private static final String IS_CANCELED = "SELECT EXISTS(SELECT 1 FROM `contract_annex` WHERE `contract_annex_id`=? AND `canceled`=1)";
+
+
     @Autowired
     private CommonRepository commonRepository;
 
@@ -105,10 +108,10 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
-        return commonRepository.exist(id, this::createStatementForContractAnnexExistsById);
+        return commonRepository.exist(id, this::createStatementForContractAnnexExistById);
     }
 
-    private PreparedStatement createStatementForContractAnnexExistsById(Connection connection, Long id) throws SQLException {
+    private PreparedStatement createStatementForContractAnnexExistById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_CONTRACT_ANNEX_BY_ID);
         statement.setLong(1, id);
         return statement;
@@ -121,6 +124,18 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     private PreparedStatement createPreparedStatementForCanceling(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CANCEL_CONTRACT_ANNEX);
+        statement.setLong(1, id);
+        return statement;
+    }
+
+
+    @Override
+    public boolean isCanceled(Long id) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, this::createStatementForIsCanceled);
+    }
+
+    private PreparedStatement createStatementForIsCanceled(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(IS_CANCELED);
         statement.setLong(1, id);
         return statement;
     }

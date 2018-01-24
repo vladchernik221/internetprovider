@@ -28,6 +28,11 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private static final String EXISTS_NOT_DISSOLVED_BY_CLIENT_INFORMATION = "SELECT EXISTS(SELECT 1 FROM `contract` c LEFT JOIN `individual_client_information` ici ON c.individual_client_information_id=ici.individual_client_information_id LEFT JOIN `legal_entity_client_information` leci ON c.legal_entity_client_information_id = leci.legal_entity_client_information_id WHERE `dissolved`=0 AND (ici.passport_unique_identification=? OR leci.payer_account_number=?))";
 
+    private static final String IS_DISSOLVED = "SELECT EXISTS(SELECT 1 FROM `contract` WHERE `contract_id`=? AND `dissolved`=1)";
+
+    private static final String HAS_NOT_CANCELED_CONTRACT_ANNEX = "SELECT EXISTS(SELECT 1 FROM `contract_annex` WHERE `contract_id`=? AND `canceled`=0)";
+
+
     @Autowired
     private CommonRepository commonRepository;
 
@@ -97,10 +102,10 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
-        return commonRepository.exist(id, this::createStatementForContractExistsById);
+        return commonRepository.exist(id, this::createStatementForContractExistById);
     }
 
-    private PreparedStatement createStatementForContractExistsById(Connection connection, Long id) throws SQLException {
+    private PreparedStatement createStatementForContractExistById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_CONTRACT_BY_ID);
         statement.setLong(1, id);
         return statement;
@@ -125,6 +130,30 @@ public class ContractRepositoryImpl implements ContractRepository {
         } else {
             statement.setNull(2, Types.VARCHAR);
         }
+        return statement;
+    }
+
+
+    @Override
+    public boolean isDissolved(Long contractId) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(contractId, this::createStatementForIsDissolved);
+    }
+
+    private PreparedStatement createStatementForIsDissolved(Connection connection, Long contractId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(IS_DISSOLVED);
+        statement.setLong(1, contractId);
+        return statement;
+    }
+
+
+    @Override
+    public boolean hasNotCanceledContractAnnex(Long contractId) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(contractId, this::createStatementForHasCanceledContractAnnex);
+    }
+
+    private PreparedStatement createStatementForHasCanceledContractAnnex(Connection connection, Long contractId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(HAS_NOT_CANCELED_CONTRACT_ANNEX);
+        statement.setLong(1, contractId);
         return statement;
     }
 }

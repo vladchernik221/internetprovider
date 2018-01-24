@@ -32,15 +32,21 @@ public class ContractAnnexServiceImpl implements ContractAnnexService {
         if (!tariffPlanService.existWithId(contractAnnex.getTariffPlan().getTariffPlanId())) {
             throw new EntityNotFoundException(String.format("Tariff plan with ID %d was not found.", contractAnnex.getTariffPlan().getTariffPlanId()));
         }
+
         Contract contract = contractService.getByIdOrThrow(contractAnnex.getContract().getContractId());
         if (contract.getDissolved()) {
             throw new UnableSaveEntityException(String.format("Contract with ID %d already dissolved. It's impossible to add annex to dissolved contract.", contractAnnex.getContract().getContractId()));
         }
+
         return contractAnnexRepository.create(contractAnnex);
     }
 
     @Override
     public Page<ContractAnnex> getPage(Long contractId, Pageable pageable) throws BaseException {
+        if (contractService.notExistById(contractId)) {
+            throw new EntityNotFoundException(String.format("Contract with id=%d not found", contractId));
+        }
+
         Page<ContractAnnex> contractAnnexPage = contractAnnexRepository.getPage(contractId, pageable);
         TariffPlan tariffPlan;
         for (ContractAnnex contractAnnex : contractAnnexPage.getData()) {
@@ -62,10 +68,19 @@ public class ContractAnnexServiceImpl implements ContractAnnexService {
     }
 
     @Override
-    public void cancel(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
-        if(!contractAnnexRepository.existWithId(id)) {
+    public void cancel(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException, UnableSaveEntityException {
+        if (!existById(id)) {
             throw new EntityNotFoundException(String.format("Contract annex with id=%d does not exist", id));
         }
-        contractAnnexRepository.cancel(id); //TODO think about throwing exception if contract annex already canceled
+        if (contractAnnexRepository.isCanceled(id)) {
+            throw new UnableSaveEntityException(String.format("Contract annex with id=%d already canceled", id));
+        }
+
+        contractAnnexRepository.cancel(id);
+    }
+
+    @Override
+    public boolean existById(Long id) throws DatabaseException, TimeOutException {
+        return contractAnnexRepository.existWithId(id);
     }
 }

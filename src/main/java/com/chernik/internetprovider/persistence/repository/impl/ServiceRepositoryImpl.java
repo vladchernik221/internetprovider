@@ -36,11 +36,13 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     private static final String GET_SERVICE_BY_ID = "SELECT `service_id`, `name`, `description`, `price`, `archived` FROM `service` WHERE `service_id`=?";
 
-    private static final String ARCHIVE_SERVICE = "UPDATE `service` SET `archived`=? WHERE service_id=?";
+    private static final String ARCHIVE_SERVICE = "UPDATE `service` s SET s.archived=NOT s.archived WHERE s.service_id=?";
 
     private static final String EXISTS_SERVICE_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `name`=?)";
 
     private static final String EXISTS_SERVICE_BY_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`=?)";
+
+    private static final String EXIST_BY_ID_AND_NAME = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`=? AND `name`=?)";
 
 
     @Autowired
@@ -79,14 +81,13 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
 
     @Override
-    public void archive(Service service) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(service, this::createPreparedStatementForArchived);
+    public void archive(Long id) throws DatabaseException, TimeOutException {
+        commonRepository.executeUpdate(id, this::createPreparedStatementForArchived);
     }
 
-    private PreparedStatement createPreparedStatementForArchived(Connection connection, Service service) throws SQLException {
+    private PreparedStatement createPreparedStatementForArchived(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(ARCHIVE_SERVICE);
-        statement.setBoolean(1, service.getArchived());
-        statement.setLong(2, service.getServiceId());
+        statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
@@ -174,6 +175,18 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         PreparedStatement statement = connection.prepareStatement(EXISTS_SERVICE_BY_ID);
         statement.setLong(1, id);
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
+    }
+
+    @Override
+    public boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
+    }
+
+    private PreparedStatement createStatementForExistByIdAndName(Connection connection, Long id, String name) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXIST_BY_ID_AND_NAME);
+        statement.setLong(1, id);
+        statement.setString(2, name);
         return statement;
     }
 }

@@ -1,9 +1,6 @@
 package com.chernik.internetprovider.service;
 
-import com.chernik.internetprovider.exception.BaseException;
-import com.chernik.internetprovider.exception.DatabaseException;
-import com.chernik.internetprovider.exception.EntityNotFoundException;
-import com.chernik.internetprovider.exception.TimeOutException;
+import com.chernik.internetprovider.exception.*;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.ContractAnnex;
@@ -15,5 +12,7 @@ public interface ContractAnnexService {
 
     ContractAnnex getById(Long id) throws BaseException;
 
-    void cancel(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException;
+    void cancel(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException, UnableSaveEntityException;
+
+    boolean existById(Long id) throws DatabaseException, TimeOutException;
 }

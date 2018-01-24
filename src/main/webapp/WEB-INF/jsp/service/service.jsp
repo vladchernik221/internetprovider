@@ -29,7 +29,8 @@
     <div class="container">
         <div class="row"><div class="align-left col-2">
                 <a href="/service" class="button small"><fmt:message key="service.toList" /></a>
-            </div><div class="align-right actions col-2">
+            </div><!--
+            --><c:if test="${sessionScope.user.userRole == 'ADMIN'}"><div class="align-right actions col-2">
                 <a href="/service/${service.serviceId}/edit" class="button small"><fmt:message key="edit" /></a>
                 <button class="button small" onclick="change_archived(${service.serviceId})">
                     <c:choose>
@@ -37,7 +38,8 @@
                         <c:otherwise><fmt:message key="service.fromArchive" /></c:otherwise>
                     </c:choose>
                 </button>
-            </div></div>
+            </div></c:if><!--
+        --></div>
         <c:if test="${service.archived}">
             <h2 class="warn"><fmt:message key="service.inArchive" /></h2>
         </c:if>

@@ -31,7 +31,9 @@
     <div class="container">
         <header class="major">
             <h2><fmt:message key="annex.list" /> <fmt:formatNumber type = "number" groupingUsed="false" minIntegerDigits = "6" value = "${contractId}" /></h2>
-            <a href="/contract/${contractId}/annex/new" class="button"><fmt:message key="annex.create" /></a>
+            <c:if test="${sessionScope.user.userRole == 'SELLER'}">
+                <a href="/contract/${contractId}/annex/new" class="button"><fmt:message key="annex.create" /></a>
+            </c:if>
         </header>
         <c:choose>
             <c:when test="${contractAnnexesPage.pagesCount == 0}">
