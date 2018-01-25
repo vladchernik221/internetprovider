@@ -8,11 +8,11 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 public class StartupListener implements ServletContextListener {
-    private ContextInitializer contextInitializer = new ContextInitializer();
+    private ContextInitializer contextInitializer;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        contextInitializer.initialize();
+        contextInitializer = ContextInitializer.getInstance();
         CommandHandler commandHandler = (CommandHandler) contextInitializer.getComponent(CommandHandler.class);
         servletContextEvent.getServletContext().setAttribute("commandHandler", commandHandler);
         SecurityConfigHandler securityConfigHandler = (SecurityConfigHandler) contextInitializer.getComponent(SecurityConfigHandler.class);

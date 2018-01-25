@@ -68,6 +68,15 @@ public class ContextInitializer {
      */
     private List<Map.Entry<Method, Object>> withBeforeDestroy = new ArrayList<>();
 
+
+    private ContextInitializer() {
+        initialize();
+    }
+
+    public static ContextInitializer getInstance() {
+        return ContextInitializerSingletonHolder.INSTANCE;
+    }
+
     /**
      * Gets component by its class.
      *
@@ -83,7 +92,7 @@ public class ContextInitializer {
      * Initialize context: fill map of components, inject them to appropriate fields annotated as
      * {@link Autowired}, invoke methods annotated as {@link AfterCreate}.
      */
-    public void initialize() {
+    private void initialize() {
         LOGGER.log(Level.INFO, "Start initialize context");
         long startTime = System.currentTimeMillis();
         initComponents(Component.class);
@@ -316,5 +325,10 @@ public class ContextInitializer {
         } else {
             throw new ConcurrentModificationException(String.format("Interface %s hasn't implementation", interfaceClass));
         }
+    }
+
+
+    private static class ContextInitializerSingletonHolder {
+        private static final ContextInitializer INSTANCE = new ContextInitializer();
     }
 }

@@ -5,7 +5,6 @@ import com.chernik.internetprovider.exception.TimeOutException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.flywaydb.core.Flyway;
 
 import java.sql.*;
 import java.util.*;
@@ -20,8 +19,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger(ConnectionPoolImpl.class);
 
     private static final String PROPERTY_FILE_NAME = "application";
-    private static final String DATABASE_CONNECTION_FORMAT = "%s?user=%s&password=%s&" +
-            "verifyServerCertificate=false&useSSL=true&serverTimezone=UTC";
+    private static final String DATABASE_CONNECTION_FORMAT = "%s?user=%s&password=%s&verifyServerCertificate=false&useSSL=true&serverTimezone=UTC";
     private static final String DRIVER_PROPERTY_NAME = "database.driver";
     private static final String URL_PROPERTY_NAME = "database.url";
     private static final String USER_PROPERTY_NAME = "database.user";
@@ -42,7 +40,15 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private Deque<Connection> busyConnections = new ArrayDeque<>();
     private AtomicInteger connectionCount = new AtomicInteger();
 
-    public void initDatabaseProperty() {
+    private ConnectionPoolImpl() {
+        initDatabaseProperty();
+    }
+
+    public static ConnectionPoolImpl getInstance() {
+        return ConnectionPoolImplSingletonHolder.INSTANCE;
+    }
+
+    private void initDatabaseProperty() {
         ResourceBundle bundle = ResourceBundle.getBundle(PROPERTY_FILE_NAME);
 
         String driver = readPropertyWithValidation(bundle, DRIVER_PROPERTY_NAME);
@@ -64,10 +70,6 @@ public class ConnectionPoolImpl implements ConnectionPool {
         if (!timeOutProperty.isEmpty() && Integer.parseInt(timeOutProperty) > 0) {
             timeOut = Integer.parseInt(timeOutProperty);
         }
-
-        Flyway flyway = new Flyway();
-        flyway.setDataSource(url + "?verifyServerCertificate=false&useSSL=true&serverTimezone=UTC", user, password);
-        flyway.migrate();
     }
 
     private String readPropertyWithValidation(ResourceBundle bundle, String propertyName) {
@@ -193,6 +195,10 @@ public class ConnectionPoolImpl implements ConnectionPool {
         return connection;
     }
 
+
+    private static class ConnectionPoolImplSingletonHolder {
+        private static final ConnectionPoolImpl INSTANCE = new ConnectionPoolImpl();
+    }
 
     private class ConnectionWrapper implements Connection {
         private Connection connection;

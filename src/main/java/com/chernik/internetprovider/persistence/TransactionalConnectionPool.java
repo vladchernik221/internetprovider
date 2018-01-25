@@ -1,6 +1,5 @@
 package com.chernik.internetprovider.persistence;
 
-import com.chernik.internetprovider.context.AfterCreate;
 import com.chernik.internetprovider.context.BeforeDestroy;
 import com.chernik.internetprovider.context.Component;
 import com.chernik.internetprovider.exception.DatabaseException;
@@ -17,12 +16,7 @@ public class TransactionalConnectionPool implements ConnectionPool, TransactionM
     private Map<Thread, Connection> connectionCache = new ConcurrentHashMap<>();
 
     public TransactionalConnectionPool() {
-        connectionPool = new ConnectionPoolImpl();
-    }
-
-    @AfterCreate
-    public void initConnectionPool() {
-        connectionPool.initDatabaseProperty();
+        connectionPool = ConnectionPoolImpl.getInstance();
     }
 
     @BeforeDestroy
