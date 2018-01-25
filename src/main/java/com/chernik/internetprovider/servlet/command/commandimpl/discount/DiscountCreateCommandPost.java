@@ -8,9 +8,10 @@ import com.chernik.internetprovider.service.DiscountService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
 import com.chernik.internetprovider.servlet.mapper.DiscountMapper;
-import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/discount/new", method = RequestType.POST)
 public class DiscountCreateCommandPost implements Command {
@@ -20,6 +21,15 @@ public class DiscountCreateCommandPost implements Command {
 
     @Autowired
     private DiscountMapper discountMapper;
+
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
+    public void setDiscountMapper(DiscountMapper discountMapper) {
+        this.discountMapper = discountMapper;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException, IOException {

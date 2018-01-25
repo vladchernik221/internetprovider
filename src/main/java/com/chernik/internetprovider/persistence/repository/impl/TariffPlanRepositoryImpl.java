@@ -52,6 +52,11 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
+
     @Override
     public Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
         return commonRepository.create(tariffPlan, this::createPreparedStatementForInserting);

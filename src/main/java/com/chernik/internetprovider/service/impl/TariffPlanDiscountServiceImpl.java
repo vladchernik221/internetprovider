@@ -18,6 +18,11 @@ public class TariffPlanDiscountServiceImpl implements TariffPlanDiscountService 
     @Autowired
     private TariffPlanHasDiscountRepository tariffPlanHasDiscountRepository;
 
+    public void setTariffPlanHasDiscountRepository(TariffPlanHasDiscountRepository tariffPlanHasDiscountRepository) {
+        this.tariffPlanHasDiscountRepository = tariffPlanHasDiscountRepository;
+    }
+
+
     @Override
     public void create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
         List<Discount> discounts = tariffPlan.getDiscounts();

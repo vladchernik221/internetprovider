@@ -33,6 +33,10 @@ public class LoginCommandPost implements Command {
 
     private int sessionTimeout;
 
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
     @AfterCreate
     public void initParameters() {//TODO property might be not int
         ResourceBundle bundle = ResourceBundle.getBundle(PROPERTY_FILE_NAME);

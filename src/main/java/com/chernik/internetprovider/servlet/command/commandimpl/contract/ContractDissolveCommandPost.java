@@ -15,6 +15,11 @@ public class ContractDissolveCommandPost implements Command {
     @Autowired
     private ContractService contractService;
 
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException {
         Long id = Long.valueOf(request.getRequestURI().split("/")[2]);

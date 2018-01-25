@@ -22,6 +22,11 @@ public class AccountByIdCommandGet implements Command {
     @Autowired
     private AccountService accountService;
 
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {//TODO check exists
         Long contractAnnexId = Long.valueOf(request.getRequestURI().split("/")[3]);

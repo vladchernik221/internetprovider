@@ -15,6 +15,11 @@ public class DiscountRemoveCommandPost implements Command {
     @Autowired
     private DiscountService discountService;
 
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException {
         Long id = Long.valueOf(request.getRequestURI().split("/")[2]);

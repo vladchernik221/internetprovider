@@ -51,6 +51,10 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
 
     @Override
     public Optional<User> getByLoginAndPassword(String login, String password) throws DatabaseException, TimeOutException {

@@ -26,6 +26,11 @@ public class CommandHandlerImpl implements CommandHandler {
     @Autowired
     private RegularExpressionService regularExpressionService;
 
+    public void setRegularExpressionService(RegularExpressionService regularExpressionService) {
+        this.regularExpressionService = regularExpressionService;
+    }
+
+
     @AfterCreate
     public void registerCommands(List<Command> commandList) {
         commandList.forEach(command -> {

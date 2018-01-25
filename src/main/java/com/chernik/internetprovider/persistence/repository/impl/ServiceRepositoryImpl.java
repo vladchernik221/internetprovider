@@ -52,6 +52,10 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
 
     @Override
     public Long create(Service service) throws DatabaseException, TimeOutException {

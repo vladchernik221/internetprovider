@@ -21,6 +21,11 @@ public class ContractAnnexByIdCommandGet implements Command {
     @Autowired
     private ContractAnnexService contractAnnexService;
 
+    public void setContractAnnexService(ContractAnnexService contractAnnexService) {
+        this.contractAnnexService = contractAnnexService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Long contractAnnexId = Long.valueOf(request.getRequestURI().split("/")[3]);

@@ -4,18 +4,17 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.Service;
-import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.service.ServiceService;
-import com.chernik.internetprovider.service.TariffPlanService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/service/{\\d+}/edit", method = RequestType.GET)
 public class ServiceEditCommandGet implements Command {
@@ -25,6 +24,11 @@ public class ServiceEditCommandGet implements Command {
 
     @Autowired
     private ServiceService serviceService;
+
+    public void setServiceService(ServiceService serviceService) {
+        this.serviceService = serviceService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

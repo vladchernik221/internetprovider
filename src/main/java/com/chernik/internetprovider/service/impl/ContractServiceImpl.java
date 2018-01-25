@@ -31,6 +31,23 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private UserService userService;
 
+    public void setContractRepository(ContractRepository contractRepository) {
+        this.contractRepository = contractRepository;
+    }
+
+    public void setIndividualClientInformationService(IndividualClientInformationService individualClientInformationService) {
+        this.individualClientInformationService = individualClientInformationService;
+    }
+
+    public void setLegalEntityClientInformationService(LegalEntityClientInformationService legalEntityClientInformationService) {
+        this.legalEntityClientInformationService = legalEntityClientInformationService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+
     @Override
     @Transactional
     public Long create(Contract contract, String userPassword) throws DatabaseException, TimeOutException, UnableSaveEntityException {

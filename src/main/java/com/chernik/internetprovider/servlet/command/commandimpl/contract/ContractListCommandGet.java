@@ -7,14 +7,15 @@ import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.io.IOException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/contract", method = RequestType.GET)
 public class ContractListCommandGet implements Command {
@@ -24,6 +25,11 @@ public class ContractListCommandGet implements Command {
 
     @Autowired
     private ContractService contractService;
+
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

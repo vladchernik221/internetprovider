@@ -16,6 +16,11 @@ public class LegalEntityClientInformationServiceImpl implements LegalEntityClien
     @Autowired
     private LegalEntityClientInformationRepository legalEntityClientInformationRepository;
 
+    public void setLegalEntityClientInformationRepository(LegalEntityClientInformationRepository legalEntityClientInformationRepository) {
+        this.legalEntityClientInformationRepository = legalEntityClientInformationRepository;
+    }
+
+
     @Override
     public Long createOrUpdate(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
         Optional<LegalEntityClientInformation> checkingInformation = legalEntityClientInformationRepository.getByPayerAccountNumber(legalEntityClientInformation.getPayerAccountNumber());

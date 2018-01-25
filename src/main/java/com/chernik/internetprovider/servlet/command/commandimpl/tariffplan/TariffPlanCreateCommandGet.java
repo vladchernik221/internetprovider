@@ -4,11 +4,9 @@ import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.Discount;
-import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.service.DiscountService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.util.List;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @HttpRequestProcessor(uri = "/tariff-plan/new", method = RequestType.GET)
 public class TariffPlanCreateCommandGet implements Command{
@@ -27,6 +26,11 @@ public class TariffPlanCreateCommandGet implements Command{
 
     @Autowired
     private DiscountService discountService;
+
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

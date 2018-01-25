@@ -23,6 +23,15 @@ public class DiscountServiceImpl implements DiscountService {
     @Autowired
     private ContractService contractService;
 
+    public void setDiscountRepository(DiscountRepository discountRepository) {
+        this.discountRepository = discountRepository;
+    }
+
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
+
     @Override
     public Long create(Discount discount) throws BaseException {
         if (!discountRepository.existWithName(discount.getName())) {
@@ -73,7 +82,7 @@ public class DiscountServiceImpl implements DiscountService {
     public List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Long tariffPlanId = tariffPlan.getTariffPlanId();
 
-        if (contractService.notExistById(tariffPlanId)) {
+        if (!contractService.notExistById(tariffPlanId)) {
             throw new EntityNotFoundException(String.format("Tariff plan with id=%d not found", tariffPlanId));
         }
 

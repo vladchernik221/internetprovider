@@ -20,6 +20,14 @@ public class ServiceServiceImpl implements ServiceService {
     @Autowired
     private ContractAnnexService contractAnnexService;
 
+    public void setServiceRepository(ServiceRepository serviceRepository) {
+        this.serviceRepository = serviceRepository;
+    }
+
+    public void setContractAnnexService(ContractAnnexService contractAnnexService) {
+        this.contractAnnexService = contractAnnexService;
+    }
+
 
     @Override
     public Long create(Service service) throws BaseException {

@@ -27,7 +27,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     private static final String UPDATE_DISCOUNT = "UPDATE `discount` SET `name`=?, `description`=?, `amount`=?, `end_date`=?, `only_for_new_client`=? WHERE `discount_id`=?";
 
     private static final String GET_DISCOUNT_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `discount`";
-    //TODO it's not needed description for by page view
+
     private static final String GET_DISCOUNT_PAGE = "SELECT `discount_id`, `name`, `description`, `amount`, `start_date`, `end_date`, `only_for_new_client` FROM `discount` LIMIT ? OFFSET ?";
 
     private static final String GET_DISCOUNTS = "SELECT `discount_id`, `name` FROM `discount`";
@@ -46,6 +46,9 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
 
     @Override
     public Long create(Discount discount) throws DatabaseException, TimeOutException {

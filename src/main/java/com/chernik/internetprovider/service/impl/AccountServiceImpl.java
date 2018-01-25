@@ -24,6 +24,15 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private TransactionService transactionService;
 
+    public void setAccountRepository(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    public void setTransactionService(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
+
     @Override
     public Account getById(Long contractAnnexId, Integer pageNumber) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Optional<Account> accountOptional = accountRepository.getById(contractAnnexId);

@@ -7,11 +7,12 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.service.DiscountService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.io.IOException;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/discount/{\\d+}", method = RequestType.GET)
 public class DiscountByIdCommandGet implements Command {
@@ -19,6 +20,11 @@ public class DiscountByIdCommandGet implements Command {
 
     @Autowired
     private DiscountService discountService;
+
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {

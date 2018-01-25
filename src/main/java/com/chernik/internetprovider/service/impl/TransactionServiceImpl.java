@@ -21,6 +21,15 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     private ContractAnnexService contractAnnexService;
 
+    public void setTransactionRepository(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    public void setContractAnnexService(ContractAnnexService contractAnnexService) {
+        this.contractAnnexService = contractAnnexService;
+    }
+
+
     @Override
     public void create(Transaction transaction) throws DatabaseException, TimeOutException, EntityNotFoundException {
         Long contractAnnexId = transaction.getAccount().getContractAnnex().getContractAnnexId();

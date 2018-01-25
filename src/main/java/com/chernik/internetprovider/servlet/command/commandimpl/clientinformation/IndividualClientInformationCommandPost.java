@@ -21,6 +21,11 @@ public class IndividualClientInformationCommandPost implements Command {
     @Autowired
     private IndividualClientInformationService individualClientInformationService;
 
+    public void setIndividualClientInformationService(IndividualClientInformationService individualClientInformationService) {
+        this.individualClientInformationService = individualClientInformationService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         String passportUniqueIdentification = request.getParameter("identifier");

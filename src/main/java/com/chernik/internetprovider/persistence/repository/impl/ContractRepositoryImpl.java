@@ -36,6 +36,10 @@ public class ContractRepositoryImpl implements ContractRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
     @Override
     public Long create(Contract contract) throws DatabaseException, TimeOutException {
         return commonRepository.create(contract, this::createPreparedStatementForInserting);

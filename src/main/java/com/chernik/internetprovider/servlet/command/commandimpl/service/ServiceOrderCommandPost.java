@@ -18,6 +18,11 @@ public class ServiceOrderCommandPost implements Command {
     @Autowired
     private ContractAnnexHasServiceService contractAnnexHasServiceService;
 
+    public void setContractAnnexHasServiceService(ContractAnnexHasServiceService contractAnnexHasServiceService) {
+        this.contractAnnexHasServiceService = contractAnnexHasServiceService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Long contractAnnexId = Long.valueOf(request.getRequestURI().split("/")[3]);

@@ -9,14 +9,15 @@ import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.io.IOException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/user", method = RequestType.GET)
 public class UserListCommandGet implements Command {
@@ -26,6 +27,11 @@ public class UserListCommandGet implements Command {
 
     @Autowired
     private UserService userService;
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, BaseException, IOException {

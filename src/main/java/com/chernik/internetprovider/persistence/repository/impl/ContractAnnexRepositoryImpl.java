@@ -41,6 +41,10 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
     @Override
     public Long create(ContractAnnex contractAnnex) throws DatabaseException, TimeOutException {
         return commonRepository.create(contractAnnex, this::createPreparedStatementForInserting);

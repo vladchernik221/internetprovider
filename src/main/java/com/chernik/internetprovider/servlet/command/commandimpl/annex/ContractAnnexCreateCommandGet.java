@@ -33,6 +33,15 @@ public class ContractAnnexCreateCommandGet implements Command {
     @Autowired
     private ContractService contractService;
 
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DatabaseException, TimeOutException, EntityNotFoundException {
         String contractId = request.getRequestURI().split("/")[2];

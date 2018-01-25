@@ -27,6 +27,10 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
     @Override
     public Long create(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
         return commonRepository.create(legalEntityClientInformation, this::createPreparedStatementForInserting);

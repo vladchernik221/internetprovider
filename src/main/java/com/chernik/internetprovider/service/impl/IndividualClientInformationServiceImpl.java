@@ -16,6 +16,11 @@ public class IndividualClientInformationServiceImpl implements IndividualClientI
     @Autowired
     private IndividualClientInformationRepository individualClientInformationRepository;
 
+    public void setIndividualClientInformationRepository(IndividualClientInformationRepository individualClientInformationRepository) {
+        this.individualClientInformationRepository = individualClientInformationRepository;
+    }
+
+
     @Override
     public Long createOrUpdate(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
         Optional<IndividualClientInformation> checkingInformation = individualClientInformationRepository.getByPassportData(individualClientInformation.getPassportUniqueIdentification());

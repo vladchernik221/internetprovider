@@ -25,6 +25,11 @@ public class TariffPlanHasDiscountRepositoryImpl implements TariffPlanHasDiscoun
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
+
     @Override
     public void create(Long tariffPlanId, List<Discount> discounts) throws DatabaseException, TimeOutException {
         commonRepository.executeBatch(tariffPlanId, discounts, this::createPreparedStatementForInserting);

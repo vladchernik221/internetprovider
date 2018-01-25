@@ -21,6 +21,11 @@ public class ContractByIdCommandGet implements Command {
     @Autowired
     private ContractService contractService;
 
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         String pathParameter = request.getRequestURI().split("/")[2];

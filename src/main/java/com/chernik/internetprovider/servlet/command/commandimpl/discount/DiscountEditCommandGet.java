@@ -7,13 +7,14 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.service.DiscountService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/discount/{\\d+}/edit", method = RequestType.GET)
 public class DiscountEditCommandGet implements Command {
@@ -23,6 +24,11 @@ public class DiscountEditCommandGet implements Command {
 
     @Autowired
     private DiscountService discountService;
+
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {

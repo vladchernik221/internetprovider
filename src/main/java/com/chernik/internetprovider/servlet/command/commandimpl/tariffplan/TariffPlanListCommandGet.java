@@ -28,6 +28,11 @@ public class TariffPlanListCommandGet implements Command {
     @Autowired
     private TariffPlanService tariffPlanService;
 
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, BaseException, IOException {

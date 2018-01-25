@@ -34,6 +34,19 @@ public class TariffPlanServiceImpl implements TariffPlanService {
     @Autowired
     private TariffPlanDiscountService tariffPlanDiscountService;
 
+    public void setTariffPlanRepository(TariffPlanRepository tariffPlanRepository) {
+        this.tariffPlanRepository = tariffPlanRepository;
+    }
+
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
+    public void setTariffPlanDiscountService(TariffPlanDiscountService tariffPlanDiscountService) {
+        this.tariffPlanDiscountService = tariffPlanDiscountService;
+    }
+
+
     @Override
     @Transactional
     public Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, UnableSaveEntityException {

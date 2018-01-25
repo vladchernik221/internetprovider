@@ -2,7 +2,6 @@ package com.chernik.internetprovider.servlet.command.commandimpl.annex;
 
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.HttpRequestProcessor;
-import com.chernik.internetprovider.exception.BadRequestException;
 import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
@@ -10,14 +9,15 @@ import com.chernik.internetprovider.persistence.entity.ContractAnnex;
 import com.chernik.internetprovider.service.ContractAnnexService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
-import java.io.IOException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/contract/{\\d+}/annex", method = RequestType.GET)
 public class ContractAnnexListCommandGet implements Command {
@@ -27,6 +27,11 @@ public class ContractAnnexListCommandGet implements Command {
 
     @Autowired
     private ContractAnnexService contractAnnexService;
+
+    public void setContractAnnexService(ContractAnnexService contractAnnexService) {
+        this.contractAnnexService = contractAnnexService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, BaseException, IOException {

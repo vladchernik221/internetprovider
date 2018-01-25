@@ -8,9 +8,10 @@ import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
 import com.chernik.internetprovider.servlet.mapper.UserMapper;
-import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/user/new", method = RequestType.POST)
 public class UserCreateCommandPost implements Command {
@@ -20,6 +21,15 @@ public class UserCreateCommandPost implements Command {
 
     @Autowired
     private UserMapper userMapper;
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException, IOException {

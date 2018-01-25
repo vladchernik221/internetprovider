@@ -27,6 +27,10 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
 
     @Override
     public Long create(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {

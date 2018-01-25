@@ -23,6 +23,15 @@ public class TransactionCreateCommandPost implements Command {
     @Autowired
     private TransactionService transactionService;
 
+    public void setTransactionMapper(TransactionMapper transactionMapper) {
+        this.transactionMapper = transactionMapper;
+    }
+
+    public void setTransactionService(TransactionService transactionService) {
+        this.transactionService = transactionService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Transaction transaction = transactionMapper.create(request);

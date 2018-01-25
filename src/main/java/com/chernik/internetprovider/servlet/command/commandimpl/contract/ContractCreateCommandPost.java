@@ -24,6 +24,15 @@ public class ContractCreateCommandPost implements Command {
     @Autowired
     private ContractMapper contractMapper;
 
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
+    public void setContractMapper(ContractMapper contractMapper) {
+        this.contractMapper = contractMapper;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Contract contract = contractMapper.create(request);

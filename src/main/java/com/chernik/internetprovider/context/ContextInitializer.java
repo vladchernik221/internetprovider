@@ -1,5 +1,6 @@
 package com.chernik.internetprovider.context;
 
+import com.chernik.internetprovider.exception.ContextInitializationException;
 import com.chernik.internetprovider.persistence.TransactionManager;
 import com.chernik.internetprovider.persistence.TransactionalConnectionPool;
 import org.apache.logging.log4j.Level;
@@ -9,6 +10,9 @@ import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
@@ -228,18 +232,31 @@ public class ContextInitializer {
         LOGGER.log(Level.TRACE, "Autowiring components to fields");
         withAutowired.forEach((entry) -> {
             try {
-                entry.getKey().setAccessible(true);
+
                 Object settingValue = getComponentOrImplementation(entry.getKey().getType());
-                entry.getKey().set(entry.getValue(), settingValue);
+                getSetter(entry.getKey(), entry.getValue().getClass()).invoke(entry.getValue(), settingValue);
+
+            } catch (IntrospectionException | ContextInitializationException e) {
+                String message = String.format("Can't find setters for field %s in class %s", entry.getKey().getName(), entry.getValue().getClass());
+                LOGGER.log(Level.FATAL, message);
+                e.printStackTrace();
+                throw new RuntimeException(message, e);
             } catch (IllegalAccessException e) {
                 String message = String.format("Error with access to field %s", entry.getKey());
                 LOGGER.log(Level.FATAL, message);
                 throw new RuntimeException(message, e);
-            } finally {
-                entry.getKey().setAccessible(false);
+            } catch (InvocationTargetException e) {
+                LOGGER.log(Level.FATAL, "Setters for field {} throwing an exception", entry.getKey());
+                throw new RuntimeException(e);
             }
         });
     }
+
+    private Method getSetter(Field field, Class<?> clazz) throws IntrospectionException, ContextInitializationException {
+        PropertyDescriptor[] propertyDescriptors = Introspector.getBeanInfo(clazz).getPropertyDescriptors();
+        return Arrays.stream(propertyDescriptors).filter(propertyDescriptor -> propertyDescriptor.getName().equals(field.getName())).findFirst().orElseThrow(ContextInitializationException::new).getWriteMethod();
+    }
+
 
     /**
      * Invoke life cycle methods for components from specified map. If this method has parameters, they will be inject

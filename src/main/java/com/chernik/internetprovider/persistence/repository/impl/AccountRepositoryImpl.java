@@ -29,6 +29,9 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
 
     @Override
     public Optional<Account> getById(Long contractAnnexId) throws DatabaseException, TimeOutException {

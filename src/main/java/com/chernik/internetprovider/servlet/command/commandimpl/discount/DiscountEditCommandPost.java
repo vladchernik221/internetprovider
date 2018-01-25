@@ -20,6 +20,15 @@ public class DiscountEditCommandPost implements Command {
     @Autowired
     private DiscountMapper discountMapper;
 
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
+    public void setDiscountMapper(DiscountMapper discountMapper) {
+        this.discountMapper = discountMapper;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException {
         Long id = Long.valueOf(request.getRequestURI().split("/")[2]);

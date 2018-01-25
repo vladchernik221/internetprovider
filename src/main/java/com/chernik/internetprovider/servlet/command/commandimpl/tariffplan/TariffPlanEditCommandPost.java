@@ -21,6 +21,15 @@ public class TariffPlanEditCommandPost implements Command {
     @Autowired
     private TariffPlanMapper tariffPlanMapper;
 
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+    public void setTariffPlanMapper(TariffPlanMapper tariffPlanMapper) {
+        this.tariffPlanMapper = tariffPlanMapper;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException {
         Long id = Long.valueOf(request.getRequestURI().split("/")[2]);

@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+
     @Override
     public Optional<User> authenticate(String login, String password) throws BaseException {
         LOGGER.log(Level.DEBUG, "Authentication user with login: {}", login);

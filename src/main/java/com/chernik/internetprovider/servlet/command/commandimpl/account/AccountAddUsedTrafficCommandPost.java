@@ -18,6 +18,11 @@ public class AccountAddUsedTrafficCommandPost implements Command {
     @Autowired
     private AccountService accountService;
 
+    public void setAccountService(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Long contractAnnexId = Long.valueOf(request.getParameter("contractAnnexId"));

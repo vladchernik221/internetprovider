@@ -27,8 +27,18 @@ public class TariffPlanEditCommandGet implements Command {
 
     @Autowired
     private TariffPlanService tariffPlanService;
+
     @Autowired
     private DiscountService discountService;
+
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+    public void setDiscountService(DiscountService discountService) {
+        this.discountService = discountService;
+    }
+
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)

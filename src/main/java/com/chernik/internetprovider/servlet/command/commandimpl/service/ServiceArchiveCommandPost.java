@@ -15,6 +15,11 @@ public class ServiceArchiveCommandPost implements Command {
     @Autowired
     private ServiceService serviceService;
 
+    public void setServiceService(ServiceService serviceService) {
+        this.serviceService = serviceService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException {
         Long id = Long.valueOf(request.getRequestURI().split("/")[2]);

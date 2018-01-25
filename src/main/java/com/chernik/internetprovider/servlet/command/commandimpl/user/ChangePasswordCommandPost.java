@@ -18,6 +18,11 @@ public class ChangePasswordCommandPost implements Command {
     @Autowired
     private UserService userService;
 
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Long userId = Long.valueOf(request.getRequestURI().split("/")[2]);

@@ -22,6 +22,19 @@ public class ContractAnnexHasServiceServiceImpl implements ContractAnnexHasServi
     @Autowired
     private ServiceService serviceService;
 
+    public void setContractAnnexHasServiceRepository(ContractAnnexHasServiceRepository contractAnnexHasServiceRepository) {
+        this.contractAnnexHasServiceRepository = contractAnnexHasServiceRepository;
+    }
+
+    public void setContractAnnexService(ContractAnnexService contractAnnexService) {
+        this.contractAnnexService = contractAnnexService;
+    }
+
+    public void setServiceService(ServiceService serviceService) {
+        this.serviceService = serviceService;
+    }
+
+
     @Override
     public void create(Long contractAnnexId, Long serviceId) throws DatabaseException, TimeOutException, EntityNotFoundException {
         if (!contractAnnexService.existById(contractAnnexId)) {

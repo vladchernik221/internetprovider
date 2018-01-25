@@ -28,6 +28,11 @@ public class ServiceListCommandGet implements Command {
     @Autowired
     private ServiceService serviceService;
 
+    public void setServiceService(ServiceService serviceService) {
+        this.serviceService = serviceService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, BaseException, IOException {

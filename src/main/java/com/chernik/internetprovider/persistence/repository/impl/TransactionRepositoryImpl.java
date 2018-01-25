@@ -30,6 +30,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     @Autowired
     private CommonRepository commonRepository;
 
+    public void setCommonRepository(CommonRepository commonRepository) {
+        this.commonRepository = commonRepository;
+    }
+
 
     @Override
     public void create(Transaction transaction) throws DatabaseException, TimeOutException {

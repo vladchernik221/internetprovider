@@ -23,6 +23,15 @@ public class ContractAnnexCreateCommandPost implements Command {
     @Autowired
     private ContractAnnexMapper contractAnnexMapper;
 
+    public void setContractAnnexService(ContractAnnexService contractAnnexService) {
+        this.contractAnnexService = contractAnnexService;
+    }
+
+    public void setContractAnnexMapper(ContractAnnexMapper contractAnnexMapper) {
+        this.contractAnnexMapper = contractAnnexMapper;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         ContractAnnex contractAnnex = contractAnnexMapper.create(request);

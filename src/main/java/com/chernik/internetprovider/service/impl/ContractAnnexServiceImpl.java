@@ -27,6 +27,19 @@ public class ContractAnnexServiceImpl implements ContractAnnexService {
     @Autowired
     private ContractService contractService;
 
+    public void setContractAnnexRepository(ContractAnnexRepository contractAnnexRepository) {
+        this.contractAnnexRepository = contractAnnexRepository;
+    }
+
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+    public void setContractService(ContractService contractService) {
+        this.contractService = contractService;
+    }
+
+
     @Override
     public Long create(ContractAnnex contractAnnex) throws BaseException {
         if (!tariffPlanService.existWithId(contractAnnex.getTariffPlan().getTariffPlanId())) {

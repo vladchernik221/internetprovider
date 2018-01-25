@@ -23,6 +23,15 @@ public class TariffPlanCreateCommandPost implements Command {
     @Autowired
     private TariffPlanMapper tariffPlanMapper;
 
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+    public void setTariffPlanMapper(TariffPlanMapper tariffPlanMapper) {
+        this.tariffPlanMapper = tariffPlanMapper;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws BaseException, IOException {
         TariffPlan tariffPlan = tariffPlanMapper.create(request);

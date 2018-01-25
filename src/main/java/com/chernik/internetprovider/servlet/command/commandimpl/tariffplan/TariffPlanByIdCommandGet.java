@@ -21,6 +21,11 @@ public class TariffPlanByIdCommandGet implements Command {
     @Autowired
     private TariffPlanService tariffPlanService;
 
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         String pathParameter = request.getRequestURI().split("/")[2];

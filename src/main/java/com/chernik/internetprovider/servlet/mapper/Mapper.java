@@ -18,6 +18,9 @@ public abstract class Mapper<T> {
     @Autowired
     private RegularExpressionService regularExpressionService;
 
+    public void setRegularExpressionService(RegularExpressionService regularExpressionService) {
+        this.regularExpressionService = regularExpressionService;
+    }
 
     public abstract T create(HttpServletRequest request) throws BadRequestException;
 

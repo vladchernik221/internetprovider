@@ -19,6 +19,15 @@ public class ContractMapper extends Mapper<Contract> {
     @Autowired
     private LegalEntityClientInformationMapper legalEntityClientInformationMapper;
 
+    public void setIndividualClientInformationMapper(IndividualClientInformationMapper individualClientInformationMapper) {
+        this.individualClientInformationMapper = individualClientInformationMapper;
+    }
+
+    public void setLegalEntityClientInformationMapper(LegalEntityClientInformationMapper legalEntityClientInformationMapper) {
+        this.legalEntityClientInformationMapper = legalEntityClientInformationMapper;
+    }
+
+
     @Override
     public Contract create(HttpServletRequest request) throws BadRequestException {
         Contract contract = new Contract();

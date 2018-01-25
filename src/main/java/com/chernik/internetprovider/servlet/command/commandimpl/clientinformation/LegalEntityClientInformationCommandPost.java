@@ -21,6 +21,11 @@ public class LegalEntityClientInformationCommandPost implements Command {
     @Autowired
     private LegalEntityClientInformationService legalEntityClientInformationService;
 
+    public void setLegalEntityClientInformationService(LegalEntityClientInformationService legalEntityClientInformationService) {
+        this.legalEntityClientInformationService = legalEntityClientInformationService;
+    }
+
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         String payerAccountNumber = request.getParameter("identifier");

@@ -29,6 +29,10 @@ public class CommonRepository {
     @Autowired
     private ConnectionPool connectionPool;
 
+    public void setConnectionPool(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
+    }
+
 
     public <T> Long create(T entity, BiThrowableFunction<Connection, T, PreparedStatement> statementFunctional) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Inserting  {}", entity);
