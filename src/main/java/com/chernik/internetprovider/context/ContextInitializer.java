@@ -340,7 +340,7 @@ public class ContextInitializer {
         if (implementation.isPresent()) {
             return implementation.get();
         } else {
-            throw new ConcurrentModificationException(String.format("Interface %s hasn't implementation", interfaceClass));
+            throw new RuntimeException(String.format("Interface %s hasn't implementation", interfaceClass));
         }
     }
 
