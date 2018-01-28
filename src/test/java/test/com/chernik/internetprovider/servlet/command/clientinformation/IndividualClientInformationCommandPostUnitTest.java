@@ -58,11 +58,11 @@ public class IndividualClientInformationCommandPostUnitTest extends CommandUnitT
 
     private IndividualClientInformation createTestClientInformation() {
         IndividualClientInformation clientInformation = new IndividualClientInformation(10L);
-        clientInformation.setFirstName("Иван");
-        clientInformation.setFirstName("Николаевич");
-        clientInformation.setLastName("Петров");
+        clientInformation.setFirstName("Ivan");
+        clientInformation.setSecondName("Nikolaevich");
+        clientInformation.setLastName("Petrov");
         clientInformation.setPassportUniqueIdentification("test passport id");
-        clientInformation.setAddress("г. Минск, ул. Ленина, д. 5, кв. 11");
+        clientInformation.setAddress("Test address 1");
         clientInformation.setPhoneNumber("(44)777-66-55");
         return clientInformation;
     }

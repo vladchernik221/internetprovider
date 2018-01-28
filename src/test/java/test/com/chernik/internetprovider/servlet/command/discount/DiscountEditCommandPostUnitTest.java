@@ -38,8 +38,8 @@ public class DiscountEditCommandPostUnitTest extends CommandUnitTest {
         reset(discountServiceMock, printWriterMock);
         super.resetMocks();
         when(requestMock.getRequestURI()).thenReturn("/discount/5");
-        when(requestMock.getParameter("name")).thenReturn("Новая акция");
-        when(requestMock.getParameter("description")).thenReturn("Описание новой акции");
+        when(requestMock.getParameter("name")).thenReturn("New action");
+        when(requestMock.getParameter("description")).thenReturn("New action description");
         when(requestMock.getParameter("amount")).thenReturn("30");
         when(requestMock.getParameter("startDate")).thenReturn("2018-02-01");
         when(requestMock.getParameter("endDate")).thenReturn("2018-03-01");
@@ -58,8 +58,8 @@ public class DiscountEditCommandPostUnitTest extends CommandUnitTest {
 
     private Discount createTestDiscount() {
         Discount discount = new Discount(5L);
-        discount.setName("Новая акция");
-        discount.setDescription("Описание новой акции");
+        discount.setName("New action");
+        discount.setDescription("New action description");
         discount.setAmount(30);
         discount.setStartDate(Date.valueOf("2018-02-01"));
         discount.setEndDate(Date.valueOf("2018-03-01"));

@@ -39,7 +39,7 @@ public class ContractAnnexCreateCommandPostUnitTest extends CommandUnitTest {
         reset(contractAnnexServiceMock, printWriterMock);
         super.resetMocks();
         when(requestMock.getRequestURI()).thenReturn("/contract/5/annex/new");
-        when(requestMock.getParameter("address")).thenReturn("г. Минск, ул. Ленина, д. 5, кв. 11");
+        when(requestMock.getParameter("address")).thenReturn("Test address 1");
         when(requestMock.getParameter("tariffPlanId")).thenReturn("10");
         when(responseMock.getWriter()).thenReturn(printWriterMock);
         when(contractAnnexServiceMock.create(any(ContractAnnex.class))).thenReturn(15L);
@@ -63,7 +63,7 @@ public class ContractAnnexCreateCommandPostUnitTest extends CommandUnitTest {
     private ContractAnnex createTestContractAnnex() {
         ContractAnnex contractAnnex = new ContractAnnex();
         contractAnnex.setContract(new Contract(5L));
-        contractAnnex.setAddress("г. Минск, ул. Ленина, д. 5, кв. 11");
+        contractAnnex.setAddress("Test address 1");
         contractAnnex.setTariffPlan(new TariffPlan(10L));
         return contractAnnex;
     }

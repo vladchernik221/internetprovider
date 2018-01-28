@@ -37,8 +37,8 @@ public class ServiceCreateCommandPostUnitTest extends CommandUnitTest {
     public void resetMocks() throws Exception {
         reset(serviceServiceMock, printWriterMock);
         super.resetMocks();
-        when(requestMock.getParameter("name")).thenReturn("Новый сервис");
-        when(requestMock.getParameter("description")).thenReturn("Описание нового сервиса");
+        when(requestMock.getParameter("name")).thenReturn("New service");
+        when(requestMock.getParameter("description")).thenReturn("New service description");
         when(requestMock.getParameter("price")).thenReturn("30.5");
         when(responseMock.getWriter()).thenReturn(printWriterMock);
         when(serviceServiceMock.create(any(Service.class))).thenReturn(15L);
@@ -61,8 +61,8 @@ public class ServiceCreateCommandPostUnitTest extends CommandUnitTest {
 
     private Service createTestService() {
         Service service = new Service();
-        service.setName("Новый сервис");
-        service.setDescription("Описание нового сервиса");
+        service.setName("New service");
+        service.setDescription("New service description");
         service.setPrice(new BigDecimal("30.5"));
         return service;
     }

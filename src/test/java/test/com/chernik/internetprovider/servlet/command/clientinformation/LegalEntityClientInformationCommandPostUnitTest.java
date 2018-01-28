@@ -58,10 +58,10 @@ public class LegalEntityClientInformationCommandPostUnitTest extends CommandUnit
 
     private LegalEntityClientInformation createTestClientInformation() {
         LegalEntityClientInformation clientInformation = new LegalEntityClientInformation(10L);
-        clientInformation.setName("Рога и копыта =)");
+        clientInformation.setName("Roga i kopi'ta =)");
         clientInformation.setPayerAccountNumber("1234567890");
         clientInformation.setCheckingAccount("0987654321");
-        clientInformation.setAddress("г. Минск, ул. Ленина, д. 5, кв. 11");
+        clientInformation.setAddress("Test address 1");
         clientInformation.setPhoneNumber("(44)777-66-55");
         return clientInformation;
     }

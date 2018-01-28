@@ -39,17 +39,17 @@ public class ContractCreateCommandPostUnitTest extends CommandUnitTest {
     public void resetMocks() throws Exception {
         reset(contractServiceMock, printWriterMock);
         super.resetMocks();
-        when(requestMock.getParameter("individual.firstName")).thenReturn("Иван");
-        when(requestMock.getParameter("individual.secondName")).thenReturn("Николаевич");
-        when(requestMock.getParameter("individual.lastName")).thenReturn("Петров");
-        when(requestMock.getParameter("individual.address")).thenReturn("г. Минск, ул. Ленина, д. 5, кв. 11");
+        when(requestMock.getParameter("individual.firstName")).thenReturn("Ivan");
+        when(requestMock.getParameter("individual.secondName")).thenReturn("Nikolaevich");
+        when(requestMock.getParameter("individual.lastName")).thenReturn("Petrov");
+        when(requestMock.getParameter("individual.address")).thenReturn("Test address 1");
         when(requestMock.getParameter("individual.passportUniqueIdentification")).thenReturn("test passport id");
         when(requestMock.getParameter("individual.phoneNumber")).thenReturn("(44)777-66-55");
 
-        when(requestMock.getParameter("legal.name")).thenReturn("Рога и копыта =)");
+        when(requestMock.getParameter("legal.name")).thenReturn("Roga i kopi'ta =)");
         when(requestMock.getParameter("legal.payerAccountNumber")).thenReturn("1234567890");
         when(requestMock.getParameter("legal.checkingAccount")).thenReturn("0987654321");
-        when(requestMock.getParameter("legal.address")).thenReturn("г. Минск, ул. Серова, д. 15, кв. 9");
+        when(requestMock.getParameter("legal.address")).thenReturn("Test address 1");
         when(requestMock.getParameter("legal.phoneNumber")).thenReturn("(44)444-33-22");
 
         when(requestMock.getParameter("password")).thenReturn("test password");
@@ -91,11 +91,11 @@ public class ContractCreateCommandPostUnitTest extends CommandUnitTest {
         contract.setClientType(ClientType.INDIVIDUAL);
 
         IndividualClientInformation clientInformation = new IndividualClientInformation();
-        clientInformation.setFirstName("Иван");
-        clientInformation.setSecondName("Николаевич");
-        clientInformation.setLastName("Петров");
+        clientInformation.setFirstName("Ivan");
+        clientInformation.setSecondName("Nikolaevich");
+        clientInformation.setLastName("Petrov");
         clientInformation.setPassportUniqueIdentification("test passport id");
-        clientInformation.setAddress("г. Минск, ул. Ленина, д. 5, кв. 11");
+        clientInformation.setAddress("Test address 1");
         clientInformation.setPhoneNumber("(44)777-66-55");
         contract.setIndividualClientInformation(clientInformation);
         return contract;
@@ -106,10 +106,10 @@ public class ContractCreateCommandPostUnitTest extends CommandUnitTest {
         contract.setClientType(ClientType.LEGAL);
 
         LegalEntityClientInformation clientInformation = new LegalEntityClientInformation();
-        clientInformation.setName("Рога и копыта =)");
+        clientInformation.setName("Roga i kopi'ta =)");
         clientInformation.setPayerAccountNumber("1234567890");
         clientInformation.setCheckingAccount("0987654321");
-        clientInformation.setAddress("г. Минск, ул. Серова, д. 15, кв. 9");
+        clientInformation.setAddress("Test address 1");
         clientInformation.setPhoneNumber("(44)444-33-22");
         contract.setLegalEntityClientInformation(clientInformation);
         return contract;
