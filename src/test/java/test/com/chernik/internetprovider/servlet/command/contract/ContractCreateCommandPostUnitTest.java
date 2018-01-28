@@ -1,0 +1,117 @@
+package test.com.chernik.internetprovider.servlet.command.contract;
+
+import com.chernik.internetprovider.persistence.entity.ClientType;
+import com.chernik.internetprovider.persistence.entity.Contract;
+import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
+import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformation;
+import com.chernik.internetprovider.service.ContractService;
+import com.chernik.internetprovider.servlet.command.impl.contract.ContractCreateCommandPost;
+import com.chernik.internetprovider.servlet.mapper.ContractMapper;
+import org.mockito.ArgumentCaptor;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import test.com.chernik.internetprovider.servlet.command.CommandUnitTest;
+
+import java.io.PrintWriter;
+
+import static org.mockito.Mockito.*;
+import static org.testng.Assert.assertEquals;
+
+public class ContractCreateCommandPostUnitTest extends CommandUnitTest {
+    private ContractCreateCommandPost command;
+    private ContractService contractServiceMock;
+
+    private PrintWriter printWriterMock;
+
+    @BeforeClass
+    public void init() {
+        super.init();
+        command = new ContractCreateCommandPost();
+        contractServiceMock = mock(ContractService.class);
+        command.setContractService(contractServiceMock);
+        command.setContractMapper(getMapper(ContractMapper.class));
+
+        printWriterMock = mock(PrintWriter.class);
+    }
+
+    @BeforeMethod
+    public void resetMocks() throws Exception {
+        reset(contractServiceMock, printWriterMock);
+        super.resetMocks();
+        when(requestMock.getParameter("individual.firstName")).thenReturn("Иван");
+        when(requestMock.getParameter("individual.secondName")).thenReturn("Николаевич");
+        when(requestMock.getParameter("individual.lastName")).thenReturn("Петров");
+        when(requestMock.getParameter("individual.address")).thenReturn("г. Минск, ул. Ленина, д. 5, кв. 11");
+        when(requestMock.getParameter("individual.passportUniqueIdentification")).thenReturn("test passport id");
+        when(requestMock.getParameter("individual.phoneNumber")).thenReturn("(44)777-66-55");
+
+        when(requestMock.getParameter("legal.name")).thenReturn("Рога и копыта =)");
+        when(requestMock.getParameter("legal.payerAccountNumber")).thenReturn("1234567890");
+        when(requestMock.getParameter("legal.checkingAccount")).thenReturn("0987654321");
+        when(requestMock.getParameter("legal.address")).thenReturn("г. Минск, ул. Серова, д. 15, кв. 9");
+        when(requestMock.getParameter("legal.phoneNumber")).thenReturn("(44)444-33-22");
+
+        when(requestMock.getParameter("password")).thenReturn("test password");
+        when(responseMock.getWriter()).thenReturn(printWriterMock);
+        when(contractServiceMock.create(any(Contract.class), anyString())).thenReturn(15L);
+    }
+
+    @Test
+    public void executeShouldSaveContractForIndividualViaService() throws Exception {
+        when(requestMock.getParameter("clientType")).thenReturn("individual");
+
+        command.execute(requestMock, responseMock);
+
+        ArgumentCaptor<Contract> captor = ArgumentCaptor.forClass(Contract.class);
+        verify(contractServiceMock).create(captor.capture(), eq("test password"));
+        assertEquals(captor.getValue(), createTestContractForIndividual());
+    }
+
+    @Test
+    public void executeShouldSaveContractForLegalEntityViaService() throws Exception {
+        when(requestMock.getParameter("clientType")).thenReturn("legal");
+
+        command.execute(requestMock, responseMock);
+
+        ArgumentCaptor<Contract> captor = ArgumentCaptor.forClass(Contract.class);
+        verify(contractServiceMock).create(captor.capture(), eq("test password"));
+        assertEquals(captor.getValue(), createTestContractForLegalEntity());
+    }
+
+    @Test
+    public void executeShouldReturnGeneratedId() throws Exception {
+        when(requestMock.getParameter("clientType")).thenReturn("individual");
+        command.execute(requestMock, responseMock);
+        verify(printWriterMock).write("15");
+    }
+
+    private Contract createTestContractForIndividual() {
+        Contract contract = new Contract();
+        contract.setClientType(ClientType.INDIVIDUAL);
+
+        IndividualClientInformation clientInformation = new IndividualClientInformation();
+        clientInformation.setFirstName("Иван");
+        clientInformation.setSecondName("Николаевич");
+        clientInformation.setLastName("Петров");
+        clientInformation.setPassportUniqueIdentification("test passport id");
+        clientInformation.setAddress("г. Минск, ул. Ленина, д. 5, кв. 11");
+        clientInformation.setPhoneNumber("(44)777-66-55");
+        contract.setIndividualClientInformation(clientInformation);
+        return contract;
+    }
+
+    private Contract createTestContractForLegalEntity() {
+        Contract contract = new Contract();
+        contract.setClientType(ClientType.LEGAL);
+
+        LegalEntityClientInformation clientInformation = new LegalEntityClientInformation();
+        clientInformation.setName("Рога и копыта =)");
+        clientInformation.setPayerAccountNumber("1234567890");
+        clientInformation.setCheckingAccount("0987654321");
+        clientInformation.setAddress("г. Минск, ул. Серова, д. 15, кв. 9");
+        clientInformation.setPhoneNumber("(44)444-33-22");
+        contract.setLegalEntityClientInformation(clientInformation);
+        return contract;
+    }
+}
