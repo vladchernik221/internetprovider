@@ -5,6 +5,7 @@ import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.User;
+import com.chernik.internetprovider.persistence.entity.UserRole;
 
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public interface UserRepository {
 
     Page<User> getPage(Pageable pageable) throws DatabaseException, TimeOutException;
 
-    Page<User> getPageWithRole(Pageable pageable, String userRole) throws DatabaseException, TimeOutException;
+    Page<User> getPageWithRole(Pageable pageable, UserRole userRole) throws DatabaseException, TimeOutException;
 
     Optional<User> getById(Long id) throws DatabaseException, TimeOutException;
 

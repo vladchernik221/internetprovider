@@ -9,7 +9,6 @@ import java.util.ResourceBundle;
 @Component
 public class DatabaseMigration {
     private static final String PROPERTY_FILE_NAME = "application";
-    private static final String DATABASE_CONNECTION_FORMAT = "%s?&verifyServerCertificate=false&useSSL=true&serverTimezone=UTC";
     private static final String URL_PROPERTY_NAME = "database.url";
     private static final String USER_PROPERTY_NAME = "database.user";
     private static final String PASSWORD_PROPERTY_NAME = "database.password";
@@ -29,7 +28,7 @@ public class DatabaseMigration {
     @AfterCreate
     public void migrate() {
         Flyway flyway = new Flyway();
-        flyway.setDataSource(String.format(DATABASE_CONNECTION_FORMAT, url), user, password);
+        flyway.setDataSource(url, user, password);
         flyway.migrate();
     }
 }

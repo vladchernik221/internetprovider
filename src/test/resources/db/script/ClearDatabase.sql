@@ -1,0 +1,12 @@
+DELETE FROM `transaction`;
+DELETE FROM `account`;
+DELETE FROM `contract_annex_has_service`;
+DELETE FROM `contract_annex`;
+DELETE FROM `tariff_plan_has_discount`;
+DELETE FROM `tariff_plan`;
+DELETE FROM `discount`;
+DELETE FROM `user`;
+DELETE FROM `contract`;
+DELETE FROM `individual_client_information`;
+DELETE FROM `legal_entity_client_information`;
+DELETE FROM `service`;

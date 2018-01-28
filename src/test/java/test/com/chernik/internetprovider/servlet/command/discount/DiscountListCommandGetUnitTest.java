@@ -9,7 +9,7 @@ import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import test.com.chernik.internetprovider.servlet.command.CommandUnitTest;
+import test.com.chernik.util.CommandUnitTest;
 
 import java.util.Arrays;
 

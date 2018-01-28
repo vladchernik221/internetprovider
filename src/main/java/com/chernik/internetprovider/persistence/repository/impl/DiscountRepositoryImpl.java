@@ -40,7 +40,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     private static final String EXISTS_DISCOUNT_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `name`=?)";
 
-    private static final String EXISTS_DISCOUNT_BY_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `dicount_id`!=? AND `name`=?)";
+    private static final String EXISTS_DISCOUNT_BY_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `discount_id`!=? AND `name`=?)";
 
     private static final String GET_ALL_BY_TARIFF_PLAN_ID = "SELECT d.discount_id, d.name, d.description, d.amount, d.start_date, d.end_date, d.only_for_new_client FROM `discount` d JOIN `tariff_plan_has_discount` tphd ON d.discount_id = tphd.discount_id WHERE tphd.tariff_plan_id = ?";
 
@@ -192,7 +192,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     @Override
     public List<Discount> getByTariffPlanId(Long tariffPlanId) throws DatabaseException, TimeOutException {
-        return commonRepository.getAllByСondition(tariffPlanId, this::createPreparedStatementForGettingAllByTariffPlanId, this::createDiscount);
+        return commonRepository.getAllByCondition(tariffPlanId, this::createPreparedStatementForGettingAllByTariffPlanId, this::createDiscount);
     }
 
     private PreparedStatement createPreparedStatementForGettingAllByTariffPlanId(Connection connection, Long tariffPlanId) throws SQLException {

@@ -87,8 +87,8 @@ public class ContextInitializer {
      * @param clazz class of needed component.
      * @return instance of specified class.
      */
-    public Object getComponent(Class<?> clazz) {
-        return getComponentOrImplementation(clazz);
+    public <T> T getComponent(Class<T> clazz) {
+        return (T) getComponentOrImplementation(clazz);
     }
 
 

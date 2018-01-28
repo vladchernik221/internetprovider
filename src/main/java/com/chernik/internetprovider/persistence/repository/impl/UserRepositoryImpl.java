@@ -27,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String GET_USER_BY_LOGIN_AND_PASSWORD = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` WHERE `login`=? AND `password`=MD5(?)";
 
-    private static final String GET_USER_BY_ID = "SELECT `user_id`, `login`, `role`, `blocked` FROM `user` WHERE `user_id`=?";
+    private static final String GET_USER_BY_ID = "SELECT `user_id`, `login`, `role`, `blocked`, `contract_id` FROM `user` WHERE `user_id`=?";
 
     private static final String CREATE_USER = "INSERT INTO `user`(`login`, `password`, `role`, `contract_id`) VALUES(?,MD5(?),?,?)";
 
@@ -129,21 +129,21 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Page<User> getPageWithRole(Pageable pageable, String userRole) throws DatabaseException, TimeOutException {
+    public Page<User> getPageWithRole(Pageable pageable, UserRole userRole) throws DatabaseException, TimeOutException {
         return commonRepository.getPage(userRole, pageable, this::createCountWithRoleStatement, this::createPreparedStatementForGettingWithRole, this::createUser);
     }
 
-    private PreparedStatement createCountWithRoleStatement(Connection connection, String userRole, Pageable pageable) throws SQLException {
+    private PreparedStatement createCountWithRoleStatement(Connection connection, UserRole userRole, Pageable pageable) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_USER_WITH_ROLE_PAGE_COUNT);
         statement.setInt(1, pageable.getPageSize());
-        statement.setString(2, userRole);
+        statement.setString(2, userRole.toString());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
-    private PreparedStatement createPreparedStatementForGettingWithRole(Connection connection, String userRole, Pageable pageable) throws SQLException {
+    private PreparedStatement createPreparedStatementForGettingWithRole(Connection connection, UserRole userRole, Pageable pageable) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_USERS_WITH_ROLE_PAGE);
-        statement.setString(1, userRole);
+        statement.setString(1, userRole.toString());
         statement.setInt(2, pageable.getPageSize());
         statement.setInt(3, pageable.getPageNumber() * pageable.getPageSize());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());

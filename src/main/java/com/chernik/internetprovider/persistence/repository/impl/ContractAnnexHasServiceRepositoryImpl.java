@@ -10,6 +10,7 @@ import com.chernik.internetprovider.persistence.repository.ContractAnnexHasServi
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 @Repository
 public class ContractAnnexHasServiceRepositoryImpl implements ContractAnnexHasServiceRepository {
@@ -29,7 +30,7 @@ public class ContractAnnexHasServiceRepositoryImpl implements ContractAnnexHasSe
     }
 
     private PreparedStatement createStatementForInsert(Connection connection, Long contractAnnexId, Long serviceId) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CREATE);
+        PreparedStatement statement = connection.prepareStatement(CREATE, Statement.RETURN_GENERATED_KEYS);
         statement.setLong(1, contractAnnexId);
         statement.setLong(2, serviceId);
         return statement;

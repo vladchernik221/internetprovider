@@ -1,2 +1,0 @@
-ALTER TABLE `discount`
-	ADD COLUMN `name` VARCHAR(45) NOT NULL;

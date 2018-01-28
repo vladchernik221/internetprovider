@@ -1,4 +1,4 @@
-package test.com.chernik.internetprovider.servlet.command;
+package test.com.chernik.util;
 
 import com.chernik.internetprovider.context.ContextInitializer;
 
@@ -25,6 +25,6 @@ public class CommandUnitTest {
 
     protected <T> T getMapper(Class<T> clazz) {
         ContextInitializer contextInitializer = ContextInitializer.getInstance();
-        return (T) contextInitializer.getComponent(clazz);
+        return contextInitializer.getComponent(clazz);
     }
 }

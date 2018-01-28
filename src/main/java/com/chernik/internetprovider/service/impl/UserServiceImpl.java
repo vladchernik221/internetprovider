@@ -10,6 +10,7 @@ import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.User;
+import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.persistence.repository.UserRepository;
 import com.chernik.internetprovider.service.UserService;
 import org.apache.logging.log4j.Level;
@@ -46,8 +47,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getPage(Pageable pageable, String userRole) throws DatabaseException, TimeOutException {
-        if (userRole.isEmpty()) {
+    public Page<User> getPage(Pageable pageable, UserRole userRole) throws DatabaseException, TimeOutException {
+        if (userRole == null) {
             return userRepository.getPage(pageable);
         } else {
             return userRepository.getPageWithRole(pageable, userRole);

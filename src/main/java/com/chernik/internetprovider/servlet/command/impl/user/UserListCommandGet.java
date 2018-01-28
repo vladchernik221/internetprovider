@@ -6,6 +6,7 @@ import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.User;
+import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
@@ -45,8 +46,8 @@ public class UserListCommandGet implements Command {
         Integer pageNumber = baseMapper.getNotMandatoryInt(request, "page");
         pageNumber = (pageNumber != null) ? pageNumber - 1 : 0;
 
-        String userRole = baseMapper.getNotMandatoryString(request, "role");
-        userRole = (userRole != null) ? userRole : "";
+        String userRoleParameter = baseMapper.getNotMandatoryString(request, "role");
+        UserRole userRole = userRoleParameter != null ? UserRole.valueOf(userRoleParameter.toUpperCase()) : null;
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(USER_LIST_PAGE);
         Page<User> usersPage = userService.getPage(new Pageable(pageNumber, 10), userRole);

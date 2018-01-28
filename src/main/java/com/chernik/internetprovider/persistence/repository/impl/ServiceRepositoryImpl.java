@@ -44,9 +44,9 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     private static final String EXISTS_SERVICE_BY_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`!=? AND `name`=?)";
 
-    private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.contract_annex_id=?";
+    private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.service_id=s.service_id WHERE cahs.contract_annex_id=?";
 
-    private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE = "SELECT s.service_id, s.name, s.price, s.archived FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.contract_annex_id=? LIMIT ? OFFSET ?";
+    private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE = "SELECT s.service_id, s.name, s.price, s.archived FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.service_id=s.service_id WHERE cahs.contract_annex_id=? LIMIT ? OFFSET ?";
 
 
     @Autowired

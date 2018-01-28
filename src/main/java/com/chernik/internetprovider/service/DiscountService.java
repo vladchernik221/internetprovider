@@ -14,6 +14,7 @@ import java.util.List;
 public interface DiscountService {
     Long create(Discount discount) throws BaseException;
 
+    //TODO id and name pair validation
     void update(Discount discount) throws BaseException;
 
     void remove(Long id) throws BaseException;

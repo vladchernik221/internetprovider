@@ -5,6 +5,7 @@ import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.User;
+import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.persistence.repository.UserRepository;
 import com.chernik.internetprovider.service.impl.UserServiceImpl;
 import org.testng.annotations.BeforeClass;
@@ -70,7 +71,7 @@ public class UserServiceUnitTest {
         when(userRepositoryMock.getPage(any(Pageable.class))).thenReturn(page);
 
         Pageable pageable = new Pageable(3, 10);
-        Page<User> actualPage = userService.getPage(pageable, "");
+        Page<User> actualPage = userService.getPage(pageable, null);
         assertSame(actualPage, page);
         verify(userRepositoryMock).getPage(pageable);
     }
@@ -78,12 +79,12 @@ public class UserServiceUnitTest {
     @Test
     public void getPageShouldReturnPageOfUsersWithRoleWhenRoleIsNotEmpty() throws Exception {
         Page<User> page = new Page<>(Arrays.asList(mock(User.class), mock(User.class)), 5);
-        when(userRepositoryMock.getPageWithRole(any(Pageable.class), anyString())).thenReturn(page);
+        when(userRepositoryMock.getPageWithRole(any(Pageable.class), any())).thenReturn(page);
 
         Pageable pageable = new Pageable(3, 10);
-        Page<User> actualPage = userService.getPage(pageable, "admin");
+        Page<User> actualPage = userService.getPage(pageable, UserRole.ADMIN);
         assertSame(actualPage, page);
-        verify(userRepositoryMock).getPageWithRole(pageable, "admin");
+        verify(userRepositoryMock).getPageWithRole(pageable, UserRole.ADMIN);
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)

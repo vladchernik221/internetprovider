@@ -6,7 +6,7 @@ import com.chernik.internetprovider.servlet.command.impl.contract.ContractByIdCo
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import test.com.chernik.internetprovider.servlet.command.CommandUnitTest;
+import test.com.chernik.util.CommandUnitTest;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;

@@ -8,6 +8,7 @@ import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
 import com.chernik.internetprovider.persistence.entity.User;
+import com.chernik.internetprovider.persistence.entity.UserRole;
 
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public interface UserService {
 
     Long create(User user) throws DatabaseException, TimeOutException, UnableSaveEntityException;
 
-    Page<User> getPage(Pageable pageable, String userRole) throws DatabaseException, TimeOutException;
+    Page<User> getPage(Pageable pageable, UserRole userRole) throws DatabaseException, TimeOutException;
 
     void block(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException;
 

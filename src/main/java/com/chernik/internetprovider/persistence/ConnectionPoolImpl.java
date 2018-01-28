@@ -19,7 +19,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private static final Logger LOGGER = LogManager.getLogger(ConnectionPoolImpl.class);
 
     private static final String PROPERTY_FILE_NAME = "application";
-    private static final String DATABASE_CONNECTION_FORMAT = "%s?user=%s&password=%s&verifyServerCertificate=false&useSSL=true&serverTimezone=UTC";
+    private static final String DATABASE_CONNECTION_FORMAT = "%s&user=%s&password=%s";
     private static final String DRIVER_PROPERTY_NAME = "database.driver";
     private static final String URL_PROPERTY_NAME = "database.url";
     private static final String USER_PROPERTY_NAME = "database.user";
@@ -53,6 +53,8 @@ public class ConnectionPoolImpl implements ConnectionPool {
 
         String driver = readPropertyWithValidation(bundle, DRIVER_PROPERTY_NAME);
         try {
+            TimeZone timeZone = TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName());
+            TimeZone.setDefault(timeZone);
             Class.forName(driver).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             LOGGER.log(Level.FATAL, "Can't find database driver {}", driver);

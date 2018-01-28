@@ -265,7 +265,7 @@ public class CommonRepository {
         return entities;
     }
 
-    public <T, C> List<T> getAllByСondition(C condition, BiThrowableFunction<Connection, C, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
+    public <T, C> List<T> getAllByCondition(C condition, BiThrowableFunction<Connection, C, PreparedStatement> statementFunctional, ThrowableFunction<ResultSet, T> createEntityFunction) throws DatabaseException, TimeOutException {
         LOGGER.log(Level.TRACE, "Getting all");
         Connection connection = connectionPool.getConnection();
         List<T> entities = new ArrayList<>();
@@ -290,7 +290,7 @@ public class CommonRepository {
             if (generatedKeys.next()) {
                 generatedId = generatedKeys.getLong(1);
             } else {
-                throw new DatabaseException("Getting generated key failed, no ID obtained.");
+                return null;
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error while execute database query, when get generated key", e);

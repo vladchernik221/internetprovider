@@ -13,9 +13,9 @@ public class StartupListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         contextInitializer = ContextInitializer.getInstance();
-        CommandHandler commandHandler = (CommandHandler) contextInitializer.getComponent(CommandHandler.class);
+        CommandHandler commandHandler = contextInitializer.getComponent(CommandHandler.class);
         servletContextEvent.getServletContext().setAttribute("commandHandler", commandHandler);
-        SecurityConfigHandler securityConfigHandler = (SecurityConfigHandler) contextInitializer.getComponent(SecurityConfigHandler.class);
+        SecurityConfigHandler securityConfigHandler = contextInitializer.getComponent(SecurityConfigHandler.class);
         servletContextEvent.getServletContext().setAttribute("securityHandler", securityConfigHandler);
     }
 
