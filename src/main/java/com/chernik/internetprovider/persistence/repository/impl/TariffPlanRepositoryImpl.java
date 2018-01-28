@@ -30,6 +30,8 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     private static final String IS_EXIST_TARIFF_PLAN_WITH_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `name`=?)";
 
+    private static final String IS_EXIST_TARIFF_PLAN_WITH_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`!=? AND `name`=?)";
+
     private static final String UPDATE_TARIFF_PLAN = "UPDATE `tariff_plan` SET `name`=?, `description`=?, `down_speed`=?, `up_speed`=?, `included_traffic`=?, `price_over_traffic`=?, `monthly_fee`=? WHERE `tariff_plan_id`=?";
 
     private static final String ARCHIVE_TARIFF_PLAN = "UPDATE `tariff_plan` tp SET tp.archived=NOT tp.archived WHERE tp.tariff_plan_id=?";
@@ -45,8 +47,6 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     private static final String GET_TARIFF_PLAN = "SELECT `tariff_plan_id`, `name`, `description`, `down_speed`, `up_speed`, `included_traffic`, `price_over_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `tariff_plan_id`=?";
 
     private static final String GET_ALL_NOT_ARCHIVED = "SELECT `tariff_plan_id`, `name`, `down_speed`, `up_speed`, `included_traffic`, `monthly_fee`, `archived` FROM `tariff_plan` WHERE `archived`=0";
-
-    private static final String EXIST_BY_ID_AND_NAME = "SELECT EXISTS(SELECT 1 FROM `tariff_plan` WHERE `tariff_plan_id`=? AND `name`=?)";
 
 
     @Autowired
@@ -219,12 +219,12 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
 
     @Override
-    public boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException {
+    public boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException {
         return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
     }
 
     private PreparedStatement createStatementForExistByIdAndName(Connection connection, Long id, String name) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(EXIST_BY_ID_AND_NAME);
+        PreparedStatement statement = connection.prepareStatement(IS_EXIST_TARIFF_PLAN_WITH_NAME_AND_NOT_ID);
         statement.setLong(1, id);
         statement.setString(2, name);
         return statement;

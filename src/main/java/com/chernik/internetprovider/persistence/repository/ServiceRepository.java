@@ -23,7 +23,7 @@ public interface ServiceRepository {
 
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
 
-    boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException;
+    boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException;
 
     Page<Service> getPageByContractAnnexId(Long id, Pageable pageable) throws DatabaseException, TimeOutException;
 }

@@ -42,7 +42,10 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Page<Transaction> getPage(Long contractAnnexId, Pageable pageable) throws DatabaseException, TimeOutException {
+    public Page<Transaction> getPage(Long contractAnnexId, Pageable pageable) throws DatabaseException, TimeOutException, EntityNotFoundException {
+        if (!contractAnnexService.existById(contractAnnexId)) {
+            throw new EntityNotFoundException(String.format("Contract annex with id=%d does not exist", contractAnnexId));
+        }
         return transactionRepository.getPage(contractAnnexId, pageable);
     }
 }

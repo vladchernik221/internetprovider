@@ -45,7 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private static final String IS_EXIST_USER_WITH_LOGIN = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `login`=?)";
 
-    private static final String EXIST_BY_ID = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `user_id`=?)";
+    private static final String IS_EXIST_USER_WITH_ID = "SELECT EXISTS(SELECT 1 FROM `user` WHERE `user_id`=?)";
 
 
     @Autowired
@@ -212,7 +212,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private PreparedStatement createStatementForExistById(Connection connection, Long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(EXIST_BY_ID);
+        PreparedStatement statement = connection.prepareStatement(IS_EXIST_USER_WITH_ID);
         statement.setLong(1, id);
         return statement;
     }

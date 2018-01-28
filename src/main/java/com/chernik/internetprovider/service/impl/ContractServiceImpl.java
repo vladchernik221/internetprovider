@@ -31,6 +31,8 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private UserService userService;
 
+    private static final String LOGIN_FORMAT = "%06d";
+
     public void setContractRepository(ContractRepository contractRepository) {
         this.contractRepository = contractRepository;
     }
@@ -59,12 +61,12 @@ public class ContractServiceImpl implements ContractService {
         switch (contract.getClientType()) {
             case INDIVIDUAL:
                 IndividualClientInformation individualClientInformation = contract.getIndividualClientInformation();
-                clientInformationId = individualClientInformationService.createOrUpdate(individualClientInformation);
+                clientInformationId = individualClientInformationService.save(individualClientInformation);
                 individualClientInformation.setIndividualClientInformationId(clientInformationId);
                 break;
             case LEGAL:
                 LegalEntityClientInformation legalEntityClientInformation = contract.getLegalEntityClientInformation();
-                clientInformationId = legalEntityClientInformationService.createOrUpdate(legalEntityClientInformation);
+                clientInformationId = legalEntityClientInformationService.save(legalEntityClientInformation);
                 legalEntityClientInformation.setLegalEntityClientInformationId(clientInformationId);
                 break;
         }
@@ -73,7 +75,7 @@ public class ContractServiceImpl implements ContractService {
         contract.setContractId(generatedId);
 
         User user = new User();
-        user.setLogin(String.format("%06d", generatedId));
+        user.setLogin(String.format(LOGIN_FORMAT, generatedId));
         user.setPassword(userPassword);
         user.setUserRole(UserRole.CUSTOMER);
         user.setContract(contract);
@@ -116,7 +118,7 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void dissolve(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException, UnableSaveEntityException {
-        if (notExistById(id)) {
+        if (!existById(id)) {
             throw new EntityNotFoundException(String.format("Contract with ID %d was not found", id));
         }
         if (contractRepository.isDissolved(id)) {
@@ -130,7 +132,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public boolean notExistById(Long id) throws DatabaseException, TimeOutException {
-        return !contractRepository.existWithId(id);
+    public boolean existById(Long id) throws DatabaseException, TimeOutException {
+        return contractRepository.existWithId(id);
     }
 }

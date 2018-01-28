@@ -22,7 +22,7 @@ public class IndividualClientInformationServiceImpl implements IndividualClientI
 
 
     @Override
-    public Long createOrUpdate(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
+    public Long save(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
         Optional<IndividualClientInformation> checkingInformation = individualClientInformationRepository.getByPassportData(individualClientInformation.getPassportUniqueIdentification());
 
         if (!checkingInformation.isPresent()) {

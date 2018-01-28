@@ -66,7 +66,7 @@ public class TariffPlanServiceImpl implements TariffPlanService {
         if (!tariffPlanRepository.existWithId(tariffPlan.getTariffPlanId())) {
             throw new EntityNotFoundException(String.format("Tariff plan with name: %s does not exist", tariffPlan.getName()));
         }
-        if (!tariffPlanRepository.existWithIdAndName(tariffPlan.getTariffPlanId(), tariffPlan.getName()) && tariffPlanRepository.existWithName(tariffPlan.getName())) {
+        if (tariffPlanRepository.existWithNameAndNotId(tariffPlan.getTariffPlanId(), tariffPlan.getName())) {
             throw new UnableSaveEntityException(String.format("Tariff plan with name=%s already exists", tariffPlan.getName()));
         }
 
@@ -88,7 +88,7 @@ public class TariffPlanServiceImpl implements TariffPlanService {
         }
 
         TariffPlan tariffPlan = tariffPlanOptional.get();
-        List<Discount> discounts = discountService.getAllByTariffPlan(tariffPlan);
+        List<Discount> discounts = discountService.getAllByTariffPlan(id);
         tariffPlan.setDiscounts(discounts);
         return tariffPlan;
     }

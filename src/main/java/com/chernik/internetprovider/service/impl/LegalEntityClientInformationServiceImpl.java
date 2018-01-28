@@ -22,7 +22,7 @@ public class LegalEntityClientInformationServiceImpl implements LegalEntityClien
 
 
     @Override
-    public Long createOrUpdate(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
+    public Long save(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
         Optional<LegalEntityClientInformation> checkingInformation = legalEntityClientInformationRepository.getByPayerAccountNumber(legalEntityClientInformation.getPayerAccountNumber());
 
         if (!checkingInformation.isPresent()) {

@@ -24,5 +24,5 @@ public interface DiscountService {
 
     Discount getById(Long id) throws BaseException;
 
-    List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException;
+    List<Discount> getAllByTariffPlan(Long tariffPlanId) throws DatabaseException, TimeOutException, EntityNotFoundException;
 }

@@ -26,5 +26,5 @@ public interface TariffPlanRepository {
 
     List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException;
 
-    boolean existWithIdAndName(Long id, String name) throws DatabaseException, TimeOutException;
+    boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException;
 }

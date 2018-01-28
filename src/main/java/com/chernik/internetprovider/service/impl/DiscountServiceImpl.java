@@ -10,6 +10,7 @@ import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
 import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.service.DiscountService;
+import com.chernik.internetprovider.service.TariffPlanService;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,14 +22,14 @@ public class DiscountServiceImpl implements DiscountService {
     private DiscountRepository discountRepository;
 
     @Autowired
-    private ContractService contractService;
+    private TariffPlanService tariffPlanService;
 
     public void setDiscountRepository(DiscountRepository discountRepository) {
         this.discountRepository = discountRepository;
     }
 
-    public void setContractService(ContractService contractService) {
-        this.contractService = contractService;
+    public void setTariffPlanService(TariffPlanService tariffPlanService) {
+        this.tariffPlanService = tariffPlanService;
     }
 
 
@@ -79,10 +80,8 @@ public class DiscountServiceImpl implements DiscountService {
     }
 
     @Override
-    public List<Discount> getAllByTariffPlan(TariffPlan tariffPlan) throws DatabaseException, TimeOutException, EntityNotFoundException {
-        Long tariffPlanId = tariffPlan.getTariffPlanId();
-
-        if (!contractService.notExistById(tariffPlanId)) {
+    public List<Discount> getAllByTariffPlan(Long tariffPlanId) throws DatabaseException, TimeOutException, EntityNotFoundException {
+        if (!tariffPlanService.existWithId(tariffPlanId)) {
             throw new EntityNotFoundException(String.format("Tariff plan with id=%d not found", tariffPlanId));
         }
 

@@ -56,7 +56,7 @@ public class ContractAnnexServiceImpl implements ContractAnnexService {
 
     @Override
     public Page<ContractAnnex> getPage(Long contractId, Pageable pageable) throws BaseException {
-        if (contractService.notExistById(contractId)) {
+        if (!contractService.existById(contractId)) {
             throw new EntityNotFoundException(String.format("Contract with id=%d not found", contractId));
         }
 

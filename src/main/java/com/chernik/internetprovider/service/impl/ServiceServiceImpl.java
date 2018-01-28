@@ -41,10 +41,10 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void update(Service service) throws BaseException {
         if (!existWithId(service.getServiceId())) {
-            throw new EntityNotFoundException(String.format("Service with id: %s does not exist", service.getServiceId()));
+            throw new EntityNotFoundException(String.format("Service with id: %d does not exist", service.getServiceId()));
         }
-        if (!serviceRepository.existWithIdAndName(service.getServiceId(), service.getName()) && serviceRepository.existWithName(service.getName())) {
-            throw new UnableSaveEntityException(String.format("Service with name=%s already exists", service.getName()));
+        if (serviceRepository.existWithNameAndNotId(service.getServiceId(), service.getName())) {
+            throw new UnableSaveEntityException(String.format("Service with name: %s already exists", service.getName()));
         }
 
         serviceRepository.update(service);
@@ -59,7 +59,7 @@ public class ServiceServiceImpl implements ServiceService {
     public Service getById(Long id) throws BaseException {
         Optional<Service> service = serviceRepository.getById(id);
         if (!service.isPresent()) {
-            throw new EntityNotFoundException(String.format("Service with id=%d does not exist", id));
+            throw new EntityNotFoundException(String.format("Service with id: %d does not exist", id));
         }
 
         return service.get();
@@ -68,7 +68,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public void archive(Long id) throws BaseException {
         if (!existWithId(id)) {
-            throw new EntityNotFoundException(String.format("Service with id: %s does not exist", id));
+            throw new EntityNotFoundException(String.format("Service with id: %d does not exist", id));
         }
 
         serviceRepository.archive(id);
@@ -77,7 +77,7 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public Page<Service> getPageByContractAnnexId(Long id, Pageable pageable) throws EntityNotFoundException, DatabaseException, TimeOutException {
         if (!contractAnnexService.existById(id)) {
-            throw new EntityNotFoundException(String.format("Service with id: %s does not exist", id));
+            throw new EntityNotFoundException(String.format("Service with id: %d does not exist", id));
         }
 
         return serviceRepository.getPageByContractAnnexId(id, pageable);

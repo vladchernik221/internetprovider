@@ -45,7 +45,7 @@ public class ContractAnnexCreateCommandGet implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DatabaseException, TimeOutException, EntityNotFoundException {
         String contractId = request.getRequestURI().split("/")[2];
-        if (contractService.notExistById(Long.valueOf(contractId))) {
+        if (!contractService.existById(Long.valueOf(contractId))) {
             throw new EntityNotFoundException(String.format("Contract with id=%s not found", contractId));
         }
 

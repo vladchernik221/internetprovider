@@ -15,5 +15,5 @@ public interface ContractService {
 
     void dissolve(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException, UnableSaveEntityException;
 
-    boolean notExistById(Long id) throws DatabaseException, TimeOutException;
+    boolean existById(Long id) throws DatabaseException, TimeOutException;
 }
