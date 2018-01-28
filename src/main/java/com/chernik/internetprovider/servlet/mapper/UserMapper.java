@@ -7,7 +7,7 @@ import com.chernik.internetprovider.persistence.entity.UserRole;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class UserMapper extends Mapper<User> {
+public class UserMapper extends BaseMapper implements Mapper<User> {
 
     @Override
     public User create(HttpServletRequest request) throws BadRequestException {

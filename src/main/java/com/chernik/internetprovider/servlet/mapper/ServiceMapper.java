@@ -7,7 +7,7 @@ import com.chernik.internetprovider.persistence.entity.Service;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class ServiceMapper extends Mapper<Service> {
+public class ServiceMapper extends BaseMapper implements Mapper<Service> {
 
     @Override
     public Service create(HttpServletRequest request) throws BadRequestException {

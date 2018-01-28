@@ -20,8 +20,7 @@ public class LoginCommandGet implements Command {
     private static final String LOGIN_PAGE = "/WEB-INF/jsp/login.jsp";
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher(LOGIN_PAGE);
         LOGGER.log(Level.TRACE, "Forward to page: {}", LOGIN_PAGE);
         dispatcher.forward(request, response);

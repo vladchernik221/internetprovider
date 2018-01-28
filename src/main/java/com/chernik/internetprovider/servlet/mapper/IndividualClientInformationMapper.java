@@ -7,7 +7,7 @@ import com.chernik.internetprovider.persistence.entity.IndividualClientInformati
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class IndividualClientInformationMapper extends Mapper<IndividualClientInformation> {
+public class IndividualClientInformationMapper extends BaseMapper implements Mapper<IndividualClientInformation> {
     @Override
     public IndividualClientInformation create(HttpServletRequest request) throws BadRequestException {
         IndividualClientInformation individualClientInformation = new IndividualClientInformation();

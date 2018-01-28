@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class TariffPlanMapper extends Mapper<TariffPlan> {
+public class TariffPlanMapper extends BaseMapper implements Mapper<TariffPlan> {
 
     private static final String DISCOUNT_ID_DELIMITER = ";";
 

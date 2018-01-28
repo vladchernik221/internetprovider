@@ -36,10 +36,7 @@ public class ContractCreateCommandPost implements Command {
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
         Contract contract = contractMapper.create(request);
-        String userPassword = request.getParameter("password");
-        if (userPassword == null || userPassword.isEmpty()) {
-            throw new BadRequestException("Mandatory parameter password does not initialize");
-        }
+        String userPassword = contractMapper.getMandatoryString(request, "password");
 
         Long generatedId = contractService.create(contract, userPassword);
         response.getWriter().write(generatedId.toString());

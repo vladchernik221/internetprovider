@@ -8,6 +8,7 @@ import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,14 +32,21 @@ public class LoginCommandPost implements Command {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     private int sessionTimeout;
 
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
+
     @AfterCreate
-    public void initParameters() {//TODO property might be not int
+    public void initParameters() {
         ResourceBundle bundle = ResourceBundle.getBundle(PROPERTY_FILE_NAME);
         String sessionTimeoutProperty = bundle.getString("session.timeOut");
         if (!sessionTimeoutProperty.isEmpty()) {
@@ -50,8 +58,8 @@ public class LoginCommandPost implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
-        String login = request.getParameter("login");
-        String password = request.getParameter("password");
+        String login = baseMapper.getMandatoryString(request, "login");
+        String password = baseMapper.getMandatoryString(request, "password");
 
         Optional<User> user = userService.authenticate(login, password);
 

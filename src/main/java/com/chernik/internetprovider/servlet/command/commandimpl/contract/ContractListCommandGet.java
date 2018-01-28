@@ -7,6 +7,7 @@ import com.chernik.internetprovider.persistence.entity.Contract;
 import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,17 +27,21 @@ public class ContractListCommandGet implements Command {
     @Autowired
     private ContractService contractService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setContractService(ContractService contractService) {
         this.contractService = contractService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, BaseException, IOException {
-        long contractId;
-        if (request.getParameter("number") != null) {
-            contractId = Long.parseLong(request.getParameter("number"));
+    public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, BaseException, IOException {
+        Long contractId = baseMapper.getNotMandatoryLong(request, "number");
+        if (contractId != null) {
             Contract contract = contractService.getById(contractId);
             request.setAttribute("contract", contract);
         }

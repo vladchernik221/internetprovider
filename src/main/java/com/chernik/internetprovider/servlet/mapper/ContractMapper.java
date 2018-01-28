@@ -11,7 +11,7 @@ import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformat
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class ContractMapper extends Mapper<Contract> {
+public class ContractMapper extends BaseMapper implements Mapper<Contract> {
 
     @Autowired
     private IndividualClientInformationMapper individualClientInformationMapper;

@@ -10,7 +10,7 @@ import com.chernik.internetprovider.persistence.entity.TransactionType;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class TransactionMapper extends Mapper<Transaction> {
+public class TransactionMapper extends BaseMapper implements Mapper<Transaction> {
     @Override
     public Transaction create(HttpServletRequest request) throws BadRequestException {
         Transaction transaction = new Transaction();

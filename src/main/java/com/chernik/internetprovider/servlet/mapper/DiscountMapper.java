@@ -7,7 +7,7 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class DiscountMapper extends Mapper<Discount> {
+public class DiscountMapper extends BaseMapper implements Mapper<Discount> {
 
     @Override
     public Discount create(HttpServletRequest request) throws BadRequestException {

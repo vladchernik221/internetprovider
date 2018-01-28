@@ -40,6 +40,8 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     private static final String EXISTS_DISCOUNT_BY_NAME = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `name`=?)";
 
+    private static final String EXISTS_DISCOUNT_BY_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `discount` WHERE `dicount_id`!=? AND `name`=?)";
+
     private static final String GET_ALL_BY_TARIFF_PLAN_ID = "SELECT d.discount_id, d.name, d.description, d.amount, d.start_date, d.end_date, d.only_for_new_client FROM `discount` d JOIN `tariff_plan_has_discount` tphd ON d.discount_id = tphd.discount_id WHERE tphd.tariff_plan_id = ?";
 
 
@@ -154,6 +156,18 @@ public class DiscountRepositoryImpl implements DiscountRepository {
     private PreparedStatement createStatementForExistByName(Connection connection, String name) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_NAME);
         statement.setString(1, name);
+        return statement;
+    }
+
+    @Override
+    public boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
+    }
+
+    private PreparedStatement createStatementForExistByIdAndName(Connection connection, Long id, String name) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_NAME_AND_NOT_ID);
+        statement.setLong(1, id);
+        statement.setString(2, name);
         return statement;
     }
 

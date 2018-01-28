@@ -9,6 +9,7 @@ import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.service.TariffPlanService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,24 +29,28 @@ public class TariffPlanListCommandGet implements Command {
     @Autowired
     private TariffPlanService tariffPlanService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setTariffPlanService(TariffPlanService tariffPlanService) {
         this.tariffPlanService = tariffPlanService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, BaseException, IOException {
-        int pageNumber = 0;
-        if (request.getParameter("page") != null) {
-            pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
-        }
-        boolean archived = false;
-        if (request.getParameter("archived") != null) {
-            archived = Boolean.parseBoolean(request.getParameter("archived"));
-        }
+        Integer pageNumber = baseMapper.getNotMandatoryInt(request, "page");
+        pageNumber = (pageNumber != null) ? pageNumber - 1 : 0;
+
+        Boolean archived = baseMapper.getNotMandatoryBoolean(request, "archived");
+        archived = (archived != null) ? archived : false;
+
         RequestDispatcher dispatcher = request.getRequestDispatcher(TARIFF_LIST_PAGE);
-        Page<TariffPlan> tariffPlansPage = tariffPlanService.getPage(new Pageable(pageNumber, 10), archived);//TODO to property or constant or somewhere
+        Page<TariffPlan> tariffPlansPage = tariffPlanService.getPage(new Pageable(pageNumber, 10), archived);
         request.setAttribute("tariffPlansPage", tariffPlansPage);
         LOGGER.log(Level.TRACE, "Forward to page: {}", TARIFF_LIST_PAGE);
         dispatcher.forward(request, response);

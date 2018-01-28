@@ -9,6 +9,7 @@ import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,23 +29,27 @@ public class UserListCommandGet implements Command {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setUserService(UserService userService) {
         this.userService = userService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, BaseException, IOException {
-        int pageNumber = 0;
-        if (request.getParameter("page") != null) {
-            pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
-        }
-        String userRole = "";
-        if (request.getParameter("role") != null) {
-            userRole = request.getParameter("role");
-        }
+        Integer pageNumber = baseMapper.getNotMandatoryInt(request, "page");
+        pageNumber = (pageNumber != null) ? pageNumber - 1 : 0;
+
+        String userRole = baseMapper.getNotMandatoryString(request, "role");
+        userRole = (userRole != null) ? userRole : "";
+
         RequestDispatcher dispatcher = request.getRequestDispatcher(USER_LIST_PAGE);
-        Page<User> usersPage = userService.getPage(new Pageable(pageNumber, 10), userRole);//TODO to property or constant or somewhere
+        Page<User> usersPage = userService.getPage(new Pageable(pageNumber, 10), userRole);
         request.setAttribute("usersPage", usersPage);
         LOGGER.log(Level.TRACE, "Forward to page: {}", USER_LIST_PAGE);
         dispatcher.forward(request, response);

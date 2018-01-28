@@ -9,6 +9,7 @@ import com.chernik.internetprovider.persistence.entity.Service;
 import com.chernik.internetprovider.service.ServiceService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,20 +29,25 @@ public class ServiceAnnexListCommandGet implements Command {
     @Autowired
     private ServiceService serviceService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setServiceService(ServiceService serviceService) {
         this.serviceService = serviceService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, BaseException, IOException {
-        int pageNumber = 0;
-        if (request.getParameter("page") != null) {
-            pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
-        }
+        Integer pageNumber = baseMapper.getNotMandatoryInt(request, "page");
+        pageNumber = (pageNumber != null) ? pageNumber - 1 : 0;
+
         RequestDispatcher dispatcher = request.getRequestDispatcher(SERVICE_ANNEX_LIST_PAGE);
-        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), false);//TODO to property or constant or somewhere
+        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), false);
         request.setAttribute("servicesPage", servicesPage);
         LOGGER.log(Level.TRACE, "Forward to page: {}", SERVICE_ANNEX_LIST_PAGE);
         dispatcher.forward(request, response);

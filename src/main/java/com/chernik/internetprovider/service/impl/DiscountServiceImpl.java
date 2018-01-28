@@ -44,11 +44,14 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public void update(Discount discount) throws BaseException {
-        if (discountRepository.existWithId(discount.getDiscountId())) {
-            discountRepository.update(discount);
-        } else {
+        if (!discountRepository.existWithId(discount.getDiscountId())) {
             throw new EntityNotFoundException(String.format("Discount with id: %s does not exist", discount.getDiscountId()));
         }
+        if(discountRepository.existWithNameAndNotId(discount.getDiscountId(), discount.getName())) {
+            throw new UnableSaveEntityException(String.format("Discount with name: %s already exist", discount.getName()));
+        }
+
+        discountRepository.update(discount);
     }
 
     @Override

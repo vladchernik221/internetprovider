@@ -7,7 +7,7 @@ import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformat
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class LegalEntityClientInformationMapper extends Mapper<LegalEntityClientInformation> {
+public class LegalEntityClientInformationMapper extends BaseMapper implements Mapper<LegalEntityClientInformation> {
     @Override
     public LegalEntityClientInformation create(HttpServletRequest request) throws BadRequestException {
         LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();

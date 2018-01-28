@@ -42,7 +42,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     private static final String EXISTS_SERVICE_BY_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`=?)";
 
-    private static final String EXISTS_SERVICE_BY_ID_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`!=? AND `name`=?)";
+    private static final String EXISTS_SERVICE_BY_NAME_AND_NOT_ID = "SELECT EXISTS(SELECT 1 FROM `service` WHERE `service_id`!=? AND `name`=?)";
 
     private static final String GET_BY_CONTRACT_ANNEX_ID_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `service` s JOIN `contract_annex_has_service` cahs ON cahs.contract_annex_id=?";
 
@@ -193,7 +193,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     private PreparedStatement createStatementForExistByIdAndName(Connection connection, Long id, String name) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(EXISTS_SERVICE_BY_ID_NAME_AND_NOT_ID);
+        PreparedStatement statement = connection.prepareStatement(EXISTS_SERVICE_BY_NAME_AND_NOT_ID);
         statement.setLong(1, id);
         statement.setString(2, name);
         return statement;

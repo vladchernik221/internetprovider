@@ -6,6 +6,7 @@ import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.service.AccountService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,15 +19,21 @@ public class AccountAddUsedTrafficCommandPost implements Command {
     @Autowired
     private AccountService accountService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setAccountService(AccountService accountService) {
         this.accountService = accountService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
-        Long contractAnnexId = Long.valueOf(request.getParameter("contractAnnexId"));
-        Integer usedTraffic = Integer.valueOf(request.getParameter("usedTraffic"));
+        Long contractAnnexId = baseMapper.getMandatoryLong(request, "contractAnnexId");
+        Integer usedTraffic = baseMapper.getMandatoryInt(request, "usedTraffic");
 
         accountService.addUsedTraffic(contractAnnexId, usedTraffic);
     }

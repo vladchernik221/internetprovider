@@ -9,6 +9,7 @@ import com.chernik.internetprovider.persistence.entity.Service;
 import com.chernik.internetprovider.service.ServiceService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,24 +29,28 @@ public class ServiceListCommandGet implements Command {
     @Autowired
     private ServiceService serviceService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setServiceService(ServiceService serviceService) {
         this.serviceService = serviceService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, BaseException, IOException {
-        int pageNumber = 0;
-        if (request.getParameter("page") != null) {
-            pageNumber = Integer.parseInt(request.getParameter("page")) - 1;
-        }
-        boolean archived = false;
-        if (request.getParameter("archived") != null) {
-            archived = Boolean.parseBoolean(request.getParameter("archived"));
-        }
+        Integer pageNumber = baseMapper.getNotMandatoryInt(request, "page");
+        pageNumber = (pageNumber != null) ? pageNumber - 1 : 0;
+
+        Boolean archived = baseMapper.getNotMandatoryBoolean(request, "archived");
+        archived = (archived != null) ? archived : false;
+
         RequestDispatcher dispatcher = request.getRequestDispatcher(SERVICE_LIST_PAGE);
-        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), archived);//TODO to property or constant or somewhere
+        Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), archived);
         request.setAttribute("servicesPage", servicesPage);
         request.setAttribute("supportArchived", true);
         LOGGER.log(Level.TRACE, "Forward to page: {}", SERVICE_LIST_PAGE);

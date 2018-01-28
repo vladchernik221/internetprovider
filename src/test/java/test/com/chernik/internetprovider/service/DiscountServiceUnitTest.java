@@ -60,18 +60,27 @@ public class DiscountServiceUnitTest {
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
-    public void updateShouldThrowExceptionWhenDiscountDoeesNotExist() throws Exception {
+    public void updateShouldThrowExceptionWhenDiscountDoesNotExist() throws Exception {
         when(discountRepositoryMock.existWithId(anyLong())).thenReturn(false);
-        discountService.update(new Discount(5L));
+        discountService.update(createTestDiscount());
+    }
+
+    @Test(expectedExceptions = UnableSaveEntityException.class)
+    public void updateShouldThrowExceptionWhenOtherDiscountWithNameAlreadyExists() throws Exception {
+        when(discountRepositoryMock.existWithId(anyLong())).thenReturn(true);
+        when(discountRepositoryMock.existWithNameAndNotId(anyLong(), anyString())).thenReturn(true);
+        discountService.update(createTestDiscount());
     }
 
     @Test
     public void updateShouldSaveUpdatedDiscount() throws Exception {
         when(discountRepositoryMock.existWithId(anyLong())).thenReturn(true);
+        when(discountRepositoryMock.existWithNameAndNotId(anyLong(), anyString())).thenReturn(false);
 
-        Discount discount = new Discount(5L);
+        Discount discount = createTestDiscount();
         discountService.update(discount);
-        verify(discountRepositoryMock).existWithId(5L);
+        verify(discountRepositoryMock).existWithId(10L);
+        verify(discountRepositoryMock).existWithNameAndNotId(10L, "test name");
         verify(discountRepositoryMock).update(discount);
     }
 
@@ -146,7 +155,7 @@ public class DiscountServiceUnitTest {
     }
 
     private Discount createTestDiscount() {
-        Discount discount = new Discount();
+        Discount discount = new Discount(10L);
         discount.setName("test name");
         return discount;
     }

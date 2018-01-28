@@ -8,7 +8,7 @@ import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-public class ContractAnnexMapper extends Mapper<ContractAnnex> {
+public class ContractAnnexMapper extends BaseMapper implements Mapper<ContractAnnex> {
 
     @Override
     public ContractAnnex create(HttpServletRequest request) throws BadRequestException {

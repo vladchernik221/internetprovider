@@ -8,6 +8,7 @@ import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformat
 import com.chernik.internetprovider.service.LegalEntityClientInformationService;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
+import com.chernik.internetprovider.servlet.mapper.BaseMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.ServletException;
@@ -21,23 +22,25 @@ public class LegalEntityClientInformationCommandPost implements Command {
     @Autowired
     private LegalEntityClientInformationService legalEntityClientInformationService;
 
+    @Autowired
+    private BaseMapper baseMapper;
+
     public void setLegalEntityClientInformationService(LegalEntityClientInformationService legalEntityClientInformationService) {
         this.legalEntityClientInformationService = legalEntityClientInformationService;
     }
 
+    public void setBaseMapper(BaseMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, BaseException {
-        String payerAccountNumber = request.getParameter("identifier");
-        if (payerAccountNumber != null) {
-            LegalEntityClientInformation legalEntityClientInformation = legalEntityClientInformationService.getByPayerAccountNumber(payerAccountNumber);
+        String payerAccountNumber = baseMapper.getMandatoryString(request, "identifier");
+        LegalEntityClientInformation legalEntityClientInformation = legalEntityClientInformationService.getByPayerAccountNumber(payerAccountNumber);
 
-            ObjectMapper objectMapper = new ObjectMapper();
-            String responseMessage = objectMapper.writeValueAsString(legalEntityClientInformation);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseMessage = objectMapper.writeValueAsString(legalEntityClientInformation);
 
-            response.getWriter().write(responseMessage);
-        } else {
-            throw new BadRequestException("Missing parameter: identifier");
-        }
+        response.getWriter().write(responseMessage);
     }
 }
