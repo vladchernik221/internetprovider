@@ -335,6 +335,7 @@ public class ContextInitializer {
      */
     private Class<?> getImplementation(Class<?> interfaceClass) {
         Set<? extends Class<?>> classSet = ref.getSubTypesOf(interfaceClass);
+        LOGGER.log(Level.INFO, classSet);
         Optional<? extends Class<?>> implementation = classSet.stream().filter(clazz -> clazz.isAnnotationPresent(Component.class) || clazz.isAnnotationPresent(Service.class) || clazz.isAnnotationPresent(Repository.class) || clazz.isAnnotationPresent(HttpRequestProcessor.class)).findFirst();
 
         if (implementation.isPresent()) {
