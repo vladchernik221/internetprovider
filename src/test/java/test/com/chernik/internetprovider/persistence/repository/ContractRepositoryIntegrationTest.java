@@ -1,10 +1,7 @@
 package test.com.chernik.internetprovider.persistence.repository;
 
 import com.chernik.internetprovider.context.ContextInitializer;
-import com.chernik.internetprovider.persistence.entity.ClientType;
-import com.chernik.internetprovider.persistence.entity.Contract;
-import com.chernik.internetprovider.persistence.entity.IndividualClientInformation;
-import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformation;
+import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.persistence.repository.ContractRepository;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -41,7 +38,7 @@ public class ContractRepositoryIntegrationTest extends RepositoryIntegrationTest
         return contract;
     }
 
-    private Contract createTestNewContract() {
+    private Contract createTestNewContractWithIndividual() {
         IndividualClientInformation individualClientInformation = new IndividualClientInformation();
         individualClientInformation.setIndividualClientInformationId(1L);
 
@@ -49,6 +46,17 @@ public class ContractRepositoryIntegrationTest extends RepositoryIntegrationTest
         contract.setDissolved(false);
         contract.setClientType(ClientType.INDIVIDUAL);
         contract.setIndividualClientInformation(individualClientInformation);
+        return contract;
+    }
+
+    private Contract createTestNewContractWithLegal() {
+        LegalEntityClientInformation legalEntityClientInformation = new LegalEntityClientInformation();
+        legalEntityClientInformation.setLegalEntityClientInformationId(1L);
+
+        Contract contract = new Contract();
+        contract.setDissolved(false);
+        contract.setClientType(ClientType.LEGAL);
+        contract.setLegalEntityClientInformation(legalEntityClientInformation);
         return contract;
     }
 
@@ -135,18 +143,38 @@ public class ContractRepositoryIntegrationTest extends RepositoryIntegrationTest
 
     @Test
     public void createShouldReturnGeneratedIdWhenContractWithNameDoesNotExist() throws Exception {
-        Long actual = contractRepository.create(createTestNewContract());
+        Long actual = contractRepository.create(createTestNewContractWithIndividual());
         assertNotNull(actual);
     }
 
     @Test
-    public void createShouldSaveCreatedContract() throws Exception {
-        Contract expected = createTestNewContract();
+    public void createShouldSaveCreatedContractWhenClientIsIndividual() throws Exception {
+        Contract expected = createTestNewContractWithIndividual();
         Long generatedId = contractRepository.create(expected);
         expected.setContractId(generatedId);
         Contract actual = contractRepository.getById(generatedId).get();
         actual.setConcludeDate(null);
 
         assertEquals(actual, expected);
+    }
+
+    @Test
+    public void createShouldSaveCreatedContractWhenClientIsLegal() throws Exception {
+        Contract expected = createTestNewContractWithLegal();
+        Long generatedId = contractRepository.create(expected);
+        expected.setContractId(generatedId);
+        Contract actual = contractRepository.getById(generatedId).get();
+        actual.setConcludeDate(null);
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void canceledShouldCancelContractAnnexWhenContractAnnexNotCanceled() throws Exception {
+        contractRepository.dissolve(1L);
+
+        Contract contract = contractRepository.getById(1L).get();
+
+        assertTrue(contract.getDissolved());
     }
 }

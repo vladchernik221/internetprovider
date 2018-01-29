@@ -141,4 +141,13 @@ public class ContractAnnexRepositoryIntegrationTest extends RepositoryIntegratio
 
         assertEquals(actualPageCount, expectedPageCount);
     }
+
+    @Test
+    public void canceledShouldCancelContractAnnexWhenContractAnnexNotCanceled() throws Exception {
+        contractAnnexRepository.cancel(1L);
+
+        ContractAnnex contractAnnex = contractAnnexRepository.getById(1L).get();
+
+        assertTrue(contractAnnex.getCanceled());
+    }
 }

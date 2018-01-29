@@ -45,13 +45,23 @@ public class UserRepositoryIntegrationTest extends RepositoryIntegrationTest {
         return user;
     }
 
-    private User createTestNewUser() {
+    private User createTestNewAdmin() {
+        User user = new User();
+        user.setLogin("Login 100");
+        user.setPassword("Password 100");
+        user.setUserRole(UserRole.ADMIN);
+        user.setBlocked(false);
+        return user;
+    }
+
+    private User createTestNewCustomer() {
         Contract contract = new Contract();
         contract.setContractId(1L);
 
         User user = new User();
         user.setLogin("Login 100");
-        user.setUserRole(UserRole.ADMIN);
+        user.setPassword("Password 100");
+        user.setUserRole(UserRole.CUSTOMER);
         user.setBlocked(false);
         user.setContract(contract);
         return user;
@@ -91,16 +101,28 @@ public class UserRepositoryIntegrationTest extends RepositoryIntegrationTest {
 
     @Test
     public void createShouldReturnGeneratedIdWhenUserWithNameDoesNotExist() throws Exception {
-        Long actual = userRepository.create(createTestNewUser());
+        Long actual = userRepository.create(createTestNewAdmin());
         assertNotNull(actual);
     }
 
     @Test
-    public void createShouldSaveCreatedUser() throws Exception {
-        User expected = createTestNewUser();
+    public void createShouldSaveCreatedUserWithRoleAdmin() throws Exception {
+        User expected = createTestNewAdmin();
         Long generatedId = userRepository.create(expected);
         expected.setUserId(generatedId);
         User actual = userRepository.getById(generatedId).get();
+        expected.setPassword(null);
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void createShouldSaveCreatedUserWithRoleSeller() throws Exception {
+        User expected = createTestNewCustomer();
+        Long generatedId = userRepository.create(expected);
+        expected.setUserId(generatedId);
+        User actual = userRepository.getById(generatedId).get();
+        expected.setPassword(null);
 
         assertEquals(actual, expected);
     }
