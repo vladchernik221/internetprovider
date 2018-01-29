@@ -38,7 +38,7 @@ CREATE TABLE `legal_entity_client_information` (
 CREATE TABLE `contract` (
   `contract_id`                        INT UNSIGNED                 NOT NULL AUTO_INCREMENT,
   `dissolved`                          BIT(1)                       NOT NULL DEFAULT 0,
-  `client_type`                        ENUM ('INDIVIDUAL', 'LEGAL') NOT NULL,
+  `client_type`                        SET ('INDIVIDUAL', 'LEGAL') NOT NULL,
   `conclude_date`                      DATETIME                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `dissolve_date`                      DATETIME,
   `legal_entity_client_information_id` INT UNSIGNED                 NULL,
@@ -93,7 +93,7 @@ CREATE INDEX `fk_account_contract_annex_idx`
 
 CREATE TABLE `transaction` (
   `transaction_id`    INT UNSIGNED                 NOT NULL AUTO_INCREMENT,
-  `type`              ENUM ('WRITE_OFF', 'REFILL') NOT NULL,
+  `type`              SET ('WRITE_OFF', 'REFILL') NOT NULL,
   `amount`            DECIMAL(15, 2)               NOT NULL,
   `date`              DATETIME                     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `contract_annex_id` INT UNSIGNED                 NOT NULL,
@@ -129,18 +129,18 @@ CREATE TABLE `tariff_plan_has_discount` (
   REFERENCES `tariff_plan` (`tariff_plan_id`)
 );
 
-CREATE INDEX `fk_discount_has_tariff_plan_tariff_plan_idx`
+CREATE INDEX `fk_tariff_plan_has_discount_tariff_plan_idx`
   ON `tariff_plan_has_discount` (`tariff_plan_id`);
-CREATE INDEX `fk_discount_has_tariff_plan_discount_idx`
+CREATE INDEX `fk_tariff_plan_has_discount_discount_idx`
   ON `tariff_plan_has_discount` (`discount_id`);
 
 CREATE TABLE `user` (
-  `user_id`     INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `login`       VARCHAR(45)  NOT NULL,
-  `password`    VARCHAR(45)  NULL,
-  `role`        ENUM ('ADMIN', 'SELLER', 'CUSTOMER'),
-  `blocked`     BIT(1)       NOT NULL DEFAULT 0,
-  `contract_id` INT UNSIGNED NULL,
+  `user_id`     INT UNSIGNED                         NOT NULL AUTO_INCREMENT,
+  `login`       VARCHAR(45)                          NOT NULL,
+  `password`    VARCHAR(45)                          NOT NULL,
+  `role`        SET ('ADMIN', 'SELLER', 'CUSTOMER') NOT NULL,
+  `blocked`     BIT(1)                               NOT NULL DEFAULT 0,
+  `contract_id` INT UNSIGNED                         NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE INDEX `login_UNIQUE` (`login`),
   CONSTRAINT `fk_user_contract`

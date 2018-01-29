@@ -1,4 +1,4 @@
-package test.com.chernik.util;
+package test.com.chernik.internetprovider.util;
 
 import com.chernik.internetprovider.context.ContextInitializer;
 

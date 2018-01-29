@@ -6,7 +6,7 @@ import com.chernik.internetprovider.persistence.entity.ContractAnnex;
 import com.chernik.internetprovider.persistence.repository.AccountRepository;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import test.com.chernik.util.RepositoryIntegrationTest;
+import test.com.chernik.internetprovider.util.RepositoryIntegrationTest;
 
 import java.math.BigDecimal;
 

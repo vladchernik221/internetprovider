@@ -8,7 +8,7 @@ import com.chernik.internetprovider.persistence.repository.ContractAnnexHasServi
 import com.chernik.internetprovider.persistence.repository.ServiceRepository;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import test.com.chernik.util.RepositoryIntegrationTest;
+import test.com.chernik.internetprovider.util.RepositoryIntegrationTest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

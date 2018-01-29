@@ -78,11 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
     private PreparedStatement createStatementForInserting(Connection connection, User user) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CREATE_USER, Statement.RETURN_GENERATED_KEYS);
         statement.setString(1, user.getLogin());
-        if (user.getPassword() != null) {
-            statement.setString(2, user.getPassword());
-        } else {
-            statement.setNull(2, Types.VARCHAR);
-        }
+        statement.setString(2, user.getPassword());
         statement.setString(3, user.getUserRole().toString());
         if (user.getContract() != null) {
             statement.setLong(4, user.getContract().getContractId());

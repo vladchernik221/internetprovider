@@ -5,7 +5,7 @@ import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.persistence.repository.ContractRepository;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import test.com.chernik.util.RepositoryIntegrationTest;
+import test.com.chernik.internetprovider.util.RepositoryIntegrationTest;
 
 import java.sql.Date;
 

@@ -5,7 +5,7 @@ import com.chernik.internetprovider.persistence.entity.IndividualClientInformati
 import com.chernik.internetprovider.persistence.repository.IndividualClientInformationRepository;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import test.com.chernik.util.RepositoryIntegrationTest;
+import test.com.chernik.internetprovider.util.RepositoryIntegrationTest;
 
 import static org.testng.Assert.*;
 

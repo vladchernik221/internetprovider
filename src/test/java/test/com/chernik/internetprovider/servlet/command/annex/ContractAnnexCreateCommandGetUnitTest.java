@@ -1,5 +1,6 @@
 package test.com.chernik.internetprovider.servlet.command.annex;
 
+import com.chernik.internetprovider.exception.EntityNotFoundException;
 import com.chernik.internetprovider.persistence.entity.TariffPlan;
 import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.service.TariffPlanService;
@@ -7,7 +8,7 @@ import com.chernik.internetprovider.servlet.command.impl.annex.ContractAnnexCrea
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import test.com.chernik.util.CommandUnitTest;
+import test.com.chernik.internetprovider.util.CommandUnitTest;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +42,12 @@ public class ContractAnnexCreateCommandGetUnitTest extends CommandUnitTest {
         when(requestMock.getRequestURI()).thenReturn("/contract/5/annex/new");
         when(contractServiceMock.existById(anyLong())).thenReturn(true);
         when(tariffPlanServiceMock.getAllNotArchived()).thenReturn(tariffPlanList);
+    }
+
+    @Test(expectedExceptions = EntityNotFoundException.class)
+    public void executeShouldThrowExceptionWhenContractDoesNotExist() throws Exception {
+        when(contractServiceMock.existById(anyLong())).thenReturn(false);
+        command.execute(requestMock, responseMock);
     }
 
     @Test
