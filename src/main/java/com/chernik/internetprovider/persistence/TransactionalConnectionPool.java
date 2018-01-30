@@ -2,6 +2,7 @@ package com.chernik.internetprovider.persistence;
 
 import com.chernik.internetprovider.context.BeforeDestroy;
 import com.chernik.internetprovider.context.Component;
+import com.chernik.internetprovider.context.TransactionManager;
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
 

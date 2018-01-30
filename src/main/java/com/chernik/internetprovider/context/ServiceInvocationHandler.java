@@ -1,16 +1,14 @@
 package com.chernik.internetprovider.context;
 
-import com.chernik.internetprovider.persistence.TransactionalConnectionPool;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
 public class ServiceInvocationHandler implements InvocationHandler {
-    private TransactionalConnectionPool transactionalConnectionPool;
+    private TransactionManager transactionManager;
     private Object service;
 
-    ServiceInvocationHandler(TransactionalConnectionPool transactionalConnectionPool, Object service) {
-        this.transactionalConnectionPool = transactionalConnectionPool;
+    ServiceInvocationHandler(TransactionManager transactionManager, Object service) {
+        this.transactionManager = transactionManager;
         this.service = service;
     }
 
@@ -40,12 +38,12 @@ public class ServiceInvocationHandler implements InvocationHandler {
     private Object invokeTransactional(Method method, Object[] args) throws Throwable {
         Object returnObject;
 
-        transactionalConnectionPool.openTransaction();
+        transactionManager.openTransaction();
         try {
             returnObject = method.invoke(service, args);
-            transactionalConnectionPool.commit();
+            transactionManager.commit();
         } catch (Throwable th) {
-            transactionalConnectionPool.rollback();
+            transactionManager.rollback();
             throw th.getCause();
         }
 

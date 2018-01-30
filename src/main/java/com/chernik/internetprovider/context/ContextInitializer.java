@@ -1,8 +1,6 @@
 package com.chernik.internetprovider.context;
 
 import com.chernik.internetprovider.exception.ContextInitializationException;
-import com.chernik.internetprovider.persistence.TransactionManager;
-import com.chernik.internetprovider.persistence.TransactionalConnectionPool;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,9 +29,6 @@ import java.util.*;
 public class ContextInitializer {
     private static final Logger LOGGER = LogManager.getLogger(ContextInitializer.class);
 
-    /**
-     * Uses for working with Java Reflection API.
-     */
     private Reflections ref = new Reflections();
 
     /**
@@ -101,7 +96,7 @@ public class ContextInitializer {
         long startTime = System.currentTimeMillis();
         initComponents(Component.class);
         initComponents(Repository.class);
-        initProxyServices(Service.class);
+        initProxyServices();
         initComponents(HttpRequestProcessor.class);
         autowireComponents();
         LOGGER.log(Level.DEBUG, "Start after create methods");
@@ -110,9 +105,14 @@ public class ContextInitializer {
         LOGGER.log(Level.INFO, "Context was initialize in {} milliseconds", stopTime - startTime);
     }
 
-    private void initProxyServices(Class<Service> annotation) {
-        LOGGER.log(Level.TRACE, "Search class with annotation {} for creating proxy", annotation);
-        ref.getTypesAnnotatedWith(annotation)
+    /**
+     * Create proxy of components annotated as <code>Service</code>. Search all classes with specified
+     * {@link Service}, create them instances, search all fields of this component annotated as {@link Autowired} and
+     * all methods of life cycle.
+     */
+    private void initProxyServices() {
+        LOGGER.log(Level.TRACE, "Search class with annotation {} for creating proxy", Service.class);
+        ref.getTypesAnnotatedWith(Service.class)
                 .forEach(clazz -> {
                     Object component = createInstance(clazz);
                     addAutowireField(clazz, component);
@@ -122,9 +122,16 @@ public class ContextInitializer {
                 });
     }
 
+    /**
+     * Create proxy of all services for transaction support.
+     *
+     * @param clazz     specify class, proxy of that should be created.
+     * @param component object of class which will be proxying.
+     * @return created proxy of <code>component</code>
+     */
     private Object createProxyOfClass(Class<?> clazz, Object component) {
         Class<?> anInterface = clazz.getInterfaces()[0];
-        ServiceInvocationHandler serviceInvocationHandler = new ServiceInvocationHandler((TransactionalConnectionPool) getComponent(TransactionManager.class), component);
+        ServiceInvocationHandler serviceInvocationHandler = new ServiceInvocationHandler(getComponent(TransactionManager.class), component);
         return Proxy.newProxyInstance(anInterface.getClassLoader(), new Class[]{anInterface}, serviceInvocationHandler);
     }
 
@@ -226,7 +233,7 @@ public class ContextInitializer {
      * Inject appropriate instances of components to fields from {@link #withAutowired} list. Created components are got
      * from {@link #components} map.
      *
-     * @throws RuntimeException if target field is not accessible.
+     * @throws RuntimeException if target field have not setter or setter is not accessible.
      */
     private void autowireComponents() {
         LOGGER.log(Level.TRACE, "Autowiring components to fields");

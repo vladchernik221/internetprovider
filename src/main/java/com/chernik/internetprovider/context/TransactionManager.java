@@ -1,4 +1,4 @@
-package com.chernik.internetprovider.persistence;
+package com.chernik.internetprovider.context;
 
 import com.chernik.internetprovider.exception.DatabaseException;
 import com.chernik.internetprovider.exception.TimeOutException;
