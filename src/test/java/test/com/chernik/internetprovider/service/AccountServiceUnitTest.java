@@ -73,10 +73,10 @@ public class AccountServiceUnitTest {
         accountService.getById(5L, 3, createTestAdmin());
     }
 
-    @Test(expectedExceptions = AccessDeniedException.class)
+    @Test(expectedExceptions = EntityNotFoundException.class)
     public void getByIdShouldThrowExceptionIfUserIsNotOwner() throws Exception {
         when(accountRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(false);
-        accountService.getById(5L, 3, createTestAdmin());
+        accountService.getById(5L, 3, createTestCustomer());
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)

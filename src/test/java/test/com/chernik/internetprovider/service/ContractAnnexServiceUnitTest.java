@@ -157,10 +157,10 @@ public class ContractAnnexServiceUnitTest {
         contractAnnexService.getById(5L, createTestAdmin());
     }
 
-    @Test(expectedExceptions = AccessDeniedException.class)
+    @Test(expectedExceptions = EntityNotFoundException.class)
     public void getByIdShouldThrowExceptionIfUserIsNotOwner() throws Exception {
         when(contractAnnexRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(false);
-        contractAnnexService.getById(5L, createTestAdmin());
+        contractAnnexService.getById(5L, createTestCustomer());
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)

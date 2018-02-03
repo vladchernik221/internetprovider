@@ -218,10 +218,10 @@ public class ContractServiceUnitTest {
         contractService.getByIdOrThrow(5L, createTestAdmin());
     }
 
-    @Test(expectedExceptions = AccessDeniedException.class)
+    @Test(expectedExceptions = EntityNotFoundException.class)
     public void getByIdShouldThrowExceptionIfUserIsNotOwner() throws Exception {
         when(contractRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(false);
-        contractService.getByIdOrThrow(5L, createTestAdmin());
+        contractService.getByIdOrThrow(5L, createTestCustomer());
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
