@@ -150,4 +150,15 @@ public class ContractAnnexRepositoryIntegrationTest extends RepositoryIntegratio
 
         assertTrue(contractAnnex.getCanceled());
     }
+
+
+    @Test
+    public void isUserOwnerShouldReturnTrueWhenUserIsOwnerOfContractAnnex() throws Exception {
+        assertTrue(contractAnnexRepository.isUserOwner(1L, 1L));
+    }
+
+    @Test
+    public void isUserOwnerWithIdShouldReturnFalseWhenUserIsNotOwnerOfContractAnnex() throws Exception {
+        assertFalse(contractAnnexRepository.isUserOwner(1L, 100L));
+    }
 }

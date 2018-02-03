@@ -74,4 +74,14 @@ public class AccountRepositoryIntegrationTest extends RepositoryIntegrationTest 
         Account actual = accountRepository.getById(1L).get();
         assertEquals(actual, expected);
     }
+
+    @Test
+    public void isUserOwnerShouldReturnTrueWhenUserIsOwnerOfAccount() throws Exception {
+        assertTrue(accountRepository.isUserOwner(1L, 1L));
+    }
+
+    @Test
+    public void isUserOwnerShouldReturnTrueWhenUserIsNotOwnerOfAccount() throws Exception {
+        assertFalse(accountRepository.isUserOwner(1L, 100L));
+    }
 }

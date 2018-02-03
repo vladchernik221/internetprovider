@@ -5,9 +5,7 @@ import com.chernik.internetprovider.context.Service;
 import com.chernik.internetprovider.exception.*;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
-import com.chernik.internetprovider.persistence.entity.Contract;
-import com.chernik.internetprovider.persistence.entity.ContractAnnex;
-import com.chernik.internetprovider.persistence.entity.TariffPlan;
+import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.persistence.repository.ContractAnnexRepository;
 import com.chernik.internetprovider.service.ContractAnnexService;
 import com.chernik.internetprovider.service.ContractService;
@@ -41,12 +39,12 @@ public class ContractAnnexServiceImpl implements ContractAnnexService {
 
 
     @Override
-    public Long create(ContractAnnex contractAnnex) throws BaseException {
+    public Long create(ContractAnnex contractAnnex, User user) throws BaseException {
         if (!tariffPlanService.existWithId(contractAnnex.getTariffPlan().getTariffPlanId())) {
             throw new EntityNotFoundException(String.format("Tariff plan with ID %d was not found.", contractAnnex.getTariffPlan().getTariffPlanId()));
         }
 
-        Contract contract = contractService.getByIdOrThrow(contractAnnex.getContract().getContractId());
+        Contract contract = contractService.getByIdOrThrow(contractAnnex.getContract().getContractId(), user);
         if (contract.getDissolved()) {
             throw new UnableSaveEntityException(String.format("Contract with ID %d already dissolved. It's impossible to add annex to dissolved contract.", contractAnnex.getContract().getContractId()));
         }
@@ -70,7 +68,13 @@ public class ContractAnnexServiceImpl implements ContractAnnexService {
     }
 
     @Override
-    public ContractAnnex getById(Long id) throws BaseException {
+    public ContractAnnex getById(Long id, User user) throws BaseException {
+        if (user.getUserRole() == UserRole.ADMIN) {
+            throw new AccessDeniedException("Access denied");
+        } else if (user.getUserRole() == UserRole.CUSTOMER && !contractAnnexRepository.isUserOwner(id, user.getUserId())) {
+            throw new EntityNotFoundException(String.format("Contract annex with id=%d does not exist", id));
+        }
+
         Optional<ContractAnnex> contractAnnex = contractAnnexRepository.getById(id);
         if (!contractAnnex.isPresent()) {
             throw new EntityNotFoundException(String.format("Contract annex with id=%d does not exist", id));

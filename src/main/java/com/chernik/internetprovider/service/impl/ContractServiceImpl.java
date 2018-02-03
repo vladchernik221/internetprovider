@@ -3,10 +3,7 @@ package com.chernik.internetprovider.service.impl;
 import com.chernik.internetprovider.context.Autowired;
 import com.chernik.internetprovider.context.Service;
 import com.chernik.internetprovider.context.Transactional;
-import com.chernik.internetprovider.exception.DatabaseException;
-import com.chernik.internetprovider.exception.EntityNotFoundException;
-import com.chernik.internetprovider.exception.TimeOutException;
-import com.chernik.internetprovider.exception.UnableSaveEntityException;
+import com.chernik.internetprovider.exception.*;
 import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.persistence.repository.ContractRepository;
 import com.chernik.internetprovider.service.ContractService;
@@ -108,7 +105,13 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public Contract getByIdOrThrow(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException {
+    public Contract getByIdOrThrow(Long id, User user) throws DatabaseException, TimeOutException, EntityNotFoundException, AccessDeniedException {
+        if (user.getUserRole() == UserRole.ADMIN) {
+            throw new AccessDeniedException("Access denied");
+        } else if (user.getUserRole() == UserRole.CUSTOMER && !contractRepository.isUserOwner(id, user.getUserId())) {
+            throw new EntityNotFoundException(String.format("Contract with id %s does not exist", id));
+        }
+
         Contract contract = getById(id);
         if (contract == null) {
             throw new EntityNotFoundException(String.format("Contract with id %s does not exist", id));

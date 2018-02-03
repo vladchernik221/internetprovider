@@ -1,5 +1,6 @@
 package test.com.chernik.internetprovider.service;
 
+import com.chernik.internetprovider.exception.AccessDeniedException;
 import com.chernik.internetprovider.exception.EntityNotFoundException;
 import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.entity.*;
@@ -48,12 +49,34 @@ public class ContractServiceUnitTest {
         reset(contractService, contractRepositoryMock, individualClientInformationServiceMock, legalEntityClientInformationServiceMock, userServiceMock);
     }
 
+
+    private User createTestAdmin() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.ADMIN);
+        return user;
+    }
+
+    private User createTestSeller() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.SELLER);
+        return user;
+    }
+
+    private User createTestCustomer() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.CUSTOMER);
+        return user;
+    }
+
     @Test(expectedExceptions = UnableSaveEntityException.class)
     public void createShouldThrowExceptionWhenClientAlreadyHasNotDissolvedContract() throws Exception {
         when(contractRepositoryMock.existNotDissolvedByClientInformation(any(Contract.class))).thenReturn(true);
 
         Contract contract = new Contract();
-        contractService.create(contract,"password");
+        contractService.create(contract, "password");
         verify(contractRepositoryMock).existNotDissolvedByClientInformation(contract);
     }
 
@@ -190,12 +213,31 @@ public class ContractServiceUnitTest {
         verify(legalEntityClientInformationServiceMock).getById(15L);
     }
 
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void getByIdShouldThrowExceptionIfUserHasRoleAdmin() throws Exception {
+        contractService.getByIdOrThrow(5L, createTestAdmin());
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void getByIdShouldThrowExceptionIfUserIsNotOwner() throws Exception {
+        when(contractRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(false);
+        contractService.getByIdOrThrow(5L, createTestAdmin());
+    }
+
+    @Test(expectedExceptions = EntityNotFoundException.class)
+    public void getByIdShouldThrowExceptionWhenAccountDoesNotExist() throws Exception {
+        when(contractRepositoryMock.getById(anyLong())).thenReturn(Optional.empty());
+        when(contractRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(true);
+
+        contractService.getByIdOrThrow(5L, createTestCustomer());
+    }
+
     @Test
     public void getByIdOrThrowShouldReturnContractWhenContractExists() throws Exception {
         Contract contract = new Contract();
         doReturn(contract).when(contractService).getById(anyLong());
 
-        Contract actualContract = contractService.getByIdOrThrow(5L);
+        Contract actualContract = contractService.getByIdOrThrow(5L, createTestSeller());
         assertSame(actualContract, contract);
         verify(contractService).getById(5L);
     }
@@ -203,7 +245,8 @@ public class ContractServiceUnitTest {
     @Test(expectedExceptions = EntityNotFoundException.class)
     public void getByIdOrThrowShouldThrowExceptionWhenContractDOesNotExist() throws Exception {
         doReturn(null).when(contractService).getById(anyLong());
-        contractService.getByIdOrThrow(5L);
+        when(contractRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(true);
+        contractService.getByIdOrThrow(5L, createTestSeller());
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)

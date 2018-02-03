@@ -1,12 +1,11 @@
 package test.com.chernik.internetprovider.service;
 
+import com.chernik.internetprovider.exception.AccessDeniedException;
 import com.chernik.internetprovider.exception.EntityNotFoundException;
 import com.chernik.internetprovider.exception.UnableSaveEntityException;
 import com.chernik.internetprovider.persistence.Page;
 import com.chernik.internetprovider.persistence.Pageable;
-import com.chernik.internetprovider.persistence.entity.Contract;
-import com.chernik.internetprovider.persistence.entity.ContractAnnex;
-import com.chernik.internetprovider.persistence.entity.TariffPlan;
+import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.persistence.repository.ContractAnnexRepository;
 import com.chernik.internetprovider.service.ContractService;
 import com.chernik.internetprovider.service.TariffPlanService;
@@ -48,19 +47,40 @@ public class ContractAnnexServiceUnitTest {
         reset(contractAnnexRepositoryMock, tariffPlanServiceMock, contractServiceMock);
     }
 
+    private User createTestAdmin() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.ADMIN);
+        return user;
+    }
+
+    private User createTestSeller() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.SELLER);
+        return user;
+    }
+
+    private User createTestCustomer() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.CUSTOMER);
+        return user;
+    }
+
     @Test(expectedExceptions = EntityNotFoundException.class)
     public void createShouldThrowExceptionWhenTariffPlanDoesNotExist() throws Exception {
         when(tariffPlanServiceMock.existWithId(anyLong())).thenReturn(false);
 
-        contractAnnexService.create(createTestContractAnnex());
+        contractAnnexService.create(createTestContractAnnex(), createTestSeller());
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
     public void createShouldThrowExceptionWhenContractDoesNotExist() throws Exception {
         when(tariffPlanServiceMock.existWithId(anyLong())).thenReturn(true);
-        when(contractServiceMock.getByIdOrThrow(anyLong())).thenThrow(EntityNotFoundException.class);
+        when(contractServiceMock.getByIdOrThrow(anyLong(), any(User.class))).thenThrow(EntityNotFoundException.class);
 
-        contractAnnexService.create(createTestContractAnnex());
+        contractAnnexService.create(createTestContractAnnex(), createTestSeller());
     }
 
     @Test(expectedExceptions = UnableSaveEntityException.class)
@@ -68,23 +88,24 @@ public class ContractAnnexServiceUnitTest {
         Contract contract = new Contract();
         contract.setDissolved(true);
         when(tariffPlanServiceMock.existWithId(anyLong())).thenReturn(true);
-        when(contractServiceMock.getByIdOrThrow(anyLong())).thenReturn(contract);
+        when(contractServiceMock.getByIdOrThrow(anyLong(), any(User.class))).thenReturn(contract);
 
-        contractAnnexService.create(createTestContractAnnex());
+        contractAnnexService.create(createTestContractAnnex(), createTestSeller());
     }
 
     @Test
     public void createShouldSaveContractAnnex() throws Exception {
         Contract contract = new Contract();
         contract.setDissolved(false);
+        User user = createTestSeller();
         when(tariffPlanServiceMock.existWithId(anyLong())).thenReturn(true);
-        when(contractServiceMock.getByIdOrThrow(anyLong())).thenReturn(contract);
+        when(contractServiceMock.getByIdOrThrow(anyLong(), any(User.class))).thenReturn(contract);
 
         ContractAnnex contractAnnex = createTestContractAnnex();
-        contractAnnexService.create(contractAnnex);
+        contractAnnexService.create(contractAnnex, user);
 
         verify(tariffPlanServiceMock).existWithId(5L);
-        verify(contractServiceMock).getByIdOrThrow(15L);
+        verify(contractServiceMock).getByIdOrThrow(15L, user);
         verify(contractAnnexRepositoryMock).create(contractAnnex);
     }
 
@@ -131,21 +152,42 @@ public class ContractAnnexServiceUnitTest {
         assertEquals(contractAnnexPage.getData().stream().map(ContractAnnex::getTariffPlan).collect(Collectors.toList()), tariffPlanList);
     }
 
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void getByIdShouldThrowExceptionIfUserHasRoleAdmin() throws Exception {
+        contractAnnexService.getById(5L, createTestAdmin());
+    }
+
+    @Test(expectedExceptions = AccessDeniedException.class)
+    public void getByIdShouldThrowExceptionIfUserIsNotOwner() throws Exception {
+        when(contractAnnexRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(false);
+        contractAnnexService.getById(5L, createTestAdmin());
+    }
+
+    @Test(expectedExceptions = EntityNotFoundException.class)
+    public void getByIdShouldThrowExceptionWhenAccountDoesNotExist() throws Exception {
+        when(contractAnnexRepositoryMock.getById(anyLong())).thenReturn(Optional.empty());
+        when(contractAnnexRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(true);
+
+        contractAnnexService.getById(5L, createTestCustomer());
+    }
+
     @Test(expectedExceptions = EntityNotFoundException.class)
     public void getByIdShouldThrowExceptionWhenContractAnnexDoesNotExist() throws Exception {
         when(contractAnnexRepositoryMock.getById(anyLong())).thenReturn(Optional.empty());
 
-        contractAnnexService.getById(25L);
+        contractAnnexService.getById(25L, createTestSeller());
     }
 
     @Test
     public void getByIdShouldReturnContractAnnexWhenContractAnnexExists() throws Exception {
         ContractAnnex contractAnnex = createTestContractAnnex();
         when(contractAnnexRepositoryMock.getById(anyLong())).thenReturn(Optional.of(contractAnnex));
+        when(contractAnnexRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(true);
 
-        ContractAnnex actualContractAnnex = contractAnnexService.getById(25L);
+        ContractAnnex actualContractAnnex = contractAnnexService.getById(25L, createTestCustomer());
         assertSame(actualContractAnnex, contractAnnex);
         verify(contractAnnexRepositoryMock).getById(25L);
+        verify(contractAnnexRepositoryMock).isUserOwner(25L, 1L);
     }
 
     @Test
@@ -154,10 +196,13 @@ public class ContractAnnexServiceUnitTest {
         TariffPlan tariffPlan = mock(TariffPlan.class);
         when(contractAnnexRepositoryMock.getById(anyLong())).thenReturn(Optional.of(contractAnnex));
         when(tariffPlanServiceMock.getById(anyLong())).thenReturn(tariffPlan);
+        when(contractAnnexRepositoryMock.isUserOwner(anyLong(), anyLong())).thenReturn(true);
 
-        ContractAnnex actualContractAnnex = contractAnnexService.getById(25L);
+
+        ContractAnnex actualContractAnnex = contractAnnexService.getById(25L, createTestCustomer());
         assertSame(actualContractAnnex.getTariffPlan(), tariffPlan);
         verify(tariffPlanServiceMock).getById(5L);
+        verify(contractAnnexRepositoryMock).isUserOwner(25L, 1L);
     }
 
     @Test(expectedExceptions = EntityNotFoundException.class)
@@ -212,7 +257,7 @@ public class ContractAnnexServiceUnitTest {
     private List<ContractAnnex> createTestContractAnnexList() {
         List<ContractAnnex> contractAnnexList = new ArrayList<>();
         ContractAnnex contractAnnex;
-        for(long id = 1L; id < 4L; id++) {
+        for (long id = 1L; id < 4L; id++) {
             contractAnnex = new ContractAnnex();
             contractAnnex.setTariffPlan(new TariffPlan(id));
             contractAnnexList.add(contractAnnex);

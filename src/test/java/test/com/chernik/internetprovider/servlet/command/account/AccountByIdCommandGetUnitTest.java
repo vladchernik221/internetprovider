@@ -1,6 +1,7 @@
 package test.com.chernik.internetprovider.servlet.command.account;
 
 import com.chernik.internetprovider.persistence.entity.Account;
+import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.AccountService;
 import com.chernik.internetprovider.servlet.command.impl.account.AccountByIdCommandGet;
 import com.chernik.internetprovider.servlet.mapper.BaseMapper;
@@ -14,6 +15,7 @@ import static org.mockito.Mockito.*;
 public class AccountByIdCommandGetUnitTest extends CommandUnitTest {
     private AccountByIdCommandGet command;
     private AccountService accountServiceMock;
+    private User testUser = new User();
 
     private Account account;
 
@@ -35,7 +37,8 @@ public class AccountByIdCommandGetUnitTest extends CommandUnitTest {
         super.resetMocks();
         when(requestMock.getRequestURI()).thenReturn("/contract/annex/5/account");
         when(requestMock.getParameter("page")).thenReturn("10");
-        when(accountServiceMock.getById(anyLong(), anyInt())).thenReturn(account);
+        when(accountServiceMock.getById(anyLong(), anyInt(), any())).thenReturn(account);
+        when(sessionMock.getAttribute("user")).thenReturn(testUser);
     }
 
     @Test
@@ -43,14 +46,14 @@ public class AccountByIdCommandGetUnitTest extends CommandUnitTest {
         when(requestMock.getParameter("page")).thenReturn(null);
 
         command.execute(requestMock, responseMock);
-        verify(accountServiceMock).getById(5L, 0);
+        verify(accountServiceMock).getById(5L, 0, testUser);
         verify(requestMock).setAttribute("account", account);
     }
 
     @Test
     public void executeShouldGetAccountWithSpecifiedTransactionsPageWhenPageIsSpecified() throws Exception {
         command.execute(requestMock, responseMock);
-        verify(accountServiceMock).getById(5L, 9);
+        verify(accountServiceMock).getById(5L, 9, testUser);
         verify(requestMock).setAttribute("account", account);
     }
 }

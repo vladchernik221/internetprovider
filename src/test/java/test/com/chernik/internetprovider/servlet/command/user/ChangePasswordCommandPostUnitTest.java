@@ -1,5 +1,6 @@
 package test.com.chernik.internetprovider.servlet.command.user;
 
+import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.service.UserService;
 import com.chernik.internetprovider.servlet.command.impl.user.ChangePasswordCommandPost;
 import com.chernik.internetprovider.servlet.mapper.BaseMapper;
@@ -13,6 +14,7 @@ import static org.mockito.Mockito.*;
 public class ChangePasswordCommandPostUnitTest extends CommandUnitTest {
     private ChangePasswordCommandPost command;
     private UserService userServiceMock;
+    private User testUser = new User();
 
     @BeforeClass
     public void init() {
@@ -29,11 +31,12 @@ public class ChangePasswordCommandPostUnitTest extends CommandUnitTest {
         super.resetMocks();
         when(requestMock.getRequestURI()).thenReturn("/user/5/password");
         when(requestMock.getParameter("newPassword")).thenReturn("new password");
+        when(sessionMock.getAttribute("user")).thenReturn(testUser);
     }
 
     @Test
     public void executeShouldChangePasswordViaService() throws Exception {
         command.execute(requestMock, responseMock);
-        verify(userServiceMock).changePassword(5L, "new password");
+        verify(userServiceMock).changePassword(5L, "new password", testUser);
     }
 }

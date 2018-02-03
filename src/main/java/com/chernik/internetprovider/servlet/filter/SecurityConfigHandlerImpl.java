@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class SecurityConfigHandlerImpl implements SecurityConfigHandler {
+public class SecurityConfigHandlerImpl implements SecurityConfiguration, SecurityConfigHandler {
     private Map<RequestParameter, List<UserRole>> securityConfig = new HashMap<>();
     private List<RequestParameter> bufferPatterns;
     private boolean enable;

@@ -23,7 +23,9 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     private static final String ADD_USED_TRAFFIC = "UPDATE `account` a SET a.used_traffic=a.used_traffic+? WHERE a.contract_annex_id=?";
 
-    private static final  String EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `account` WHERE `contract_annex_id`=?)";
+    private static final String EXISTS_BY_ID = "SELECT EXISTS(SELECT 1 FROM `account` WHERE `contract_annex_id`=?)";
+
+    private static final String IS_USER_OWNER = "SELECT EXISTS(SELECT 1 FROM `contract_annex` ca JOIN `contract` c ON ca.contract_id = c.contract_id JOIN `user` u ON c.contract_id = u.contract_id WHERE ca.contract_annex_id=? AND u.user_id=?)";
 
 
     @Autowired
@@ -76,6 +78,18 @@ public class AccountRepositoryImpl implements AccountRepository {
     private PreparedStatement createStatementForExistsById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_BY_ID);
         statement.setLong(1, id);
+        return statement;
+    }
+
+    @Override
+    public boolean isUserOwner(Long contractAnnexId, Long userId) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(contractAnnexId, userId, this::createStatementForIsUserOwner);
+    }
+
+    private PreparedStatement createStatementForIsUserOwner(Connection connection, Long contractAnnexId, Long userId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(IS_USER_OWNER);
+        statement.setLong(1, contractAnnexId);
+        statement.setLong(2, userId);
         return statement;
     }
 }

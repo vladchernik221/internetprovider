@@ -21,5 +21,5 @@ public interface UserService {
 
     void block(Long id) throws DatabaseException, TimeOutException, EntityNotFoundException;
 
-    void changePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException, EntityNotFoundException;
+    void changePassword(Long userId, String newPassword, User currentUser) throws DatabaseException, TimeOutException, EntityNotFoundException;
 }

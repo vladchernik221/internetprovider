@@ -20,4 +20,6 @@ public interface ContractAnnexRepository {
     void cancel(Long id) throws DatabaseException, TimeOutException;
 
     boolean isCanceled(Long id) throws DatabaseException, TimeOutException;
+
+    boolean isUserOwner(Long contactAnnexId, Long userId) throws DatabaseException, TimeOutException;
 }

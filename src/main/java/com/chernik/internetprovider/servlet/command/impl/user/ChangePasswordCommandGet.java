@@ -1,6 +1,9 @@
 package com.chernik.internetprovider.servlet.command.impl.user;
 
 import com.chernik.internetprovider.context.HttpRequestProcessor;
+import com.chernik.internetprovider.exception.AccessDeniedException;
+import com.chernik.internetprovider.persistence.entity.User;
+import com.chernik.internetprovider.persistence.entity.UserRole;
 import com.chernik.internetprovider.servlet.command.Command;
 import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
@@ -11,6 +14,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @HttpRequestProcessor(uri = "/user/{\\d+}/password", method = RequestType.GET)
@@ -21,12 +25,19 @@ public class ChangePasswordCommandGet implements Command {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String pathParameter = request.getRequestURI().split("/")[2];
-        request.setAttribute("userId", Long.valueOf(pathParameter));
+            throws ServletException, IOException, AccessDeniedException {
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher(CHANGE_PASSWORD_PAGE);
-        LOGGER.log(Level.TRACE, "Forward to page: {}", CHANGE_PASSWORD_PAGE);
-        dispatcher.forward(request, response);
+        String pathParameter = request.getRequestURI().split("/")[2];
+        Long userId = Long.valueOf(pathParameter);
+        if (user.getUserRole() == UserRole.ADMIN || userId.equals(user.getUserId())) {
+            request.setAttribute("userId", userId);
+            RequestDispatcher dispatcher = request.getRequestDispatcher(CHANGE_PASSWORD_PAGE);
+            LOGGER.log(Level.TRACE, "Forward to page: {}", CHANGE_PASSWORD_PAGE);
+            dispatcher.forward(request, response);
+        } else {
+            throw new AccessDeniedException("Access denied");
+        }
     }
 }

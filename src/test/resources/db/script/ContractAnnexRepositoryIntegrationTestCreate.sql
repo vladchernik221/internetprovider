@@ -14,3 +14,5 @@ INSERT INTO `contract_annex` VALUES (1, 'Contract annex address 1', '2018-01-28 
 INSERT INTO `contract_annex` VALUES (2, 'Contract annex address 2', '2018-01-28 00:00:00', 1, 1, 2);
 INSERT INTO `contract_annex` VALUES (3, 'Contract annex address 3', '2018-01-28 00:00:00', 0, 1, 2);
 INSERT INTO `contract_annex` VALUES (4, 'Contract annex address 4', '2018-01-28 00:00:00', 0, 1, 2);
+
+INSERT INTO `user` VALUES (1, 'customer', MD5('test password'), 'CUSTOMER', '\0', 1);

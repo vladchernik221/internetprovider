@@ -1,10 +1,7 @@
 package com.chernik.internetprovider.servlet.filter;
 
-import com.chernik.internetprovider.exception.BaseException;
 import com.chernik.internetprovider.persistence.entity.User;
 import com.chernik.internetprovider.persistence.entity.UserRole;
-import com.chernik.internetprovider.servlet.command.CommandHandler;
-import com.chernik.internetprovider.servlet.command.RequestParameter;
 import com.chernik.internetprovider.servlet.command.RequestType;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -19,12 +16,10 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
     private static final Logger LOGGER = LogManager.getLogger(LoginFilter.class);
     private SecurityConfigHandler securityConfigHandler;
-    private CommandHandler commandHandler;
 
     @Override
     public void init(FilterConfig filterConfig) {
         securityConfigHandler = (SecurityConfigHandler) filterConfig.getServletContext().getAttribute("securityHandler");
-        commandHandler = (CommandHandler) filterConfig.getServletContext().getAttribute("commandHandler");
     }
 
     @Override
@@ -41,15 +36,12 @@ public class LoginFilter implements Filter {
         if (isAvailable) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            try {
-                commandHandler.getCommand(new RequestParameter("403")).execute(request, response);
-            } catch (BaseException e) {
-                LOGGER.log(Level.ERROR, "Error {} does not support", e.getStatusCode());
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Error {} does not support");
-            }
+            LOGGER.log(Level.DEBUG, "Access denied");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access denied");
         }
     }
 
     @Override
-    public void destroy() {}
+    public void destroy() {
+    }
 }

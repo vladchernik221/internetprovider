@@ -32,6 +32,8 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     private static final String HAS_NOT_CANCELED_CONTRACT_ANNEX = "SELECT EXISTS(SELECT 1 FROM `contract_annex` WHERE `contract_id`=? AND `canceled`=0)";
 
+    private static final String IS_USER_OWNER = "SELECT EXISTS(SELECT 1 FROM `contract` c JOIN `user` u ON c.contract_id = u.contract_id WHERE c.contract_id=? AND u.user_id=?)";
+
 
     @Autowired
     private CommonRepository commonRepository;
@@ -158,6 +160,18 @@ public class ContractRepositoryImpl implements ContractRepository {
     private PreparedStatement createStatementForHasCanceledContractAnnex(Connection connection, Long contractId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(HAS_NOT_CANCELED_CONTRACT_ANNEX);
         statement.setLong(1, contractId);
+        return statement;
+    }
+
+    @Override
+    public boolean isUserOwner(Long contractId, Long userId) throws DatabaseException, TimeOutException {
+        return commonRepository.exist(contractId, userId, this::createStatementForIsUserOwner);
+    }
+
+    private PreparedStatement createStatementForIsUserOwner(Connection connection, Long contractId, Long userId) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(IS_USER_OWNER);
+        statement.setLong(1, contractId);
+        statement.setLong(2, userId);
         return statement;
     }
 }

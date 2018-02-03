@@ -177,4 +177,14 @@ public class ContractRepositoryIntegrationTest extends RepositoryIntegrationTest
 
         assertTrue(contract.getDissolved());
     }
+
+    @Test
+    public void isUserOwnerShouldReturnTrueWhenUserIsOwnerOfContract() throws Exception {
+        assertTrue(contractRepository.isUserOwner(1L, 1L));
+    }
+
+    @Test
+    public void isUserOwnerWithIdShouldReturnFalseWhenUserIsNotOwnerOfContract() throws Exception {
+        assertFalse(contractRepository.isUserOwner(1L, 100L));
+    }
 }

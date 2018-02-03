@@ -12,4 +12,6 @@ public interface AccountRepository {
     void addUsedTraffic(Long contractAnnexId, Integer usedTraffic) throws DatabaseException, TimeOutException;
 
     boolean existWithId(Long id) throws DatabaseException, TimeOutException;
+
+    boolean isUserOwner(Long contractAnnexId, Long userId) throws DatabaseException, TimeOutException;
 }

@@ -1,8 +1,6 @@
 package test.com.chernik.internetprovider.servlet.command.annex;
 
-import com.chernik.internetprovider.persistence.entity.Contract;
-import com.chernik.internetprovider.persistence.entity.ContractAnnex;
-import com.chernik.internetprovider.persistence.entity.TariffPlan;
+import com.chernik.internetprovider.persistence.entity.*;
 import com.chernik.internetprovider.service.ContractAnnexService;
 import com.chernik.internetprovider.servlet.command.impl.annex.ContractAnnexCreateCommandPost;
 import com.chernik.internetprovider.servlet.mapper.ContractAnnexMapper;
@@ -20,12 +18,14 @@ import static org.testng.Assert.assertEquals;
 public class ContractAnnexCreateCommandPostUnitTest extends CommandUnitTest {
     private ContractAnnexCreateCommandPost command;
     private ContractAnnexService contractAnnexServiceMock;
+    private User testUser;
 
     private PrintWriter printWriterMock;
 
     @BeforeClass
     public void init() {
         super.init();
+        testUser = createTestUser();
         command = new ContractAnnexCreateCommandPost();
         contractAnnexServiceMock = mock(ContractAnnexService.class);
         command.setContractAnnexService(contractAnnexServiceMock);
@@ -42,7 +42,15 @@ public class ContractAnnexCreateCommandPostUnitTest extends CommandUnitTest {
         when(requestMock.getParameter("address")).thenReturn("Test address 1");
         when(requestMock.getParameter("tariffPlanId")).thenReturn("10");
         when(responseMock.getWriter()).thenReturn(printWriterMock);
-        when(contractAnnexServiceMock.create(any(ContractAnnex.class))).thenReturn(15L);
+        when(contractAnnexServiceMock.create(any(ContractAnnex.class), any(User.class))).thenReturn(15L);
+        when(sessionMock.getAttribute("user")).thenReturn(testUser);
+    }
+
+    private User createTestUser() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.ADMIN);
+        return user;
     }
 
     @Test
@@ -50,7 +58,7 @@ public class ContractAnnexCreateCommandPostUnitTest extends CommandUnitTest {
         command.execute(requestMock, responseMock);
 
         ArgumentCaptor<ContractAnnex> captor = ArgumentCaptor.forClass(ContractAnnex.class);
-        verify(contractAnnexServiceMock).create(captor.capture());
+        verify(contractAnnexServiceMock).create(captor.capture(), eq(testUser));
         assertEquals(captor.getValue(), createTestContractAnnex());
     }
 

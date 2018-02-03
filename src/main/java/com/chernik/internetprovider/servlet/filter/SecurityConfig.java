@@ -8,9 +8,9 @@ import com.chernik.internetprovider.servlet.command.RequestType;
 @Component
 public class SecurityConfig {
     @AfterCreate
-    public void initConfig(SecurityConfigHandlerImpl securityConfigHandlerImpl) {
-        securityConfigHandlerImpl
-                //.enable()
+    public void initConfig(SecurityConfiguration securityConfiguration) {
+        securityConfiguration
+                .enable()
                 .matcher(RequestType.GET, "/contract/{\\d+}", "/contract/{\\d+}/annex", "/contract/annex/{\\d+}", "/contract/annex/{\\d+}/account").withRole(UserRole.CUSTOMER, UserRole.SELLER)
                 .matcher(RequestType.GET, "/contract/new", "/contract", "/contract/{\\d+}/annex/new").withRole(UserRole.SELLER)
                 .matcher(RequestType.POST, "/contract/new", "/contract/{\\d+}/dissolve", "/contract/{\\d+}/annex/new", "/contract/annex/{\\d+}/cancel", "/client/individual", "client/legal").withRole(UserRole.SELLER)

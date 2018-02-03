@@ -36,6 +36,20 @@ public class UserServiceUnitTest {
         reset(userRepositoryMock);
     }
 
+    private User createTestAdmin() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.ADMIN);
+        return user;
+    }
+
+    private User createTestCustomer() {
+        User user = new User();
+        user.setUserId(1L);
+        user.setUserRole(UserRole.CUSTOMER);
+        return user;
+    }
+
     @Test
     public void authenticateShouldReturnUserOptinalByLoginAndPassword() throws Exception {
         Optional<User> user = Optional.of(createTestUser());
@@ -105,16 +119,23 @@ public class UserServiceUnitTest {
     @Test(expectedExceptions = EntityNotFoundException.class)
     public void changePasswordShouldThrowExceptionWhenUserDoesNotExist() throws Exception {
         when(userRepositoryMock.existWithId(anyLong())).thenReturn(false);
-        userService.changePassword(5L, "new test password");
+        userService.changePassword(5L, "new test password", createTestAdmin());
     }
 
     @Test
     public void changePasswordShouldSaveNewPasswordWhenUserExists() throws Exception {
         when(userRepositoryMock.existWithId(anyLong())).thenReturn(true);
 
-        userService.changePassword(5L, "new test password");
+        userService.changePassword(5L, "new test password", createTestAdmin());
         verify(userRepositoryMock).existWithId(5L);
         verify(userRepositoryMock).updatePassword(5L, "new test password");
+    }
+
+    @Test(expectedExceptions = EntityNotFoundException.class)
+    public void changePasswordShouldSaveNewPasswordWhenUserChangePasswordToOtherUser() throws Exception {
+        when(userRepositoryMock.existWithId(anyLong())).thenReturn(true);
+
+        userService.changePassword(5L, "new test password", createTestCustomer());
     }
 
     private User createTestUser() {

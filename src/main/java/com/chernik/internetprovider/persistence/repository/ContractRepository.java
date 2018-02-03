@@ -20,4 +20,6 @@ public interface ContractRepository {
     boolean isDissolved(Long contractId) throws DatabaseException, TimeOutException;
 
     boolean hasNotCanceledContractAnnex(Long contractId) throws DatabaseException, TimeOutException;
+
+    boolean isUserOwner(Long contractId, Long userId) throws DatabaseException, TimeOutException;
 }

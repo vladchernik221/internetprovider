@@ -65,7 +65,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException, EntityNotFoundException {
+    public void changePassword(Long userId, String newPassword, User currentUser) throws DatabaseException, TimeOutException, EntityNotFoundException {
+        UserRole currentUserRole = currentUser.getUserRole();
+        if (currentUserRole == UserRole.CUSTOMER || currentUserRole == UserRole.SELLER) {
+            if (!userId.equals(currentUser.getUserId())) {
+                throw new EntityNotFoundException(String.format("User with id %d was not found", userId));
+            }
+        }
+
         if (!userRepository.existWithId(userId)) {
             throw new EntityNotFoundException(String.format("User with id %d was not found", userId));
         }

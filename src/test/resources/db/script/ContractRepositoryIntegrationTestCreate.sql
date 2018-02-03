@@ -21,3 +21,5 @@ INSERT INTO `tariff_plan` VALUES (1, 'Tariff plan 1', 'Description for tariff pl
 
 INSERT INTO `contract_annex` VALUES (1, 'Contract annex address 1', '2018-01-28 00:00:00', 0, 1, 1);
 INSERT INTO `contract_annex` VALUES (2, 'Contract annex address 2', '2018-01-28 00:00:00', 1, 1, 3);
+
+INSERT INTO `user` VALUES (1, 'customer', MD5('test password'), 'CUSTOMER', '\0', 1);
