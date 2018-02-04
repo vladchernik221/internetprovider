@@ -15,10 +15,11 @@ function send_form(event) {
 }
 
 function validate_form(form) {
-    if(form.elements.newPassword.value !== form.elements.confirmNewPassword.value) {
+    if(form.find("input[name=newPassword]").val() !== form.find("input[name=confirmNewPassword]").val()) {
         $("#modal_message").html("Пароли не совпадают");
         show_modal();
-        form.elements.newPassword.value = form.elements.confirmNewPassword.value = "";
+        form.find("input[name=newPassword]").val("");
+        form.find("input[name=confirmNewPassword]").val("");
         return false;
     }
     return true;

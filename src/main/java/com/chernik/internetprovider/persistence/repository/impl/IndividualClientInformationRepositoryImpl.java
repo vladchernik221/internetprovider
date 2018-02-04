@@ -8,12 +8,17 @@ import com.chernik.internetprovider.persistence.entity.IndividualClientInformati
 import com.chernik.internetprovider.persistence.entityfield.IndividualClientInformationField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.IndividualClientInformationRepository;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Optional;
 
 @Repository
 public class IndividualClientInformationRepositoryImpl implements IndividualClientInformationRepository {
+    private static final Logger LOGGER = LogManager.getLogger(IndividualClientInformationRepositoryImpl.class);
+
 
     private static final String CREATE_INDIVIDUAL_CLIENT_INFORMATION = "INSERT INTO `individual_client_information`(`first_name`, `second_name`, `last_name`, `passport_unique_identification`, `address`, `phone_number`) VALUES(?,?,?,?,?,?)";
 
@@ -34,6 +39,7 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
 
     @Override
     public Long create(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating individual client information: {}", individualClientInformation);
         return commonRepository.create(individualClientInformation, this::createPreparedStatementForInserting);
     }
 
@@ -45,18 +51,53 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         statement.setString(4, individualClientInformation.getPassportUniqueIdentification());
         statement.setString(5, individualClientInformation.getAddress());
         statement.setObject(6, individualClientInformation.getPhoneNumber(), Types.VARCHAR);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public Optional<IndividualClientInformation> getByPassportData(String passportUniqueIdentification) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting individual client information with passport unique ID {}", passportUniqueIdentification);
         return commonRepository.getByParameters(passportUniqueIdentification, this::createPreparedStatementForGettingByPassportData, this::createIndividualClientInformation);
     }
 
     private PreparedStatement createPreparedStatementForGettingByPassportData(Connection connection, String passportUniqueIdentification) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_BY_PASSPORT_DATA);
         statement.setString(1, passportUniqueIdentification);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
+    }
+
+    @Override
+    public void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Updating individual client information: {}", individualClientInformation);
+        commonRepository.executeUpdate(individualClientInformation, this::createStatementForUpdate);
+    }
+
+    private PreparedStatement createStatementForUpdate(Connection connection, IndividualClientInformation individualClientInformation) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_INDIVIDUAL_CLIENT_INFORMATION);
+        statement.setString(1, individualClientInformation.getFirstName());
+        statement.setString(2, individualClientInformation.getSecondName());
+        statement.setString(3, individualClientInformation.getLastName());
+        statement.setString(4, individualClientInformation.getAddress());
+        statement.setObject(5, individualClientInformation.getPhoneNumber(), Types.VARCHAR);
+        statement.setString(6, individualClientInformation.getPassportUniqueIdentification());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
+    }
+
+    @Override
+    public Optional<IndividualClientInformation> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting individual client infornation with ID {}", id);
+        return commonRepository.getByParameters(id, this::createPreparedStatementForGettingByID, this::createIndividualClientInformation);
+    }
+
+
+    private PreparedStatement createPreparedStatementForGettingByID(Connection connection, Long id) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
+        statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -71,35 +112,5 @@ public class IndividualClientInformationRepositoryImpl implements IndividualClie
         String phoneNumber = (String) resultSet.getObject(IndividualClientInformationField.PHONE_NUMBER.toString());
         individualClientInformation.setPhoneNumber(phoneNumber);
         return individualClientInformation;
-    }
-
-
-    @Override
-    public void update(IndividualClientInformation individualClientInformation) throws DatabaseException, TimeOutException {
-        commonRepository.executeUpdate(individualClientInformation, this::createStatementForUpdate);
-    }
-
-    private PreparedStatement createStatementForUpdate(Connection connection, IndividualClientInformation individualClientInformation) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_INDIVIDUAL_CLIENT_INFORMATION);
-        statement.setString(1, individualClientInformation.getFirstName());
-        statement.setString(2, individualClientInformation.getSecondName());
-        statement.setString(3, individualClientInformation.getLastName());
-        statement.setString(4, individualClientInformation.getAddress());
-        statement.setObject(5, individualClientInformation.getPhoneNumber(), Types.VARCHAR);
-        statement.setString(6, individualClientInformation.getPassportUniqueIdentification());
-        return statement;
-    }
-
-
-    @Override
-    public Optional<IndividualClientInformation> getById(Long id) throws DatabaseException, TimeOutException {
-        return commonRepository.getByParameters(id, this::createPreparedStatementForGettingByID, this::createIndividualClientInformation);
-    }
-
-
-    private PreparedStatement createPreparedStatementForGettingByID(Connection connection, Long id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
-        statement.setLong(1, id);
-        return statement;
     }
 }

@@ -59,6 +59,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public Long create(Service service) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating service: {}", service);
         return commonRepository.create(service, this::createPreparedStatementForInserting);
     }
 
@@ -74,6 +75,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public void update(Service service) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Updating service: {}", service);
         commonRepository.executeUpdate(service, this::createPreparedStatementForUpdating);
     }
 
@@ -90,6 +92,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public void archive(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Archiving service with ID {}", id);
         commonRepository.executeUpdate(id, this::createPreparedStatementForArchived);
     }
 
@@ -108,9 +111,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     private PreparedStatement createCountStatement(Connection connection, Boolean archived, Pageable pageable) throws SQLException {
-        LOGGER.log(Level.TRACE, "Create statement for service page count");
-        PreparedStatement statement;
-        statement = archived ? connection.prepareStatement(GET_SERVICE_WITH_ARCHIVED_PAGE_COUNT) :
+        PreparedStatement statement = archived ? connection.prepareStatement(GET_SERVICE_WITH_ARCHIVED_PAGE_COUNT) :
                 connection.prepareStatement(GET_SERVICE_PAGE_COUNT);
         statement.setInt(1, pageable.getPageSize());
         LOGGER.log(Level.TRACE, "Create statement with query: {}", statement);
@@ -118,9 +119,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
     }
 
     private PreparedStatement createPreparedStatementForGetting(Connection connection, Boolean archived, Pageable pageable) throws SQLException {
-        LOGGER.log(Level.TRACE, "Create statement for service page");
-        PreparedStatement statement;
-        statement = archived ? connection.prepareStatement(GET_SERVICE_WITH_ARCHIVED_PAGE) :
+        PreparedStatement statement = archived ? connection.prepareStatement(GET_SERVICE_WITH_ARCHIVED_PAGE) :
                 connection.prepareStatement(GET_SERVICE_PAGE);
         statement.setInt(1, pageable.getPageSize());
         statement.setInt(2, pageable.getPageNumber() * pageable.getPageSize());
@@ -140,6 +139,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public Optional<Service> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting service with ID {}", id);
         return commonRepository.getByParameters(id, this::createPreparedStatementForGettingOne, this::createFullService);
     }
 
@@ -163,6 +163,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public boolean existWithName(String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of service with name {}", name);
         return commonRepository.exist(name, this::createPreparedStatementForExistByName);
     }
 
@@ -176,6 +177,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of service with ID {}", id);
         return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 
@@ -189,6 +191,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
 
     @Override
     public boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check that service with name {} and ID not {} exist", name, id);
         return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
     }
 
@@ -196,12 +199,14 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         PreparedStatement statement = connection.prepareStatement(EXISTS_SERVICE_BY_NAME_AND_NOT_ID);
         statement.setLong(1, id);
         statement.setString(2, name);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public Page<Service> getPageByContractAnnexId(Long id, Pageable pageable) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting page of services for contract annex with ID {}. Page number is {}, page size is {}", id, pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(id, pageable, this::createStatementForGetPageCountByContractAnnexId, this::createStatementForGetPageByContractAnnexId, this::createShortService);
     }
 
@@ -209,6 +214,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         PreparedStatement statement = connection.prepareStatement(GET_BY_CONTRACT_ANNEX_ID_PAGE_COUNT);
         statement.setInt(1, pageable.getPageSize());
         statement.setLong(2, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -217,6 +223,7 @@ public class ServiceRepositoryImpl implements ServiceRepository {
         statement.setLong(1, id);
         statement.setInt(2, pageable.getPageSize());
         statement.setInt(3, pageable.getPageNumber() * pageable.getPageSize());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 }

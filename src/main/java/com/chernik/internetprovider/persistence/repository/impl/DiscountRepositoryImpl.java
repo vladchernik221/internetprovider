@@ -10,6 +10,7 @@ import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.entityfield.DiscountField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.DiscountRepository;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -54,6 +55,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     @Override
     public Long create(Discount discount) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating discount: {}", discount);
         return commonRepository.create(discount, this::createStatementForInserting);
     }
 
@@ -65,12 +67,14 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         statement.setDate(4, discount.getStartDate());
         statement.setDate(5, discount.getEndDate());
         statement.setBoolean(6, discount.getOnlyForNewClient());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public void update(Discount discount) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Updating discount: {}", discount);
         commonRepository.executeUpdate(discount, this::createPreparedStatementForUpdate);
     }
 
@@ -82,18 +86,21 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         statement.setDate(4, discount.getEndDate());
         statement.setBoolean(5, discount.getOnlyForNewClient());
         statement.setLong(6, discount.getDiscountId());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public Page<Discount> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting page of discounts. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(pageable, this::createPreparedStatementForPageCount, this::createPreparedStatementForPage, this::createDiscount);
     }
 
     private PreparedStatement createPreparedStatementForPageCount(Connection connection, Pageable pageable) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_DISCOUNT_PAGE_COUNT);
         statement.setInt(1, pageable.getPageSize());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -101,66 +108,79 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         PreparedStatement statement = connection.prepareStatement(GET_DISCOUNT_PAGE);
         statement.setInt(1, pageable.getPageSize());
         statement.setInt(2, pageable.getPageNumber() * pageable.getPageSize());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public List<Discount> getAll() throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting all discounts");
         return commonRepository.getAll(this::createPreparedStatementForGettingAll, this::createShortDiscount);
     }
 
     private PreparedStatement createPreparedStatementForGettingAll(Connection connection) throws SQLException {
-        return connection.prepareStatement(GET_DISCOUNTS);
+        PreparedStatement statement = connection.prepareStatement(GET_DISCOUNTS);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
     }
 
 
     @Override
     public Optional<Discount> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting discount with ID {}", id);
         return commonRepository.getByParameters(id, this::createStatementForGetting, this::createDiscount);
     }
 
     private PreparedStatement createStatementForGetting(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_DISCOUNT_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public void remove(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Removing discount with ID {}", id);
         commonRepository.executeUpdate(id, this::getPreparedStatementForRemove);
     }
 
     private PreparedStatement getPreparedStatementForRemove(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(REMOVE_DISCOUNT);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of discount with ID {}", id);
         return commonRepository.exist(id, this::createStatementForExistById);
     }
 
     private PreparedStatement createStatementForExistById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public boolean existWithName(String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of discount with name {}", name);
         return commonRepository.exist(name, this::createStatementForExistByName);
     }
 
     private PreparedStatement createStatementForExistByName(Connection connection, String name) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_NAME);
         statement.setString(1, name);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of discount with name {} and ID not {}", name, id);
         return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
     }
 
@@ -168,6 +188,7 @@ public class DiscountRepositoryImpl implements DiscountRepository {
         PreparedStatement statement = connection.prepareStatement(EXISTS_DISCOUNT_BY_NAME_AND_NOT_ID);
         statement.setLong(1, id);
         statement.setString(2, name);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -192,12 +213,14 @@ public class DiscountRepositoryImpl implements DiscountRepository {
 
     @Override
     public List<Discount> getByTariffPlanId(Long tariffPlanId) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting all wiscounts for tariff plan with ID {}", tariffPlanId);
         return commonRepository.getAllByCondition(tariffPlanId, this::createPreparedStatementForGettingAllByTariffPlanId, this::createDiscount);
     }
 
     private PreparedStatement createPreparedStatementForGettingAllByTariffPlanId(Connection connection, Long tariffPlanId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_ALL_BY_TARIFF_PLAN_ID);
         statement.setLong(1, tariffPlanId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 }

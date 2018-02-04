@@ -23,6 +23,7 @@ import java.util.Optional;
 public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
     private static final Logger LOGGER = LogManager.getLogger(ContractAnnexRepositoryImpl.class);
 
+
     private static final String CREATE_CONTRACT_ANNEX = "INSERT INTO `contract_annex`(`address`, `tariff_plan_id`, `contract_id`) VALUES(?,?,?)";
 
     private static final String GET_CONTRACT_ANNEX_PAGE_COUNT = "SELECT CEIL(COUNT(*)/?) FROM `contract_annex` WHERE `contract_id`=?";
@@ -49,6 +50,7 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     @Override
     public Long create(ContractAnnex contractAnnex) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating contract annex {}", contractAnnex);
         return commonRepository.create(contractAnnex, this::createPreparedStatementForInserting);
     }
 
@@ -63,12 +65,11 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     @Override
     public Page<ContractAnnex> getPage(Long contractId, Pageable pageable) throws DatabaseException, TimeOutException {
-        LOGGER.log(Level.TRACE, "Getting page of contract annexes for contract with ID {}. Page number is {}, page size is {}.", contractId, pageable.getPageNumber(), pageable.getPageSize());
+        LOGGER.log(Level.TRACE, "Getting page of contract annexes for contract with ID {}. Page number is {}, page size is {}", contractId, pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(contractId, pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createContractAnnex);
     }
 
     private PreparedStatement createCountStatement(Connection connection, Long contractId, Pageable pageable) throws SQLException {
-        LOGGER.log(Level.TRACE, "Create statement for contract annexes page count");
         PreparedStatement statement = connection.prepareStatement(GET_CONTRACT_ANNEX_PAGE_COUNT);
         statement.setInt(1, pageable.getPageSize());
         statement.setLong(2, contractId);
@@ -77,7 +78,6 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
     }
 
     private PreparedStatement createPreparedStatementForGetting(Connection connection, Long contractId, Pageable pageable) throws SQLException {
-        LOGGER.log(Level.TRACE, "Create statement for contract annexes page");
         PreparedStatement statement = connection.prepareStatement(GET_CONTRACT_ANNEX_PAGE);
         statement.setLong(1, contractId);
         statement.setInt(2, pageable.getPageSize());
@@ -88,12 +88,14 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     @Override
     public Optional<ContractAnnex> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting contract annex with ID {}", id);
         return commonRepository.getByParameters(id, this::createPreparedStatementForGetting, this::createContractAnnex);
     }
 
     private PreparedStatement createPreparedStatementForGetting(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_CONTRACT_ANNEX_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -114,35 +116,40 @@ public class ContractAnnexRepositoryImpl implements ContractAnnexRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of contract annex with ID {}", id);
         return commonRepository.exist(id, this::createStatementForContractAnnexExistById);
     }
 
     private PreparedStatement createStatementForContractAnnexExistById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_CONTRACT_ANNEX_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public void cancel(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Canceling of contract annex with ID {}", id);
         commonRepository.executeUpdate(id, this::createPreparedStatementForCanceling);
     }
 
     private PreparedStatement createPreparedStatementForCanceling(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(CANCEL_CONTRACT_ANNEX);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
-
     @Override
     public boolean isCanceled(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check that contract annex with ID {} is canceled", id);
         return commonRepository.exist(id, this::createStatementForIsCanceled);
     }
 
     private PreparedStatement createStatementForIsCanceled(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(IS_CANCELED);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

@@ -181,4 +181,4 @@ CREATE INDEX `fk_contract_annex_has_service_contract_idx`
   ON `contract_annex_has_service` (`contract_annex_id`);
 
 
-INSERT INTO `user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'ADMIN', '\0', NULL);
+INSERT INTO `user` VALUES (1, 'admin', MD5('Admin221'), 'ADMIN', '\0', NULL);

@@ -24,6 +24,8 @@ public class LocalizationFilter implements Filter {
             session.setAttribute("locale", locale);
         }
 
+        response.setCharacterEncoding("UTF-8");
+
         filterChain.doFilter(request, response);
     }
 

@@ -37,14 +37,17 @@ public class FrontControllerServlet extends HttpServlet {
             Command command = commandHandler.getCommand(parameter);
             command.execute(request, response);
         } catch (UnableSaveEntityException e) {
-            LOGGER.log(Level.WARN, e.getMessage(), e);
+            LOGGER.log(Level.WARN, e.getMessage());
+            LOGGER.log(Level.DEBUG, e.getMessage(), e);
             response.setStatus(e.getStatusCode());
             response.getWriter().write(e.getMessage());
         } catch (BaseException e) {
-            LOGGER.log(Level.ERROR, e.getMessage(), e);
+            LOGGER.log(Level.ERROR, e.getMessage());
+            LOGGER.log(Level.DEBUG, e.getMessage(), e);
             response.sendError(e.getStatusCode(), e.getMessage());
         } catch (Exception e) {
-            LOGGER.log(Level.ERROR, e.getMessage(), e);
+            LOGGER.log(Level.ERROR, e.getMessage());
+            LOGGER.log(Level.DEBUG, e.getMessage(), e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }

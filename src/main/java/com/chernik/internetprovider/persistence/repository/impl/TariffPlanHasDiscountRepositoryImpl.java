@@ -7,6 +7,9 @@ import com.chernik.internetprovider.exception.TimeOutException;
 import com.chernik.internetprovider.persistence.entity.Discount;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.TariffPlanHasDiscountRepository;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,6 +18,8 @@ import java.util.List;
 
 @Repository
 public class TariffPlanHasDiscountRepositoryImpl implements TariffPlanHasDiscountRepository {
+    private static final Logger LOGGER = LogManager.getLogger(TariffPlanHasDiscountRepositoryImpl.class);
+
 
     private static final String CREATE = "INSERT INTO `tariff_plan_has_discount`(`tariff_plan_id`, `discount_id`) VALUES (?,?)";
 
@@ -32,6 +37,7 @@ public class TariffPlanHasDiscountRepositoryImpl implements TariffPlanHasDiscoun
 
     @Override
     public void create(Long tariffPlanId, List<Discount> discounts) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Adding discounts {} to tariff plan with ID {}", discounts, tariffPlanId);
         commonRepository.executeBatch(tariffPlanId, discounts, this::createPreparedStatementForInserting);
     }
 
@@ -42,30 +48,35 @@ public class TariffPlanHasDiscountRepositoryImpl implements TariffPlanHasDiscoun
             statement.setLong(2, discount.getDiscountId());
             statement.addBatch();
         }
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public void remove(Long tariffPlanId) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Removing all discount for tariff plan with ID {}", tariffPlanId);
         commonRepository.executeUpdate(tariffPlanId, this::createPreparedStatementForRemoving);
     }
 
     private PreparedStatement createPreparedStatementForRemoving(Connection connection, Long tariffPlanId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(REMOVE);
         statement.setLong(1, tariffPlanId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public boolean existByTariffPlanId(Long tariffPlanId) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of discounts for tariff plan with ID {}", tariffPlanId);
         return commonRepository.exist(tariffPlanId, this::createPreparedStatementForExistingByTariffPlanId);
     }
 
     private PreparedStatement createPreparedStatementForExistingByTariffPlanId(Connection connection, Long tariffPlanId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXIST_BY_TARIFF_PLAN_ID);
         statement.setLong(1, tariffPlanId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 }

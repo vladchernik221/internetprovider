@@ -59,6 +59,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public Long create(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating tariff plan: {}", tariffPlan);
         return commonRepository.create(tariffPlan, this::createPreparedStatementForInserting);
     }
 
@@ -78,6 +79,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public void update(TariffPlan tariffPlan) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Updating tariff plan: {}", tariffPlan);
         commonRepository.executeUpdate(tariffPlan, this::createPreparedStatementForUpdating);
     }
 
@@ -98,6 +100,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public void archive(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Archiving tariff plan with ID {}", id);
         commonRepository.executeUpdate(id, this::createPreparedStatementForArchived);
     }
 
@@ -111,11 +114,11 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public Page<TariffPlan> getPage(boolean archived, Pageable pageable) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting page of tariff plan with archived status {}. Page number is {}, page size is {}", archived, pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(archived, pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createShortTariffPlan);
     }
 
     private PreparedStatement createCountStatement(Connection connection, Boolean archived, Pageable pageable) throws SQLException {
-        LOGGER.log(Level.TRACE, "Create statement for tariff plan page count");
         PreparedStatement statement;
         statement = archived ? connection.prepareStatement(GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE_COUNT) :
                 connection.prepareStatement(GET_TARIFF_PLANS_PAGE_COUNT);
@@ -125,7 +128,6 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
     }
 
     private PreparedStatement createPreparedStatementForGetting(Connection connection, Boolean archived, Pageable pageable) throws SQLException {
-        LOGGER.log(Level.TRACE, "Create statement for tariff plan page");
         PreparedStatement statement;
         statement = archived ? connection.prepareStatement(GET_TARIFF_PLANS_WITH_ARCHIVED_PAGE) :
                 connection.prepareStatement(GET_TARIFF_PLANS_PAGE);
@@ -153,6 +155,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public Optional<TariffPlan> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting tariff plan with ID {}", id);
         return commonRepository.getByParameters(id, this::createPreparedStatementForGettingOne, this::createFullTariffPlan);
     }
 
@@ -184,6 +187,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public boolean existWithName(String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of tariff plan with name {}", name);
         return commonRepository.exist(name, this::createPreparedStatementForExistByName);
     }
 
@@ -197,6 +201,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of tariff plan with ID {}", id);
         return commonRepository.exist(id, this::createPreparedStatementForExistById);
     }
 
@@ -210,16 +215,20 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
 
     @Override
     public List<TariffPlan> getAllNotArchived() throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting all not archived tariff plans");
         return commonRepository.getAll(this::createStatementForGetAll, this::createShortTariffPlan);
     }
 
     private PreparedStatement createStatementForGetAll(Connection connection) throws SQLException {
-        return connection.prepareStatement(GET_ALL_NOT_ARCHIVED);
+        PreparedStatement statement = connection.prepareStatement(GET_ALL_NOT_ARCHIVED);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
+        return statement;
     }
 
 
     @Override
     public boolean existWithNameAndNotId(Long id, String name) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check that tariff plan with name {} and ID not {} exists", name, id);
         return commonRepository.exist(id, name, this::createStatementForExistByIdAndName);
     }
 
@@ -227,6 +236,7 @@ public class TariffPlanRepositoryImpl implements TariffPlanRepository {
         PreparedStatement statement = connection.prepareStatement(IS_EXIST_TARIFF_PLAN_WITH_NAME_AND_NOT_ID);
         statement.setLong(1, id);
         statement.setString(2, name);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 }

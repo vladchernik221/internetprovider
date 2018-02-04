@@ -8,12 +8,17 @@ import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformat
 import com.chernik.internetprovider.persistence.entityfield.LegalEntityClientInformationField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.LegalEntityClientInformationRepository;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Optional;
 
 @Repository
 public class LegalEntityClientInformationRepositoryImpl implements LegalEntityClientInformationRepository {
+    private static final Logger LOGGER = LogManager.getLogger(LegalEntityClientInformationRepositoryImpl.class);
+
 
     private static final String CREATE_LEGAL_ENTITY_CLIENT_INFORMATION = "INSERT INTO `legal_entity_client_information`(`payer_account_number`, `checking_account`, `name`, `address`, `phone_number`) VALUES(?,?,?,?,?)";
 
@@ -33,6 +38,7 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
 
     @Override
     public Long create(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating legal entityclient information: {}", legalEntityClientInformation);
         return commonRepository.create(legalEntityClientInformation, this::createPreparedStatementForInserting);
     }
 
@@ -43,24 +49,28 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         statement.setString(3, legalEntityClientInformation.getName());
         statement.setString(4, legalEntityClientInformation.getAddress());
         statement.setString(5, legalEntityClientInformation.getPhoneNumber());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public Optional<LegalEntityClientInformation> getByPayerAccountNumber(String payerAccountNumber) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting legal entity client information with payer account number {}", payerAccountNumber);
         return commonRepository.getByParameters(payerAccountNumber, this::createPreparedStatementForGettingByPayerAccountNumber, this::createLegalEntityClientInformation);
     }
 
     private PreparedStatement createPreparedStatementForGettingByPayerAccountNumber(Connection connection, String payerAccountNumber) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_BY_PAYER_ACCOUNT_NUMBER);
         statement.setString(1, payerAccountNumber);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public void update(LegalEntityClientInformation legalEntityClientInformation) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Updating legal entity client information: {}", legalEntityClientInformation);
         commonRepository.executeUpdate(legalEntityClientInformation, this::createPreparedStatementForUpdate);
     }
 
@@ -71,17 +81,20 @@ public class LegalEntityClientInformationRepositoryImpl implements LegalEntityCl
         statement.setString(3, legalEntityClientInformation.getPhoneNumber());
         statement.setString(4, legalEntityClientInformation.getCheckingAccount());
         statement.setString(5, legalEntityClientInformation.getPayerAccountNumber());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public Optional<LegalEntityClientInformation> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting legal entity client information with ID {}", id);
         return commonRepository.getByParameters(id, this::createPreparedStatementForGettingById, this::createLegalEntityClientInformation);
     }
 
     private PreparedStatement createPreparedStatementForGettingById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

@@ -9,6 +9,9 @@ import com.chernik.internetprovider.persistence.entity.ContractAnnex;
 import com.chernik.internetprovider.persistence.entityfield.AccountField;
 import com.chernik.internetprovider.persistence.repository.AccountRepository;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +21,8 @@ import java.util.Optional;
 
 @Repository
 public class AccountRepositoryImpl implements AccountRepository {
+    private static final Logger LOGGER = LogManager.getLogger(AccountRepositoryImpl.class);
+
 
     private static final String GET_BY_ID = "SELECT `balance`, `used_traffic`, `contract_annex_id` FROM `account` WHERE `contract_annex_id`=?";
 
@@ -37,12 +42,14 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Optional<Account> getById(Long contractAnnexId) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting account for contract annex with ID {}", contractAnnexId);
         return commonRepository.getByParameters(contractAnnexId, this::createStatementForGettingById, this::createAccount);
     }
 
     private PreparedStatement createStatementForGettingById(Connection connection, Long contractAnnexId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_BY_ID);
         statement.setLong(1, contractAnnexId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -59,6 +66,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public void addUsedTraffic(Long accountId, Integer usedTraffic) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Adding used traffic {} to account with ID {}", usedTraffic, accountId);
         commonRepository.executeUpdate(accountId, usedTraffic, this::createStatementForAddUsedTraffic);
     }
 
@@ -66,18 +74,21 @@ public class AccountRepositoryImpl implements AccountRepository {
         PreparedStatement statement = connection.prepareStatement(ADD_USED_TRAFFIC);
         statement.setInt(1, usedTraffic);
         statement.setLong(2, contractAnnexId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of account with ID {}", id);
         return commonRepository.exist(id, this::createStatementForExistsById);
     }
 
     private PreparedStatement createStatementForExistsById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

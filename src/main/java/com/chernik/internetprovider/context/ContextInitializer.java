@@ -92,17 +92,17 @@ public class ContextInitializer {
      * {@link Autowired}, invoke methods annotated as {@link AfterCreate}.
      */
     private void initialize() {
-        LOGGER.log(Level.INFO, "Start initialize context");
+        LOGGER.log(Level.INFO, "Start context initialization");
         long startTime = System.currentTimeMillis();
         initComponents(Component.class);
         initComponents(Repository.class);
         initProxyServices();
         initComponents(HttpRequestProcessor.class);
         autowireComponents();
-        LOGGER.log(Level.DEBUG, "Start after create methods");
+        LOGGER.log(Level.DEBUG, "Start after create methods invocation");
         invokeLifeCycleMethod(withAfterCreate);
         long stopTime = System.currentTimeMillis();
-        LOGGER.log(Level.INFO, "Context was initialize in {} milliseconds", stopTime - startTime);
+        LOGGER.log(Level.INFO, "Context was initialized in {} milliseconds", stopTime - startTime);
     }
 
     /**
@@ -111,7 +111,7 @@ public class ContextInitializer {
      * all methods of life cycle.
      */
     private void initProxyServices() {
-        LOGGER.log(Level.TRACE, "Search class with annotation {} for creating proxy", Service.class);
+        LOGGER.log(Level.TRACE, "Search classes with annotation @Service for creating proxies", Service.class);
         ref.getTypesAnnotatedWith(Service.class)
                 .forEach(clazz -> {
                     Object component = createInstance(clazz);
@@ -130,6 +130,7 @@ public class ContextInitializer {
      * @return created proxy of <code>component</code>
      */
     private Object createProxyOfClass(Class<?> clazz, Object component) {
+        LOGGER.log(Level.TRACE, "Create proxy for {}", clazz);
         Class<?> anInterface = clazz.getInterfaces()[0];
         ServiceInvocationHandler serviceInvocationHandler = new ServiceInvocationHandler(getComponent(TransactionManager.class), component);
         return Proxy.newProxyInstance(anInterface.getClassLoader(), new Class[]{anInterface}, serviceInvocationHandler);
@@ -139,10 +140,10 @@ public class ContextInitializer {
      * Destroy context: invoke methods annotated as {@link BeforeDestroy}.
      */
     public void destroy() {
-        LOGGER.log(Level.INFO, "Start destroy context");
-        LOGGER.log(Level.DEBUG, "Start before destroy methods");
+        LOGGER.log(Level.INFO, "Start context destroying");
+        LOGGER.log(Level.DEBUG, "Start before destroy methods invocation");
         invokeLifeCycleMethod(withBeforeDestroy);
-        LOGGER.log(Level.INFO, "Context was destroy");
+        LOGGER.log(Level.INFO, "Context was destroyed");
     }
 
     /**
@@ -153,7 +154,7 @@ public class ContextInitializer {
      * @param annotation specify annotation, components with that should be initialized.
      */
     private void initComponents(Class<? extends Annotation> annotation) {
-        LOGGER.log(Level.TRACE, "Search class with annotation {}", annotation);
+        LOGGER.log(Level.DEBUG, "Search classes with annotation {}", annotation);
         ref.getTypesAnnotatedWith(annotation)
                 .forEach(clazz -> {
                     Object component = createInstance(clazz);
@@ -179,19 +180,19 @@ public class ContextInitializer {
             component = constructor.newInstance();
         } catch (NoSuchMethodException e) {
             String message = String.format("Can't resolve constructor with zero parameters for class %s", clazz);
-            LOGGER.log(Level.FATAL, message);
+            LOGGER.log(Level.FATAL, message, e);
             throw new RuntimeException(message, e);
         } catch (IllegalAccessException e) {
             String message = String.format("Can't create class %s. Constructor should be public", clazz);
-            LOGGER.log(Level.FATAL, message);
+            LOGGER.log(Level.FATAL, message, e);
             throw new RuntimeException(message, e);
         } catch (InstantiationException e) {
             String message = String.format("Can't create class %s. Class should not be abstract", clazz);
-            LOGGER.log(Level.FATAL, message);
+            LOGGER.log(Level.FATAL, message, e);
             throw new RuntimeException(message, e);
         } catch (InvocationTargetException e) {
             String message = String.format("Can't create class %s. Exception in constructor", clazz);
-            LOGGER.log(Level.FATAL, message);
+            LOGGER.log(Level.FATAL, message, e);
             throw new RuntimeException(message, e);
         }
 
@@ -244,17 +245,17 @@ public class ContextInitializer {
                 getSetter(entry.getKey(), entry.getValue().getClass()).invoke(entry.getValue(), settingValue);
 
             } catch (IntrospectionException | ContextInitializationException e) {
-                String message = String.format("Can't find setters for field %s in class %s", entry.getKey().getName(), entry.getValue().getClass());
+                String message = String.format("Can't find setter for field %s in class %s", entry.getKey().getName(), entry.getValue().getClass());
                 LOGGER.log(Level.FATAL, message);
-                e.printStackTrace();
                 throw new RuntimeException(message, e);
             } catch (IllegalAccessException e) {
-                String message = String.format("Error with access to field %s", entry.getKey());
-                LOGGER.log(Level.FATAL, message);
+                String message = String.format("Field %s isn't accessible", entry.getKey());
+                LOGGER.log(Level.FATAL, message, e);
                 throw new RuntimeException(message, e);
             } catch (InvocationTargetException e) {
-                LOGGER.log(Level.FATAL, "Setters for field {} throwing an exception", entry.getKey());
-                throw new RuntimeException(e);
+                String message = String.format("Setter for field %s throws an exception", entry.getKey());
+                LOGGER.log(Level.FATAL, message, e);
+                throw new RuntimeException(message, e);
             }
         });
     }
@@ -289,11 +290,11 @@ public class ContextInitializer {
                 entry.getKey().invoke(entry.getValue(), parameters.toArray());
             } catch (IllegalAccessException e) {
                 String message = String.format("Can't invoke method %s. Method should be public", entry.getKey());
-                LOGGER.log(Level.FATAL, message);
+                LOGGER.log(Level.FATAL, message, e);
                 throw new RuntimeException(message, e);
             } catch (InvocationTargetException e) {
                 String message = String.format("Can't invoke method %s. Exception in method", entry.getKey());
-                LOGGER.log(Level.FATAL, message);
+                LOGGER.log(Level.FATAL, message, e);
                 throw new RuntimeException(message, e);
             }
         });
@@ -347,7 +348,9 @@ public class ContextInitializer {
         if (implementation.isPresent()) {
             return implementation.get();
         } else {
-            throw new RuntimeException(String.format("Interface %s hasn't implementation", interfaceClass));
+            String message = String.format("Interface of %s hasn't implementation", interfaceClass);
+            LOGGER.log(Level.FATAL, message);
+            throw new RuntimeException(message);
         }
     }
 

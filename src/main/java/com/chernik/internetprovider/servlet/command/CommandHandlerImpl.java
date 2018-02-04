@@ -47,6 +47,7 @@ public class CommandHandlerImpl implements CommandHandler {
 
     @Override
     public Command getCommand(RequestParameter parameter) throws CommandNotFoundException {
+        LOGGER.log(Level.DEBUG, "Getting command with parameters {}", parameter);
         Command command = commands.get(parameter);
         if (command == null) {
             RequestParameter dynamicParameter = dynamicCommands.get(parameter);

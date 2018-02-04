@@ -11,12 +11,17 @@ import com.chernik.internetprovider.persistence.entity.LegalEntityClientInformat
 import com.chernik.internetprovider.persistence.entityfield.ContractField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.ContractRepository;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.Optional;
 
 @Repository
 public class ContractRepositoryImpl implements ContractRepository {
+    private static final Logger LOGGER = LogManager.getLogger(ContractRepositoryImpl.class);
+
 
     private static final String CREATE_CONTRACT = "INSERT INTO `contract`(`client_type`, `individual_client_information_id`, `legal_entity_client_information_id`) VALUES (?,?,?)";
 
@@ -44,6 +49,7 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     @Override
     public Long create(Contract contract) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating contract: {}", contract);
         return commonRepository.create(contract, this::createPreparedStatementForInserting);
     }
 
@@ -60,30 +66,35 @@ public class ContractRepositoryImpl implements ContractRepository {
         } else {
             statement.setNull(3, Types.INTEGER);
         }
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public void dissolve(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Dissolving of contract with ID {}", id);
         commonRepository.executeUpdate(id, this::createPreparedStatementForDissolved);
     }
 
     private PreparedStatement createPreparedStatementForDissolved(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(DISSOLVE_CONTRACT);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public Optional<Contract> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting contract with ID {}", id);
         return commonRepository.getByParameters(id, this::createPreparedStatementForGetting, this::createContract);
     }
 
     private PreparedStatement createPreparedStatementForGetting(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(GET_CONTRACT_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -108,17 +119,20 @@ public class ContractRepositoryImpl implements ContractRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of contract with ID {}", id);
         return commonRepository.exist(id, this::createStatementForContractExistById);
     }
 
     private PreparedStatement createStatementForContractExistById(Connection connection, Long id) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(EXISTS_CONTRACT_BY_ID);
         statement.setLong(1, id);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
     @Override
     public boolean existNotDissolvedByClientInformation(Contract contract) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check that client doesn't have not dissolved contracts: {}", contract);
         return commonRepository.exist(contract, this::createPreparedStatementForExistNotDissolvedByClientInformation);
     }
 
@@ -136,30 +150,35 @@ public class ContractRepositoryImpl implements ContractRepository {
         } else {
             statement.setNull(2, Types.VARCHAR);
         }
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public boolean isDissolved(Long contractId) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check that contract with ID {} is dissolved", contractId);
         return commonRepository.exist(contractId, this::createStatementForIsDissolved);
     }
 
     private PreparedStatement createStatementForIsDissolved(Connection connection, Long contractId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(IS_DISSOLVED);
         statement.setLong(1, contractId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
 
     @Override
     public boolean hasNotCanceledContractAnnex(Long contractId) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check that contract with ID {} has not canceled contract annexes", contractId);
         return commonRepository.exist(contractId, this::createStatementForHasCanceledContractAnnex);
     }
 
     private PreparedStatement createStatementForHasCanceledContractAnnex(Connection connection, Long contractId) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(HAS_NOT_CANCELED_CONTRACT_ANNEX);
         statement.setLong(1, contractId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

@@ -57,8 +57,9 @@ public class ConnectionPoolImpl implements ConnectionPool {
             TimeZone.setDefault(timeZone);
             Class.forName(driver).newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            LOGGER.log(Level.FATAL, "Can't find database driver {}", driver);
-            throw new RuntimeException(String.format("Can't find database driver %s", driver), e);
+            String message = String.format("Can't find database driver %s", driver);
+            LOGGER.log(Level.FATAL, message, e);
+            throw new RuntimeException(message, e);
         }
         url = readPropertyWithValidation(bundle, URL_PROPERTY_NAME);
         user = readPropertyWithValidation(bundle, USER_PROPERTY_NAME);
@@ -77,7 +78,9 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private String readPropertyWithValidation(ResourceBundle bundle, String propertyName) {
         String property = bundle.getString(propertyName);
         if (property.isEmpty()) {
-            throw new RuntimeException(String.format("Mandatory property %s was not found", propertyName));
+            String message = String.format("Mandatory property %s was not found", propertyName);
+            LOGGER.log(Level.FATAL, message);
+            throw new RuntimeException(message);
         }
         return property;
     }
@@ -180,7 +183,7 @@ public class ConnectionPoolImpl implements ConnectionPool {
                     connection.close();
                 }
             } catch (SQLException e) {
-                LOGGER.log(Level.WARN, "Can't close connection {}", connection);
+                LOGGER.log(Level.WARN, "Can't close connection", e);
             }
         });
     }
@@ -188,12 +191,14 @@ public class ConnectionPoolImpl implements ConnectionPool {
     private Connection createConnection() {
         Connection connection;
         try {
+            LOGGER.log(Level.INFO, "Connect to database. Url: {}, user: {}", url, user);
             connection = DriverManager.getConnection(String.format(DATABASE_CONNECTION_FORMAT, url, user, password));
         } catch (SQLException e) {
-            LOGGER.log(Level.FATAL, "Can't connect to database. Url: {}, user: {}", url, user);
-            throw new RuntimeException(String.format("Can't connect to database. Url: %s, user: %s", url, user), e);
+            String message = String.format("Can't connect to database. Url: %s, user: %s", url, user);
+            LOGGER.log(Level.FATAL, message, e);
+            throw new RuntimeException(message, e);
         }
-        LOGGER.log(Level.TRACE, "New connection was created.");
+        LOGGER.log(Level.TRACE, "New connection was created");
         return connection;
     }
 
@@ -255,7 +260,9 @@ public class ConnectionPoolImpl implements ConnectionPool {
 
         @Override
         public void close() {
-            throw new RuntimeException("ConnectionClosing is unsupported operation");
+            String message = "Connection closing is unsupported operation";
+            LOGGER.log(Level.FATAL, message);
+            throw new RuntimeException(message);
         }
 
         @Override

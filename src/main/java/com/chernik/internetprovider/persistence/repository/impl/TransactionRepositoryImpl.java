@@ -11,6 +11,7 @@ import com.chernik.internetprovider.persistence.entity.TransactionType;
 import com.chernik.internetprovider.persistence.entityfield.TransactionField;
 import com.chernik.internetprovider.persistence.repository.CommonRepository;
 import com.chernik.internetprovider.persistence.repository.TransactionRepository;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +38,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Override
     public void create(Transaction transaction) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating transaction: {}", transaction);
         commonRepository.create(transaction, this::createPreparedStatementForInserting);
     }
 
@@ -45,12 +47,14 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         statement.setString(1, transaction.getType().toString());
         statement.setBigDecimal(2, transaction.getAmount());
         statement.setLong(3, transaction.getAccount().getContractAnnex().getContractAnnexId());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString()); //TODO why toString()?
         return statement;
     }
 
 
     @Override
     public Page<Transaction> getPage(Long contractAnnexId, Pageable pageable) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting page of transactions for contract annex with ID {}. Page number is {}, page size is {}", contractAnnexId, pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(contractAnnexId, pageable, this::createPreparedStatementForGettingPageCount, this::createPreparedStatementForGettingPage, this::createTransaction);
     }
 
@@ -58,6 +62,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         PreparedStatement statement = connection.prepareStatement(GET_TRANSACTION_PAGE_COUNT);
         statement.setInt(1, pageable.getPageSize());
         statement.setLong(2, contractAnnexId);
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 
@@ -66,6 +71,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         statement.setLong(1, contractAnnexId);
         statement.setInt(2, pageable.getPageSize());
         statement.setInt(3, pageable.getPageSize() * pageable.getPageNumber());
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

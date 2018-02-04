@@ -19,8 +19,6 @@ public class ServiceInvocationHandler implements InvocationHandler {
         } else {
             return invokeTransactional(method, args);
         }
-
-
     }
 
     private Object invokeNotTransactional(Method method, Object[] args) throws Throwable {

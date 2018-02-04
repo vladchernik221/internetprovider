@@ -58,6 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> getByLoginAndPassword(String login, String password) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting user with login {}", login);
         return commonRepository.getByParameters(login, password, this::createStatementForGettingByLoginAndPassword, this::createUser);
     }
 
@@ -72,6 +73,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Long create(User user) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Creating user: {}", user);
         return commonRepository.create(user, this::createStatementForInserting);
     }
 
@@ -92,6 +94,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void updatePassword(Long userId, String newPassword) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Updating password for user with ID: {}", userId);
         commonRepository.executeUpdate(userId, newPassword, this::createStatementForUpdatingPassword);
     }
 
@@ -106,6 +109,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Page<User> getPage(Pageable pageable) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting page of users. Page number is {}, page size is {}", pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(pageable, this::createCountStatement, this::createPreparedStatementForGetting, this::createUser);
     }
 
@@ -126,6 +130,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Page<User> getPageWithRole(Pageable pageable, UserRole userRole) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting page of users with role {}. Page number is {}, page size is {}", userRole, pageable.getPageNumber(), pageable.getPageSize());
         return commonRepository.getPage(userRole, pageable, this::createCountWithRoleStatement, this::createPreparedStatementForGettingWithRole, this::createUser);
     }
 
@@ -148,6 +153,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> getById(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Getting user with ID {}", id);
         return commonRepository.getByParameters(id, this::createStatementForGettingById, this::createUser);
     }
 
@@ -161,6 +167,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void block(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Blocking user with ID {}", id);
         commonRepository.executeUpdate(id, this::createStatementForBlock);
     }
 
@@ -174,6 +181,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean existWithLogin(String login) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of user with login {}", login);
         return commonRepository.exist(login, this::createPreparedStatementForExistByLogin);
     }
 
@@ -204,6 +212,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean existWithId(Long id) throws DatabaseException, TimeOutException {
+        LOGGER.log(Level.TRACE, "Check existing of user with ID {}", id);
         return commonRepository.exist(id, this::createStatementForExistById);
     }
 
