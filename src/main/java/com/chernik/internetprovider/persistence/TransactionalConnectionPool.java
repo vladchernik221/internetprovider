@@ -11,16 +11,18 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @Component
 public class TransactionalConnectionPool implements ConnectionPool, TransactionManager {
     private static final Logger LOGGER = LogManager.getLogger(TransactionalConnectionPool.class);
 
     private ConnectionPoolImpl connectionPool;
-    private Map<Thread, Connection> connectionCache = Collections.synchronizedMap(new HashMap<>());
+    private Map<Thread, Entry<Connection, Integer>> connectionCache = Collections.synchronizedMap(new HashMap<>());
 
     public TransactionalConnectionPool() {
         connectionPool = ConnectionPoolImpl.getInstance();
@@ -33,9 +35,9 @@ public class TransactionalConnectionPool implements ConnectionPool, TransactionM
 
     @Override
     public Connection getConnection() throws DatabaseException, TimeOutException {
-        Connection connection = connectionCache.get(Thread.currentThread());
-        if (connection != null) {
-            return connection;
+        Entry<Connection, Integer> connectionEntry = connectionCache.get(Thread.currentThread());
+        if (connectionEntry != null) {
+            return connectionEntry.getKey();
         } else {
             return connectionPool.getConnection();
         }
@@ -43,37 +45,58 @@ public class TransactionalConnectionPool implements ConnectionPool, TransactionM
 
     @Override
     public void releaseConnection(Connection connection) throws DatabaseException {
-        Connection transactionConnection = connectionCache.get(Thread.currentThread());
-        if (transactionConnection == null) {
+        if (!connectionCache.containsKey(Thread.currentThread())) {
             connectionPool.releaseConnection(connection);
         }
     }
 
     @Override
     public void openTransaction() throws DatabaseException, TimeOutException, SQLException {
-        Connection connection = connectionPool.getConnection();
-        LOGGER.log(Level.DEBUG, "Open transaction");
-        connection.setAutoCommit(false);
-        connectionCache.put(Thread.currentThread(), connection);
+        Entry<Connection, Integer> connectionEntry = connectionCache.get(Thread.currentThread());
+        if (connectionEntry == null) {
+            LOGGER.log(Level.DEBUG, "Open transaction");
+            Connection connection = connectionPool.getConnection();
+            connection.setAutoCommit(false);
+            connectionCache.put(Thread.currentThread(), new SimpleEntry<>(connection, 1));
+        } else {
+            Integer counter = connectionEntry.getValue();
+            counter = counter + 1;
+            connectionEntry.setValue(counter);
+        }
     }
 
     @Override
     public void commit() throws SQLException, DatabaseException {
-        Connection connection = connectionCache.remove(Thread.currentThread());
+        Entry<Connection, Integer> connectionEntry = connectionCache.get(Thread.currentThread());
+        Connection connection = connectionEntry.getKey();
+        Integer counter = connectionEntry.getValue();
 
-        LOGGER.log(Level.DEBUG, "Commit transaction");
-        connection.commit();
-        connection.setAutoCommit(true);
-        connectionPool.releaseConnection(connection);
+        if (counter == 1) {
+            LOGGER.log(Level.DEBUG, "Commit transaction");
+            connectionCache.remove(Thread.currentThread());
+            connection.commit();
+            connection.setAutoCommit(true);
+            connectionPool.releaseConnection(connection);
+        } else {
+            counter = counter - 1;
+            connectionEntry.setValue(counter);
+        }
     }
 
     @Override
     public void rollback() throws SQLException, DatabaseException {
-        Connection connection = connectionCache.remove(Thread.currentThread());
-
-        LOGGER.log(Level.DEBUG, "Rollback transaction");
-        connection.rollback();
-        connection.setAutoCommit(true);
-        connectionPool.releaseConnection(connection);
+        Entry<Connection, Integer> connectionEntry = connectionCache.get(Thread.currentThread());
+        Connection connection = connectionEntry.getKey();
+        Integer counter = connectionEntry.getValue();
+        if (counter == 1) {
+            LOGGER.log(Level.DEBUG, "Rollback transaction");
+            connectionCache.remove(Thread.currentThread());
+            connection.rollback();
+            connection.setAutoCommit(true);
+            connectionPool.releaseConnection(connection);
+        } else {
+            counter = counter - 1;
+            connectionEntry.setValue(counter);
+        }
     }
 }
