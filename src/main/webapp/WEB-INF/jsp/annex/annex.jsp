@@ -32,6 +32,7 @@
             <a href="/contract/annex/${annex.contractAnnexId}/account" class="button small"><fmt:message key="account" /></a>
         </div><!--
          --><c:if test="${!annex.canceled}"><div class="align-right actions col-2">
+                <a href="/contract/annex/${annex.contractAnnexId}/service" class="button small"><fmt:message key="annex.orderedService" /></a>
                 <a href="/contract/annex/${annex.contractAnnexId}/service/order" class="button small"><fmt:message key="annex.orderService" /></a>
                 <c:if test="${sessionScope.user.userRole == 'SELLER'}">
                     <button class="button small" onclick="cancel_annex(${annex.contractAnnexId})"><fmt:message key="annex.dissolve" /></button>

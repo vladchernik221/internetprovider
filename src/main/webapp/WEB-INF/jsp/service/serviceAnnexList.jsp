@@ -49,7 +49,7 @@
                             <td>${service.name}</td>
                             <td>${service.price}</td>
                             <td>
-                                <button class="button small" onclick="order_service(${service.serviceId}, event)"><fmt:message key="service.order" /></button>
+                                <button class="button small" onclick="order_service(${annexId}, ${service.serviceId}, event)"><fmt:message key="service.order" /></button>
                             </td>
                         </tr>
                     </c:forEach>

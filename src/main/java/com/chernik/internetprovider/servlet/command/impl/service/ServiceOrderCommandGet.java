@@ -49,6 +49,9 @@ public class ServiceOrderCommandGet implements Command {
         RequestDispatcher dispatcher = request.getRequestDispatcher(SERVICE_ANNEX_LIST_PAGE);
         Page<Service> servicesPage = serviceService.getPage(new Pageable(pageNumber, 10), false);
         request.setAttribute("servicesPage", servicesPage);
+        String annexId = request.getRequestURI().split("/")[3];
+        request.setAttribute("annexId", annexId);
+
         LOGGER.log(Level.TRACE, "Forward to page: {}", SERVICE_ANNEX_LIST_PAGE);
         dispatcher.forward(request, response);
     }
