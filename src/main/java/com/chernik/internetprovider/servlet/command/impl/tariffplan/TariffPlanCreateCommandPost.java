@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//TODO create unlimited tariff plan exception
 @HttpRequestProcessor(uri = "/tariff-plan/new", method = RequestType.POST)
 public class TariffPlanCreateCommandPost implements Command {
 

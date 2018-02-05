@@ -47,7 +47,7 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         statement.setString(1, transaction.getType().toString());
         statement.setBigDecimal(2, transaction.getAmount());
         statement.setLong(3, transaction.getAccount().getContractAnnex().getContractAnnexId());
-        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString()); //TODO why toString()?
+        LOGGER.log(Level.TRACE, "Create statement with query: {}", statement.toString());
         return statement;
     }
 

@@ -48,7 +48,7 @@ public class ContractAnnexListCommandGet implements Command {
         Long contractId = Long.valueOf(request.getRequestURI().split("/")[2]);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher(CONTRACT_ANNEX_LIST_PAGE);
-        Page<ContractAnnex> contractAnnexesPage = contractAnnexService.getPage(contractId, new Pageable(pageNumber, 10));//TODO to property or constant or somewhere
+        Page<ContractAnnex> contractAnnexesPage = contractAnnexService.getPage(contractId, new Pageable(pageNumber, 10));
         request.setAttribute("contractAnnexesPage", contractAnnexesPage);
         request.setAttribute("contractId", contractId);
         LOGGER.log(Level.TRACE, "Forward to page: {}", CONTRACT_ANNEX_LIST_PAGE);
